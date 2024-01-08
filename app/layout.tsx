@@ -18,14 +18,16 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${inter.className} antialiased`}>
-        <div className='p-10 shadow-lg'>
-          <h1 className='py-10 text-5xl text-red-600 font-bold'>A to Z Fitness</h1>
-          <div className='grid grid-cols-5 p-5 border-t-2 border-red-600 text-center text-xl text-red-600'>
-            <Link className='' href=''>Home</Link>
-            <Link className='' href=''>Testimonials</Link>
-            <Link className='' href=''>Tips & Advice</Link>
-            <Link className='' href=''>Contact</Link>
-            <Link className='' href=''>FAQ</Link>
+        <div className='shadow-lg'>
+          <div className='px-64'>
+            <h1 className='py-10 text-5xl text-red-600 font-bold'>A to Z Fitness</h1>
+            <div className='grid grid-cols-5 p-5 px-32 border-t-2 border-red-600 text-center text-xl text-red-600'>
+              <Link className='' href=''>Home</Link>
+              <Link className='' href=''>Testimonials</Link>
+              <Link className='' href=''>Tips & Advice</Link>
+              <Link className='' href=''>Contact</Link>
+              <Link className='' href=''>FAQ</Link>
+            </div>
           </div>
         </div>
 
@@ -34,7 +36,7 @@ export default function RootLayout({
         </div>
 
         <div className='p-10 text-center'>
-          <h3 className='py-5 text-red-600 font-bold'>A to Z Fitness</h3>
+          <h3 className='py-5 text-xl text-red-600 font-bold'>A to Z Fitness</h3>
           <h4 className='text-red-600'>aran.ziegler@gmail.com</h4>
           <h4 className='text-red-600'>022 017 0799</h4>
           <p className='pt-10 text-red-600'>©2023 by AZ Fitness</p>
