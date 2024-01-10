@@ -26,16 +26,29 @@
     rgb(var(--background-start-rgb));
 } */
 
+@keyframes fade {
+  0% { opacity: 1; }
+  100% { opacity: 0.75; }
+}
+
 @layer utilities {
-  /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 
   .no-scrollbar {
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
+  }
+
+  .faded {
+    opacity: 0.75;
+    animation: fade 0.5s cubic-bezier(0.4, 0, 0.6, 1);
+  }
+
+  .unfaded {
+    opacity: 1;
+    animation: fade 1s cubic-bezier(0.4, 0, 0.6, 1);
+    animation-direction: reverse;
   }
 }
