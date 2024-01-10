@@ -1,15 +1,15 @@
 import Image from 'next/image'
-import ImageGallery from '@/app/ImageGallery'
+import Gallery from '@/app/gallery'
 
 export default function HomePage() {
   return (
     <main>
-      <div>
+      <div className='py-5'>
         <div className='p-10 text-center'>
           <h1 className='text-5xl text-red-600 font-bold'>Build a better you!</h1>
           <h2 className='text-xl text-red-600'>Personal training tailored to your needs</h2>
         </div>
-        <ImageGallery />
+        <Gallery />
       </div>
 
       <div className='bg-red-600'>
@@ -26,7 +26,6 @@ export default function HomePage() {
         <Image src='/training.png' alt='Training' className='pb-10' layout="responsive" width={0} height={0} />
       </div>
 
-      <br></br>
       <div className='p-10 text-center'>
         <h2 className='p-5 text-3xl text-red-600 font-bold'>Services</h2>
         <p className='text-red-600'>
@@ -69,7 +68,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      <br></br>
       <div className='flex items-center justify-center p-10 text-center bg-red-600'>
         <div className='bg-white'>
           <Image src='/profile.png' alt='Profile' className='relative left-4 bottom-4' layout="responsive" width={0} height={0} />

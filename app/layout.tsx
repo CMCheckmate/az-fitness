@@ -19,19 +19,17 @@ export default function RootLayout({
     <html lang='en'>
       <body className={`${inter.className} antialiased`}>
         <div className='shadow-lg'>
-          <div className='px-64'>
-            <h1 className='py-10 text-5xl text-red-600 font-bold'>A to Z Fitness</h1>
-            <div className='grid grid-cols-5 p-5 px-32 border-t-2 border-red-600 text-center text-xl text-red-600'>
-              <Link className='' href=''>Home</Link>
-              <Link className='' href=''>Testimonials</Link>
-              <Link className='' href=''>Tips & Advice</Link>
-              <Link className='' href=''>Contact</Link>
-              <Link className='' href=''>FAQ</Link>
-            </div>
+          <h1 className='mx-44 py-10 text-5xl text-red-600 font-bold border-b-2 border-red-600'>A to Z Fitness</h1>
+          <div className='mx-72 p-5 grid grid-cols-5 text-center text-xl text-red-600'>
+            <Link className='' href=''>Home</Link>
+            <Link className='' href=''>Testimonials</Link>
+            <Link className='' href=''>Tips & Advice</Link>
+            <Link className='' href=''>Contact</Link>
+            <Link className='' href=''>FAQ</Link>
           </div>
         </div>
 
-        <div className='h-full'>
+        <div className=''>
           {children}
         </div>
 
