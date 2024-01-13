@@ -68,13 +68,13 @@ export default function TestimonialDisplay() {
             }, transitionTime);
             return () => { clearTimeout(timeout); };
         }
-    }, [testimonialIndex]);
+    }, [testimonialIndex, swap]);
 
     return (
         <div className='relative py-32 flex justify-center items-center text-center overflow-x-hidden'>
             {testimonials.map((testimonial, index) => (
                 <div key={`testimonial${index + 1}`} ref={(block) => { testimonialBlocks.current.push(block); }} onAnimationEnd={() => { setBlock(index); }} className={`px-72 ${(index == 0 ? 'block' : 'hidden') }`}>
-                    <p className={`mt-5 text-9xl text-red-600 ${nestoCopper.className} leading-[0.5]`}>''</p>
+                    <p className={`mt-5 text-9xl text-red-600 ${nestoCopper.className} leading-[0.5]`}>{'\'\''}</p>
                     <p className='text-red-600'>{testimonial.text}</p>
                     <p className='mt-10 text-xl text-red-600'>{testimonial.author}</p>
                 </div>

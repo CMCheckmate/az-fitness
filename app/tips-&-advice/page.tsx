@@ -7,7 +7,7 @@ export function TipsAndAdvice() {
         <div>
             <div className='p-20 bg-gray-100'>
                 <h2 className='p-5 text-center text-4xl text-red-600 font-bold'>FITNESS ADVICE FOR YOU</h2>
-                <h3 className='text-center text-red-600'>What's New</h3>
+                <h3 className='text-center text-red-600'>{'What\'s New'}</h3>
 
                 <div className='flex justify-center text-center'>
                     <div className='p-5 flex flex-col items-center'>
