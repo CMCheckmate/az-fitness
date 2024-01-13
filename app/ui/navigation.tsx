@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Navigation() {
     const links = [
@@ -19,5 +19,5 @@ export default function Navigation() {
                 <Link key={link['name']} className={`text-center text-xl ${pathname == link.href ? 'text-red-400' : 'text-red-600'} hover:text-red-400`} href={link.href}>{link.name}</Link>
             ))}
         </div>
-    )
+    );
 }

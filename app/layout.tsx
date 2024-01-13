@@ -16,16 +16,18 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${inter.className} antialiased`}>
-        <div className='shadow-lg'>
-          <h1 className='mx-44 py-10 text-5xl text-red-600 font-bold border-b-2 border-red-600'>A to Z Fitness</h1>
-          <div className='mx-72 p-5'>
-            <Navigation />
+        <div className='pb-2'>
+          <div className='shadow-lg'>
+            <h1 className='mx-44 py-10 text-5xl text-red-600 font-bold border-b-2 border-red-600'>A to Z Fitness</h1>
+            <div className='mx-72 p-5'>
+              <Navigation />
+            </div>
           </div>
         </div>
 
-        <div className=''>
+        <main>
           {children}
-        </div>
+        </main>
 
         <div className='p-10 text-center'>
           <h3 className='py-5 text-xl text-red-600 font-bold'>A to Z Fitness</h3>
@@ -35,5 +37,5 @@ export default function RootLayout({
         </div>
       </body>
     </html>
-  )
+  );
 }

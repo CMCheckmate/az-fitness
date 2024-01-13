@@ -1,11 +1,12 @@
-import Image from 'next/image'
-import Testimonials from '@/app/ui/testimonials' 
-import womenRunning from '@/public/women_running.png'
+import Image from 'next/image';
+import Loader from '@/app/loader'
+import TestimonialDisplay from '@/app/ui/testimonials';
+import womenRunning from '@/public/women_running.png';
 
-export default function Page() {
+export function Testimonials() {
     return (
-        <main>
-            <Testimonials />
+        <div>
+            <TestimonialDisplay />
             
             <Image src={womenRunning} alt='Women Running' className='w-full aspect-[5/2] object-cover' />
 
@@ -14,15 +15,15 @@ export default function Page() {
                     <h2 className='m-10 text-center text-4xl text-white font-bold'>ADD A REVIEW</h2>
                     <h3 className='text-center text-xl text-white'>How Was Your Experience?</h3>
                     <form className='grid grid-cols-2'>
-                        <input type="text" placeholder='First Name' className='m-5 p-5 border-b-2' />
+                        <input type="text" placeholder='First Name' className='m-5 p-5 border-b-2' required />
 
                         <input type="text" placeholder='Last Name' className='m-5 p-5 border-b-2' />
 
-                        <input type="text" placeholder='Email' className='m-5 p-5 border-b-2' />
+                        <input type="text" placeholder='Email' className='m-5 p-5 border-b-2' required />
 
                         <input type="text" placeholder='Phone' className='m-5 p-5 border-b-2' />
 
-                        <input type="text" placeholder='Write your review here' className='col-span-2 m-5 p-5 border-b-2' />
+                        <input type="text" placeholder='Write your review here' className='col-span-2 m-5 p-5 border-b-2' required />
 
                         <p className='col-span-2 m-5 text-white'>Would you recommend us to your friends?</p>
                         <label htmlFor='Yes' className='mx-5'>
@@ -43,6 +44,12 @@ export default function Page() {
                     </form>
                 </div>
             </div>
-        </main>
-    )
+        </div>
+    );
+}
+
+export default function TestimonialPage() {
+    return (
+        <Loader component={Testimonials()} />
+    );
 }

@@ -1,21 +1,21 @@
 'use client';
 
-import { useEffect, useRef, useState} from 'react'
-import Image from 'next/image'
-import outdoorFitness from '@/public/outdoor_fitness.png'
-import fitnessArmband from '@/public/fitness_armband.png'
-import fitnessVideo from '@/public/fitness_video.png'
-import onlineFitnessClass from '@/public/online_fitness_class.png'
-import outdoorWorkout from '@/public/outdoor_workout.png'
-import danceClass from '@/public/dance_class.png'
-import outdoorExercise from '@/public/outdoor_exercise.png'
-import yogaClass from '@/public/yoga_class.png'
-import workoutLesson from '@/public/workout_lesson.png'
-import exercisingAtHome from '@/public/exercising_at_home.png'
-import upwardFacingDog from '@/public/upward_facing_dog.png'
-import womenRunning from '@/public/women_running.png'
-import funAtYoga from '@/public/fun_at_yoga.png'
-import fitnessGears from '@/public/fitness_gears.png'
+import { useEffect, useRef, useState} from 'react';
+import Image from 'next/image';
+import outdoorFitness from '@/public/outdoor_fitness.png';
+import fitnessArmband from '@/public/fitness_armband.png';
+import fitnessVideo from '@/public/fitness_video.png';
+import onlineFitnessClass from '@/public/online_fitness_class.png';
+import outdoorWorkout from '@/public/outdoor_workout.png';
+import danceClass from '@/public/dance_class.png';
+import outdoorExercise from '@/public/outdoor_exercise.png';
+import yogaClass from '@/public/yoga_class.png';
+import workoutLesson from '@/public/workout_lesson.png';
+import exercisingAtHome from '@/public/exercising_at_home.png';
+import upwardFacingDog from '@/public/upward_facing_dog.png';
+import womenRunning from '@/public/women_running.png';
+import funAtYoga from '@/public/fun_at_yoga.png';
+import fitnessGears from '@/public/fitness_gears.png';
 
 export default function Gallery() {
     const images = [
@@ -34,6 +34,7 @@ export default function Gallery() {
         { 'src': funAtYoga, 'alt': 'Fun at Yoga' },
         { 'src': fitnessGears, 'alt': 'Fitness Gears' }, 
     ];
+    const transitionTime = 10000;
     const gallery = useRef(null);
     const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
     const [imageIndex, setImageIndex] = useState(0);
@@ -57,19 +58,17 @@ export default function Gallery() {
     }
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setImageIndex(prevIndex => {
-                if (prevIndex < images.length) {
-                    scroll(prevIndex + 1);
-                    return prevIndex + 1;
+        if (!document.hidden) {
+            const timeout = setTimeout(() => {
+                if (imageIndex < images.length - 1) {
+                    scroll(imageIndex + 1);
                 } else {
                     scroll(0);
-                    return 0;
                 }
-            });
-        }, 10000);
-        return () => { clearInterval(interval); };
-    }, [gallery]);
+            }, transitionTime);
+            return () => { clearTimeout(timeout); };
+        }
+    }, [imageIndex]);
 
     return (
         <div ref={gallery} className='flex overflow-x-auto no-scrollbar scroll-smooth cursor-pointer'>
@@ -79,5 +78,5 @@ export default function Gallery() {
             ))}
             <Image onClick={() => { scroll(0); }} src={images[0].src} alt={images[0].alt} className='w-1/4 object-cover object-left opacity-75' />
         </div>
-    )
+    );
 }

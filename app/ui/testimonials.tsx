@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { useEffect, useState, useRef } from 'react'
-import { nestoCopper } from '@/app/ui/fonts'
-import './ui.css'
+import { useEffect, useState, useRef } from 'react';
+import { nestoCopper } from '@/app/ui/fonts';
+import './ui.css';
 
-export default function Testimonials() {
+export default function TestimonialDisplay() {
     const testimonials = [
         { 'text': 'This is your Testimonial quote. Use this space to share clients’ reviews about you, your services and exciting success stories. Get your site visitors excited to work with you!', 
             'author': 'Kris Michaels' }, 
@@ -13,6 +13,7 @@ export default function Testimonials() {
         { 'text': 'This is your Testimonial quote. Use this space to share clients’ reviews about you, your services and exciting success stories. Get your site visitors excited to work with you!', 
             'author': 'Robbie White' }
     ];
+    const transitionTime = 10000;
     const [testimonialIndex, setTestimonialIndex] = useState(0);
     const testimonialBlocks = useRef<(HTMLDivElement | null)[]>([]);
     const [leftButton, rightButton] = [useRef(null), useRef(null)];
@@ -20,11 +21,9 @@ export default function Testimonials() {
     function swap(direction: number) {
         const leftAction = leftButton.current as unknown as HTMLElement;
         const rightAction = rightButton.current as unknown as HTMLElement;
-        const currentIndex = (testimonialIndex == testimonials.length - 1 && direction == 1) ? 0 : (testimonialIndex == 0 && direction == -1) ? testimonials.length - 1 : testimonialIndex + direction;
+        const currentIndex = (testimonialIndex == 0 && direction == -1) ? testimonials.length - 1 : (testimonialIndex == testimonials.length - 1 && direction == 1) ? 0 : testimonialIndex + direction;
         const previousTestimonial = testimonialBlocks.current[testimonialIndex] as HTMLElement;
         const currentTestimonial = testimonialBlocks.current[currentIndex] as HTMLElement;
-
-        setTestimonialIndex(currentIndex);
 
         leftAction.style.pointerEvents = 'none';
         rightAction.style.pointerEvents = 'none';
@@ -44,6 +43,8 @@ export default function Testimonials() {
             currentTestimonial.style.animation = 'slideLeft 1s ease';
         }
         currentTestimonial.style.animationDirection = 'reverse';
+        
+        setTestimonialIndex(currentIndex);
     }
 
     function setBlock(index: number) {
@@ -61,9 +62,13 @@ export default function Testimonials() {
     }
 
     useEffect(() => {
-        const interval = setInterval(() => { swap(1); }, 10000);
-        return () => { clearInterval(interval); };
-    });
+        if (!document.hidden) {
+            const timeout = setTimeout(() => {
+                swap(1);
+            }, transitionTime);
+            return () => { clearTimeout(timeout); };
+        }
+    }, [testimonialIndex]);
 
     return (
         <div className='relative py-32 flex justify-center items-center text-center overflow-x-hidden'>
@@ -77,5 +82,5 @@ export default function Testimonials() {
             <button ref={leftButton} onClick={() => { swap(-1); }} className='absolute top-1/2 left-16 translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`<`}</button>
             <button ref={rightButton} onClick={() => { swap(1); }} className='absolute top-1/2 right-16 translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`>`}</button>
         </div>
-    )
+    );
 }

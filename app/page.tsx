@@ -1,12 +1,13 @@
 import Image from 'next/image'
+import Loader from '@/app/loader'
 import Gallery from '@/app/ui/gallery'
 import placeholder from '@/public/placeholder.svg'
 import training from '@/public/training.png'
 import profile from '@/public/profile.png'
 
-export default function HomePage() {
+export function Home() {
   return (
-    <main>
+    <div>
       <div className='py-5'>
         <div className='p-10 text-center'>
           <h1 className='text-5xl text-red-600 font-bold'>Build a better you!</h1>
@@ -39,8 +40,8 @@ export default function HomePage() {
             <Image src={placeholder} alt='Placeholder 1' className='w-3/4 p-5 rounded-full' />
             <h3 className='p-5 text-2xl text-red-600 font-bold'>Service 1</h3>
             <p className='text-red-600'>
-              Describe your service here. What makes it great? 
-              Use short catchy text to tell people what you offer, and the benefits they will receive. 
+              Describe your service here. What makes it great?
+              Use short catchy text to tell people what you offer, and the benefits they will receive.
               A great description gets readers in the mood, and makes them more likely to go ahead and book.
             </p>
           </div>
@@ -67,7 +68,7 @@ export default function HomePage() {
 
       <div className='flex items-center justify-center p-10 text-center bg-red-600'>
         <div className='bg-white'>
-          <Image src={profile} alt='Profile' className='relative left-4 bottom-4'/>
+          <Image src={profile} alt='Profile' className='relative left-4 bottom-4' />
         </div>
         <div className='px-5'>
           <h2 className='text-4xl text-white font-bold'>Aran Ziegler</h2>
@@ -79,6 +80,12 @@ export default function HomePage() {
           </ul>
         </div>
       </div>
-    </main>
+    </div>
   )
+}
+
+export default function HomePage() {
+  return (
+    <Loader component={Home()} />
+  );
 }
