@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Gallery from '@/app/gallery'
+import Gallery from '@/app/ui/gallery'
 import placeholder from '@/public/placeholder.svg'
 import training from '@/public/training.png'
 import profile from '@/public/profile.png'
@@ -26,7 +26,7 @@ export default function HomePage() {
             I have developed my training regime by working with a variety of people, and constantly adapting my program to the needs of my new clients.
           </p>
         </div>
-        <Image src={training} alt='Training' className='w-full' />
+        <Image src={training} alt='Training' className='w-full object-cover' />
       </div>
 
       <div className='p-10 text-center'>
