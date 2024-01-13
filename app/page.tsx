@@ -5,7 +5,7 @@ import placeholder from '@/public/placeholder.svg'
 import training from '@/public/training.png'
 import profile from '@/public/profile.png'
 
-export function Home() {
+function Home() {
   return (
     <div>
       <div className='py-5'>

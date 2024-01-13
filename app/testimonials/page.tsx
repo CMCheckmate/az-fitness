@@ -3,7 +3,7 @@ import Loader from '@/app/loader'
 import TestimonialDisplay from '@/app/ui/testimonials';
 import womenRunning from '@/public/women_running.png';
 
-export function Testimonials() {
+function Testimonials() {
     return (
         <div>
             <TestimonialDisplay />

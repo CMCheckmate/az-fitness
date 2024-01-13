@@ -4,7 +4,7 @@ import outdoorExercise from '@/public/outdoor_exercise.png'
 import yogaClass from '@/public/yoga_class.png'
 import workoutLesson from '@/public/workout_lesson.png'
 
-export function FAQ() {
+function FAQ() {
     return (
         <div className='flex flex-col justify-center items-center p-40 text-center bg-gray-100'>
             <h2 className='text-4xl text-red-600 font-bold'>FAQS</h2>

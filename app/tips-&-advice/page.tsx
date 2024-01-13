@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Loader from '@/app/loader'
 import placeholder from '@/public/placeholder.svg'
 
-export function TipsAndAdvice() {
+function TipsAndAdvice() {
     return (
         <div>
             <div className='p-20 bg-gray-100'>

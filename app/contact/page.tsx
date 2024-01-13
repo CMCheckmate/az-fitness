@@ -1,7 +1,7 @@
 import Loader from '@/app/loader'
 import Map from '@/app/ui/map'
 
-export function Contact() {
+function Contact() {
     return (
         <div>
             <div className='p-10 flex justify-center items-center'>
