@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Loader from '@/app/loader'
+import Loader from '@/app/ui/loader'
 import Gallery from '@/app/ui/gallery'
 import placeholder from '@/public/placeholder.svg'
 import training from '@/public/training.png'

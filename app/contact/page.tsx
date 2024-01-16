@@ -1,4 +1,4 @@
-import Loader from '@/app/loader'
+import Loader from '@/app/ui/loader'
 import Map from '@/app/ui/map'
 
 function Contact() {

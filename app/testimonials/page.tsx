@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Loader from '@/app/loader'
+import Loader from '@/app/ui/loader'
 import TestimonialDisplay from '@/app/ui/testimonials';
 import womenRunning from '@/public/women_running.png';
 
