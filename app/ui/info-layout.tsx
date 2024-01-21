@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: 'Personal training service provider',
 }
 
-export default function InfoLayout({ children }: { children: React.ReactNode }) {
+export default function InfoLayout({ content }: { content: React.ReactNode }) {
     return (
         <html lang='en'>
             <body className={`${inter.className} antialiased`}>
@@ -27,7 +27,7 @@ export default function InfoLayout({ children }: { children: React.ReactNode }) 
                 </div>
 
                 <main>
-                    <Loader component={children} />
+                    <Loader component={content} />
                 </main>
 
                 <div className='p-10 text-center'>

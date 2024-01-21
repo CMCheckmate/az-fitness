@@ -86,6 +86,6 @@ function Home() {
 
 export default function HomePage() {
   return (
-    <InfoLayout children={Home()} />
+    <InfoLayout content={Home()} />
   );
 }

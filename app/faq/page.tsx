@@ -39,6 +39,6 @@ function FAQ() {
 
 export default function FAQPage() {
     return (
-        <InfoLayout children={FAQ()} />
+        <InfoLayout content={FAQ()} />
     );
 }

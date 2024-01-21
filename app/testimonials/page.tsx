@@ -50,6 +50,6 @@ function Testimonials() {
 
 export default function TestimonialPage() {
     return (
-        <InfoLayout children={Testimonials()} />
+        <InfoLayout content={Testimonials()} />
     );
 }

@@ -45,6 +45,6 @@ function TipsAndAdvice() {
 
 export default function TipsAndAdvicePage() {
     return (
-        <InfoLayout children={TipsAndAdvice()} />
+        <InfoLayout content={TipsAndAdvice()} />
     );
 }
