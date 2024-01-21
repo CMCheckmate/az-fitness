@@ -1,4 +1,4 @@
-import Loader from '@/app/ui/loader'
+import InfoLayout from '@/app/ui/info-layout'
 import Map from '@/app/ui/map'
 
 function Contact() {
@@ -31,6 +31,6 @@ function Contact() {
 
 export default function ContactPage() {
     return (
-        <Loader component={Contact()} />
+        <InfoLayout children={Contact()} />
     );
 }

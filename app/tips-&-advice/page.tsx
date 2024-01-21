@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Loader from '@/app/ui/loader'
+import InfoLayout from '@/app/ui/info-layout'
 import placeholder from '@/public/placeholder.svg'
 
 function TipsAndAdvice() {
@@ -45,6 +45,6 @@ function TipsAndAdvice() {
 
 export default function TipsAndAdvicePage() {
     return (
-        <Loader component={TipsAndAdvice()} />
+        <InfoLayout children={TipsAndAdvice()} />
     );
 }

@@ -10,13 +10,14 @@ export default function Navigation() {
         { 'name': 'Tips & Advice', 'href': '/tips-&-advice' },
         { 'name': 'Contact', 'href': '/contact' },
         { 'name': 'FAQ', 'href': '/faq' }, 
+        { 'name': 'Schedules', 'href': '/schedules' }
     ];
     const pathname = usePathname();
 
     return (
-        <div className='grid grid-cols-5'>
+        <div className='flex justify-center items-center'>
             {links.map((link) => (
-                <Link key={link['name']} className={`text-center text-xl ${pathname == link.href ? 'text-red-400' : 'text-red-600'} hover:text-red-400`} href={link.href}>{link.name}</Link>
+                <Link key={link['name']} className={`px-5 text-center text-xl ${pathname == link.href ? 'text-red-400' : 'text-red-600'} hover:text-red-400`} href={link.href}>{link.name}</Link>
             ))}
         </div>
     );

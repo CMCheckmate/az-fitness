@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { nestoCopper } from '@/app/ui/fonts';
-import './ui.css';
 
 export default function TestimonialDisplay() {
     const testimonials = [

@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Loader from '@/app/ui/loader'
+import InfoLayout from '@/app/ui/info-layout'
 import Gallery from '@/app/ui/gallery'
 import placeholder from '@/public/placeholder.svg'
 import training from '@/public/training.png'
@@ -86,6 +86,6 @@ function Home() {
 
 export default function HomePage() {
   return (
-    <Loader component={Home()} />
+    <InfoLayout children={Home()} />
   );
 }

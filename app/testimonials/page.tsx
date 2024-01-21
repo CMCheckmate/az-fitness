@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Loader from '@/app/ui/loader'
+import InfoLayout from '@/app/ui/info-layout'
 import TestimonialDisplay from '@/app/ui/testimonials';
 import womenRunning from '@/public/women_running.png';
 
@@ -50,6 +50,6 @@ function Testimonials() {
 
 export default function TestimonialPage() {
     return (
-        <Loader component={Testimonials()} />
+        <InfoLayout children={Testimonials()} />
     );
 }

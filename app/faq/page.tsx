@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Loader from '@/app/ui/loader'
+import InfoLayout from '@/app/ui/info-layout'
 import outdoorExercise from '@/public/outdoor_exercise.png'
 import yogaClass from '@/public/yoga_class.png'
 import workoutLesson from '@/public/workout_lesson.png'
@@ -39,6 +39,6 @@ function FAQ() {
 
 export default function FAQPage() {
     return (
-        <Loader component={FAQ()} />
+        <InfoLayout children={FAQ()} />
     );
 }
