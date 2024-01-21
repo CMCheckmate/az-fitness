@@ -9,7 +9,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <Link className='text-5xl text-white font-bold' href='/'>AZ-Fitness</Link>
                 </div>
 
-                {children}
+                <main>
+                    {children}
+                </main>
             </body>
         </html>
     );
