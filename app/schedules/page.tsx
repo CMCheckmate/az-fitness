@@ -43,7 +43,7 @@ export default function SchedulePage() {
                     </thead>
                     <tbody>
                         {data.map((element, index) => (
-                            <tr className={`text-red-400 ${index % 2 != 0 ? 'bg-gray-300' : ''} font-bold`}>
+                            <tr key={`row${index + 1}`} className={`text-red-400 ${index % 2 != 0 ? 'bg-gray-300' : ''} font-bold`}>
                                 <td className='p-2 border-2'>{index + 1}</td>
                                 <td className='p-2 border-2'>{element.name}</td>
                                 <td className='p-2 border-2'>{element.date}</td>
