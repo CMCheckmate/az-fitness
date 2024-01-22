@@ -14,7 +14,7 @@ export const { auth, signIn, signOut } = NextAuth({...authConfig, providers: [
                 const { email, password } = parsedCredentials.data;
                 
                 try {
-                    const userData = await sql`SELECT name, password FROM users WHERE email=${email}`;
+                    const userData = await sql`SELECT * FROM users WHERE email=${email}`;
                     const user = userData.rows[0];
                     if (user) {
                         const passwordsMatch = await bcrypt.compare(password, user.password);

@@ -27,6 +27,8 @@ export async function authenticate(prevState: string | undefined, formData: Form
                     return 'Something went wrong.';
             }
         }
-        throw error;
     }
+
+    revalidatePath('/schedules');
+    redirect('/schedules');
 }

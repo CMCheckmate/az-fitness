@@ -1,6 +1,6 @@
-import { signOut } from '@/auth';
+import { auth, signOut } from '@/auth';
 
-export default function SchedulePage() {
+export default async function SchedulePage() {
     const data = [
         {
             'name': 'Sussy Baka',
@@ -25,9 +25,15 @@ export default function SchedulePage() {
         }
     ];
 
+    const session = await auth();
+
     return (
         <div>
-            <h2 className='m-10 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
+            <h2 className='p-10 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
+
+            <div className='p-2 flex items-center justify-center'>
+                <h3 className='text-2xl font-bold'>{session ? `Logged in as: ${session.user?.name}` : 'Not Logged in'}</h3>
+            </div>
 
             <div className='flex items-center justify-center'>
                 <table>
