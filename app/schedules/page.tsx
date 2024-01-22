@@ -24,7 +24,6 @@ export default async function SchedulePage() {
             'comments': 'Leg Day :T',
         }
     ];
-
     const session = await auth();
 
     return (
@@ -32,7 +31,7 @@ export default async function SchedulePage() {
             <h2 className='p-10 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
 
             <div className='p-2 flex items-center justify-center'>
-                <h3 className='text-2xl font-bold'>{session ? `Logged in as: ${session.user?.name}` : 'Not Logged in'}</h3>
+                <h3 className='text-2xl font-bold'>{session ? `Logged in as: ${session.user?.name} (${session.user?.status})` : 'Not Logged in'}</h3>
             </div>
 
             <div className='flex items-center justify-center'>
