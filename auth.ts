@@ -27,7 +27,7 @@ export const { auth, signIn, signOut } = NextAuth({...authConfig,
                         throw new Error('Failed to fetch user.');
                     }
                 }
-                return null; // Invalid credentials
+                return null;
             }
         })
     ],

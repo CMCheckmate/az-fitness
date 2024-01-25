@@ -1,4 +1,5 @@
-import { auth, signOut } from '@/auth';
+import { auth } from '@/auth';
+import SignOut from '@/app/ui/signout-button';
 
 export default async function SchedulePage() {
     const data = [
@@ -34,7 +35,7 @@ export default async function SchedulePage() {
                 <h3 className='text-2xl font-bold'>{session ? `Logged in as: ${session.user?.name} (${session.user?.status})` : 'Not Logged in'}</h3>
             </div>
 
-            <div className='flex items-center justify-center'>
+            <div className='m-5 flex items-center justify-center'>
                 <table>
                     <thead>
                         <tr className='bg-red-600'>
@@ -60,10 +61,8 @@ export default async function SchedulePage() {
                     </tbody>
                 </table>
             </div>
-
-            <form action={async () => { 'use server'; await signOut(); }} className='m-5 flex items-center justify-center'>
-                <button className='p-2 text-white font-bold rounded-md bg-gray-400'>Sign Out</button>
-            </form>
+            
+            <SignOut />
         </div>
     );
 }

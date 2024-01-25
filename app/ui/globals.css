@@ -46,24 +46,55 @@
   }
 }
 
+@keyframes changeIcon {
+  0% {
+    background-image: url('../../public/menu.png');
+  }
+  100% {
+    background-image: url('../../public/exit.png');
+  }
+}
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
   
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-  
-    .faded {
-      opacity: 0.75;
-      animation: fade 0.5s cubic-bezier(0.4, 0, 0.6, 1);
-    }
-  
-    .unfaded {
-      opacity: 1;
-      animation: fade 1s cubic-bezier(0.4, 0, 0.6, 1);
-      animation-direction: reverse;
-    }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
+
+  .faded {
+    opacity: 0.75;
+    animation: fade 0.5s cubic-bezier(0.4, 0, 0.6, 1);
+  }
+
+  .unfaded {
+    opacity: 1;
+    animation: fade 1s cubic-bezier(0.4, 0, 0.6, 1);
+    animation-direction: reverse;
+  }
+
+  .showSidebar {
+    transform: translateX(0);
+    animation: slideRight 0.5s cubic-bezier(0.4, 0, 0.6, 1);
+    animation-direction: reverse;
+  }
+
+  .hideSidebar {
+    transform: translateX(100%);
+    animation: slideRight 0.5s cubic-bezier(0.4, 0, 0.6, 1);
+  }
+
+  .showMenu {
+    background-image: url('../../public/menu.png');
+    animation: changeIcon 0.5s cubic-bezier(0.4, 0, 0.6, 1);
+    animation-direction: reverse;
+  }
+  
+  .showExit {
+    background-image: url('../../public/exit.png');
+    animation: changeIcon 0.5s cubic-bezier(0.4, 0, 0.6, 1);
+  }
+}

@@ -1,9 +1,9 @@
-import Image from 'next/image'
-import InfoLayout from '@/app/ui/info-layout'
-import Gallery from '@/app/ui/gallery'
-import placeholder from '@/public/placeholder.svg'
-import training from '@/public/training.png'
-import profile from '@/public/profile.png'
+import Image from 'next/image';
+import InfoLayout from '@/app/ui/info-layout';
+import Gallery from '@/app/ui/gallery';
+import placeholder from '@/public/placeholder.svg';
+import training from '@/public/training.png';
+import profile from '@/public/profile.png';
 
 function Home() {
   return (

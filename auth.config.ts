@@ -13,12 +13,12 @@ export const authConfig = {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
             const isOnSchedules = nextUrl.pathname.startsWith('/schedules');
-            if (isOnSchedules && !isLoggedIn){
-                return false; // Redirect unauthenticated users to login page
+            if (isOnSchedules && !isLoggedIn) {
+                return false;
             } else {
                 return true;
             }
         },
     },
-    providers: [], // Add providers with an empty array for now
+    providers: [],
 } satisfies NextAuthConfig;
