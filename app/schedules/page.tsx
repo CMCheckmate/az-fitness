@@ -44,14 +44,16 @@ export default async function SchedulePage() {
 
             {
                 session?.user.status == 'member' && 
-                <div className='flex justify-center items-center'>
+                <div className='m-5 flex justify-center items-center'>
                     <div className='w-1/2 p-10 shadow-lg'>
                         <CreateSchedules />
                     </div>
                 </div>
             }
             
-            <SignOut />
+            <div className='m-5'>
+                <SignOut />
+            </div>
         </div>
     );
 }

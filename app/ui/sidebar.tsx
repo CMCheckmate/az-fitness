@@ -48,11 +48,11 @@ export default function SideBar({ session, signOutButton } : { session : Session
                     <div className='flex justify-end items-center'>
                         {
                             user ? 
-                            <div>
+                            <div className='flex flex-col justify-center items-end'>
                                 <p className='py-2'>
                                     {user.name}
                                 </p>
-                                <div className='flex justify-end items-center'>
+                                <div className='my-2'>
                                     {signOutButton}
                                 </div>
                             </div> :
