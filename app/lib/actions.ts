@@ -64,7 +64,7 @@ export async function addSchedules(prevState: string | undefined, formData: Form
         });
 
         if (!validatedFields.success) {
-            return 'Missing Fields. Failed to add schedule.';
+            return 'Invalid entries. Failed to add schedule.';
         } else {
             const { date, time, length, comments } = validatedFields.data;
             try {
@@ -75,7 +75,7 @@ export async function addSchedules(prevState: string | undefined, formData: Form
             }
         }
     } catch (error) {
-        return 'Cannot detect user.'
+        return 'User session not detected. Try relogging in.'
     }
     
     redirect('/schedules');

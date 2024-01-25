@@ -1,13 +1,22 @@
 'use client';
 
 import { useFormState } from 'react-dom';
+import { useRef } from 'react';
 import { addSchedules } from '@/app/lib/actions';
 
 export default function CreateSchedules() {
-    const [responseMessage, dispatch] = useFormState((addSchedules), undefined);
+    const scheduleForm = useRef(null);
+    const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
+        const dispatch = await addSchedules(state, formData);
+        
+        const form = scheduleForm.current as unknown as HTMLFormElement;
+        form.reset();
+
+        return dispatch;
+    }, undefined);
 
     return (
-        <form action={dispatch} className='flex flex-col'>
+        <form ref={scheduleForm} action={dispatch} className='flex flex-col'>
             <h2 className='my-5 text-3xl text-red-600 font-bold'>Enter New Schedule Details</h2>
 
             <label htmlFor='date' className='mt-2 px-2 text-red-600'>Date</label>
