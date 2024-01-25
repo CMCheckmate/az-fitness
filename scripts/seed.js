@@ -59,7 +59,7 @@ async function seedSchedules(client) {
 
         const createTable = await client.sql`CREATE TABLE IF NOT EXISTS schedules (
                 schedule_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                user_id UUID DEFAULT uuid_generate_v4() NOT NULL UNIQUE,
+                user_id UUID DEFAULT uuid_generate_v4() NOT NULL,
                 date_time TIMESTAMP NOT NULL UNIQUE,
                 length INT NOT NULL,
                 comments VARCHAR(45),

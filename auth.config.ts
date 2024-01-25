@@ -5,7 +5,7 @@ export const authConfig = {
     pages: { signIn: '/login' },
     callbacks: {
         async session({ session }) {
-            const userStatus = await sql`SELECT status FROM users WHERE email=${session.user.email}`;
+            const userStatus = await sql`SELECT status FROM users WHERE email = ${session.user.email}`;
             const status = userStatus.rows[0].status;
             session.user.status = status;
             return session;

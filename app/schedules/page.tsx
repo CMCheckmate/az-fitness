@@ -1,46 +1,26 @@
 import { auth } from '@/auth';
+import { getSchedules } from '@/app/lib/actions';
+import CreateSchedules from '@/app/ui/create-schedule-form';
 import SignOut from '@/app/ui/signout-button';
 
 export default async function SchedulePage() {
-    const data = [
-        {
-            'name': 'Sussy Baka',
-            'date': '01/04/2024',
-            'time': '6:00',
-            'length': '1',
-            'comments': '',
-        },
-        {
-            'name': 'Mike Oxlong',
-            'date': '06/06/2024',
-            'time': '6:09',
-            'length': '69',
-            'comments': '69 baby!',
-        },
-        {
-            'name': 'Ming Ray Goy',
-            'date': '01/01/2024',
-            'time': '14:00',
-            'length': '0.5',
-            'comments': 'Leg Day :T',
-        }
-    ];
     const session = await auth();
+    const schedules = await getSchedules(session?.user);
 
     return (
         <div>
-            <h2 className='p-10 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
-
-            <div className='p-2 flex items-center justify-center'>
+            <div className='m-5 p-2 flex items-center justify-center'>
                 <h3 className='text-2xl font-bold'>{session ? `Logged in as: ${session.user?.name} (${session.user?.status})` : 'Not Logged in'}</h3>
             </div>
 
-            <div className='m-5 flex items-center justify-center'>
+            <div className='m-5 flex flex-col items-center justify-center'>
+                <h2 className='p-10 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
+
                 <table>
                     <thead>
                         <tr className='bg-red-600'>
                             <th className='p-2 border-2 text-l text-white font-bold'>Session Number</th>
-                            <th className='p-2 border-2 text-l text-white font-bold'>Name</th>
+                            {session?.user.status == 'administrator' && <th className='p-2 border-2 text-l text-white font-bold'>Name</th>}
                             <th className='p-2 border-2 text-l text-white font-bold'>Date</th>
                             <th className='p-2 border-2 text-l text-white font-bold'>Time</th>
                             <th className='p-2 border-2 text-l text-white font-bold'>Length (hours)</th>
@@ -48,19 +28,28 @@ export default async function SchedulePage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((element, index) => (
+                        {schedules.map((schedule, index) => (
                             <tr key={`row${index + 1}`} className={`text-red-400 ${index % 2 != 0 ? 'bg-gray-300' : ''} font-bold`}>
                                 <td className='p-2 border-2'>{index + 1}</td>
-                                <td className='p-2 border-2'>{element.name}</td>
-                                <td className='p-2 border-2'>{element.date}</td>
-                                <td className='p-2 border-2'>{element.time}</td>
-                                <td className='p-2 border-2'>{element.length}</td>
-                                <td className='p-2 border-2'>{element.comments}</td>
+                                {'name' in schedule && <td className='p-2 border-2'>{schedule.name}</td>}
+                                <td className='p-2 border-2'>{schedule.date_time.toLocaleDateString()}</td>
+                                <td className='p-2 border-2'>{schedule.date_time.toLocaleTimeString()}</td>
+                                <td className='p-2 border-2'>{schedule.length}</td>
+                                <td className='p-2 border-2'>{schedule.comments}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+
+            {
+                session?.user.status == 'member' && 
+                <div className='flex justify-center items-center'>
+                    <div className='w-1/2 p-10 shadow-lg'>
+                        <CreateSchedules />
+                    </div>
+                </div>
+            }
             
             <SignOut />
         </div>
