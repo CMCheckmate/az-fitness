@@ -1,6 +1,7 @@
 import { auth } from '@/auth';
 import { getSchedules } from '@/app/lib/actions';
 import CreateSchedules from '@/app/ui/create-schedule-form';
+import EditSchedules from '@/app/ui/edit-schedule-form';
 import SignOut from '@/app/ui/signout-button';
 
 export default async function SchedulePage() {
@@ -16,30 +17,25 @@ export default async function SchedulePage() {
             <div className='m-5 flex flex-col items-center justify-center'>
                 <h2 className='p-10 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
 
-                <table>
-                    <thead>
-                        <tr className='bg-red-600'>
-                            <th className='p-2 border-2 text-l text-white font-bold'>Session Number</th>
-                            {session?.user.status == 'administrator' && <th className='p-2 border-2 text-l text-white font-bold'>Name</th>}
-                            <th className='p-2 border-2 text-l text-white font-bold'>Date</th>
-                            <th className='p-2 border-2 text-l text-white font-bold'>Time</th>
-                            <th className='p-2 border-2 text-l text-white font-bold'>Length (hours)</th>
-                            <th className='p-2 border-2 text-l text-white font-bold'>Comments</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div className='table'>
+                    <div className='table-header-group border-2'>
+                        <div className='table-row bg-red-600'>
+                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Session Number</div>
+                            {session?.user.status == 'administrator' && <div className='table-cell text-center p-2 border-2 text-l text-white font-bold'>Name</div>}
+                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Date</div>
+                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Time</div>
+                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Length (hours)</div>
+                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Comments</div>
+                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Action</div>
+                        </div>
+                    </div>
+
+                    <div className='table-row-group border-2'>
                         {schedules.map((schedule, index) => (
-                            <tr key={`row${index + 1}`} className={`text-red-400 ${index % 2 != 0 ? 'bg-gray-300' : ''} font-bold`}>
-                                <td className='p-2 border-2'>{index + 1}</td>
-                                {'name' in schedule && <td className='p-2 border-2'>{schedule.name}</td>}
-                                <td className='p-2 border-2'>{schedule.date_time.toLocaleDateString()}</td>
-                                <td className='p-2 border-2'>{schedule.date_time.toLocaleTimeString()}</td>
-                                <td className='p-2 border-2'>{schedule.length}</td>
-                                <td className='p-2 border-2'>{schedule.comments}</td>
-                            </tr>
+                            <EditSchedules key={`row${index + 1}`} data={{...schedule, 'number': index + 1}} className={`${index % 2 != 0 && 'bg-gray-300'}`} />
                         ))}
-                    </tbody>
-                </table>
+                    </div>
+                </div>
             </div>
 
             {

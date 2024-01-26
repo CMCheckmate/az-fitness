@@ -22,13 +22,13 @@ const users = [
 const schedules = [
     {
         email: 'sussybaka@gmail.com',
-        dateTime: '2024-01-17 14:30:00',
+        dateTime: '2024-01-17 14:30',
         length: '2',
         comment: 'no comment'
     },
     {
         email: 'mikeoxlong@yahoo.com',
-        dateTime: '2024-04-01 06:09:06',
+        dateTime: '2024-04-01 06:09',
         length: '69',
         comment: 'mikeoxlong'
     }

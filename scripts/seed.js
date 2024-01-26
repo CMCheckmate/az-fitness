@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 const { users, schedules } = require('../app/lib/data.js');
 
 const currentDate = new Date();
-const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} `;
-const formattedTime = `${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
+const formattedTime = `${currentDate.getHours()}:${currentDate.getMinutes()}`;
 
 async function seedUsers(client) {
     try {
