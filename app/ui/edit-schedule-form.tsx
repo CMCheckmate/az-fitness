@@ -1,12 +1,13 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { updateSchedule, deleteSchedule } from '@/app/lib/actions';
 import { QueryResultRow } from '@vercel/postgres';
 
 export default function EditSchedules({ data, className }: { data: QueryResultRow, className?: string}) {
     const [action, setAction] = useState<string>();
+    const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
         if (action == 'edit') {
             return await updateSchedule(state, data.schedule_id, formData);
@@ -14,6 +15,12 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
             return await deleteSchedule(data.schedule_id);
         }
     }, undefined);
+
+    useEffect(() => {
+        setResponse(responseMessage);
+        const timeout = setTimeout(() => { setResponse(''); }, 5000);
+        return () => { clearTimeout(timeout); };
+    }, [responseMessage])
     
     return (
         <form action={dispatch} className={`${className} table-row text-red-400 font-bold`}>
@@ -37,7 +44,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                     <button type='submit' onClick={() => { setAction('delete'); }} className='m-2 p-2 bg-red-600 rounded-md text-white font-bold'>Delete</button>
                     
                     <div className='col-span-2' aria-live="polite" aria-atomic="true">
-                        {responseMessage && (<p className="text-red-600">{responseMessage}</p>)}
+                        {response && (<p className="text-red-600">{response}</p>)}
                     </div>
                 </div>
             </div>

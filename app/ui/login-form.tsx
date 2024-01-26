@@ -1,16 +1,21 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { redirect } from 'next/navigation';
 import { authenticate } from '@/app/lib/actions';
 
 export default function Login() {
+    const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(authenticate, undefined);
 
     useEffect(() => {
+        setResponse(responseMessage);
         if (responseMessage?.includes('login')) {
             redirect('/schedules');
+        } else {
+            const timeout = setTimeout(() => { setResponse(''); }, 5000);
+            return () => { clearTimeout(timeout); };
         }
     }, [responseMessage]);
 
@@ -24,7 +29,7 @@ export default function Login() {
             <input type="password" name='password' id='password' placeholder='Enter your password' className='p-2 border-b-2' required />
             
             <div className='p-2' aria-live="polite" aria-atomic="true">
-                {responseMessage && (<p className="text-red-600">{responseMessage}</p>)}
+                {response && (<p className="text-red-600">{response}</p>)}
             </div>
 
             <button type='submit' className='my-5 p-5 text-white bg-red-600'>Submit</button>

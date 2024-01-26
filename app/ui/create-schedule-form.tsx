@@ -1,11 +1,12 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { addSchedules } from '@/app/lib/actions';
 
 export default function CreateSchedules() {
     const scheduleForm = useRef(null);
+    const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
         const dispatch = await addSchedules(state, formData);
         
@@ -14,6 +15,12 @@ export default function CreateSchedules() {
 
         return dispatch;
     }, undefined);
+
+    useEffect(() => {
+        setResponse(responseMessage);
+        const timeout = setTimeout(() => { setResponse(''); }, 5000);
+        return () => { clearTimeout(timeout); };
+    }, [responseMessage])
 
     return (
         <form ref={scheduleForm} action={dispatch} className='flex flex-col'>
@@ -29,7 +36,7 @@ export default function CreateSchedules() {
             <textarea name='comments' id='comments' placeholder='Enter any comments' className='mb-2 p-2 border-b-2' />
             
             <div className='' aria-live="polite" aria-atomic="true">
-                {responseMessage && (<p className="text-red-600">{responseMessage}</p>)}
+                {response && (<p className="text-red-600">{response}</p>)}
             </div>
 
             <button type='submit' className='my-5 p-5 text-white bg-red-600'>Submit</button>
