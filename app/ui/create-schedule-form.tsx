@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { addSchedules } from '@/app/lib/actions';
 import { CircularProgress } from '@mui/material';
 
@@ -10,20 +10,13 @@ export default function CreateSchedules() {
     const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
         const dispatch = await addSchedules(state, formData);
-        
+        setResponse(dispatch);
+
         const form = scheduleForm.current as unknown as HTMLFormElement;
         form.reset();
 
-        setResponse('');
-
         return dispatch;
     }, undefined);
-
-    useEffect(() => {
-        setResponse(responseMessage);
-        const timeout = setTimeout(() => { setResponse(''); }, 5000);
-        return () => { clearTimeout(timeout); };
-    }, [responseMessage])
 
     return (
         <form ref={scheduleForm} action={dispatch} className='flex flex-col'>

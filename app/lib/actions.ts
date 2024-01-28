@@ -83,7 +83,7 @@ export async function updateSchedule(prevState: string | undefined, scheduleID: 
         return 'Invalid entries. Failed to update schedule.';
     }
 
-    return 'Schedule updated';
+    revalidatePath('/schedules');
 }
 
 export async function deleteSchedule(scheduleID: string) {
@@ -94,7 +94,6 @@ export async function deleteSchedule(scheduleID: string) {
     }
 
     revalidatePath('/schedules');
-    redirect('/schedules');
 }
 
 export async function signUp(prevState: string | undefined, formData: FormData) {
@@ -138,5 +137,5 @@ export async function authenticate(prevState: string | undefined, formData: Form
             }
         }
     }
-    redirect('/schedules');
+    redirect('/schedules')
 }

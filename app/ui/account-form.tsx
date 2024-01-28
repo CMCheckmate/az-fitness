@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useFormState } from 'react-dom';
-import ReCAPTCHA from 'react-google-recaptcha';
 import { authenticate, signUp } from '@/app/lib/actions';
 import { CircularProgress } from '@mui/material';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function AccountForm() {
     const accountForm = useRef(null);
@@ -12,29 +12,20 @@ export default function AccountForm() {
     const [captcha, setCaptcha] = useState<string | null>();
     const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
-        if (formType == 'login') {
-            return await authenticate(state, formData);
-        } else if (formType == 'signUp') {
-            if (captcha) {
-                return await signUp(state, formData);
-            } else {
-                setResponse('Invalid captcha.');
+        if (formType == 'signUp' && !captcha) {
+            setResponse('Invalid captcha.');
+        } else {
+            const dispatch = formType == 'login' ? await authenticate(state, formData) : await signUp(state, formData);
+            setResponse(dispatch);
+            if (dispatch == 'Successful signup') {
+                const form = accountForm.current as unknown as HTMLFormElement;
+                form.reset();
+
+                setFormType('login');
             }
+            return dispatch;
         }
     }, undefined);
-
-    useEffect(() => {
-        if (responseMessage?.includes('Successful signup')) {
-            const form = accountForm.current as unknown as HTMLFormElement;
-            form.reset(); 
-
-            setFormType('login');
-        }
-
-        setResponse(responseMessage);
-        const timeout = setTimeout(() => { setResponse(''); }, 5000);
-        return () => { clearTimeout(timeout); };
-    }, [responseMessage]);
 
     return (
         <form ref={accountForm} action={dispatch} className='flex flex-col'>

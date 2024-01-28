@@ -1,7 +1,8 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { redirect } from 'next/navigation';
 import { updateSchedule, deleteSchedule } from '@/app/lib/actions';
 import { QueryResultRow } from '@vercel/postgres';
 import { CircularProgress } from '@mui/material';
@@ -10,19 +11,15 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     const [action, setAction] = useState<string>();
     const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
-        if (action == 'edit') {
-            return await updateSchedule(state, data.schedule_id, formData);
-        } else if (action == 'delete') {
-            return await deleteSchedule(data.schedule_id);
+        const dispatch = action == 'edit' ? await updateSchedule(state, data.schedule_id, formData) : await deleteSchedule(data.schedule_id);
+        if (dispatch) {
+            setResponse(dispatch);
+            return dispatch;
+        } else {
+            redirect('/schedules');
         }
     }, undefined);
 
-    useEffect(() => {
-        setResponse(responseMessage);
-        const timeout = setTimeout(() => { setResponse(''); }, 5000);
-        return () => { clearTimeout(timeout); };
-    }, [responseMessage])
-    
     return (
         <form action={dispatch} className={`${className} table-row text-red-400 font-bold`}>
             <div className='table-cell p-2 border-2 text-center'>{data.number}</div>

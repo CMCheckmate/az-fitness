@@ -7,15 +7,18 @@ import SignOut from '@/app/ui/signout-button';
 export default async function SchedulePage() {
     const session = await auth();
     const schedules = await getSchedules(session?.user);
-
+    
     return (
         <div>
             <div className='m-5 p-2 flex items-center justify-center'>
-                <h3 className='text-2xl font-bold'>{session ? `Logged in as: ${session.user?.name} (${session.user?.status})` : 'Not Logged in'}</h3>
+                <h3 className='text-2xl font-bold'>{session ? `Logged In As: ${session.user?.name} (${session.user?.status})` : 'Problem with user session'}</h3>
+                <div className='mx-5'>
+                    <SignOut />
+                </div>
             </div>
 
             <div className='m-5 flex flex-col items-center justify-center'>
-                <h2 className='p-10 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
+                <h2 className='p-5 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
 
                 <div className='table'>
                     <div className='table-header-group border-2'>
@@ -46,10 +49,6 @@ export default async function SchedulePage() {
                     </div>
                 </div>
             }
-            
-            <div className='m-5'>
-                <SignOut />
-            </div>
         </div>
     );
 }
