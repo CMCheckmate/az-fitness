@@ -11,7 +11,7 @@ import bcrypt from 'bcrypt';
 const scheduleSchema = z.object({
     date: z.string(),
     time: z.string(),
-    length: z.coerce.number(),
+    length: z.coerce.number().gt(0, 'Please enter a number greater than 0'),
     comments: z.string(),
 });
 const signUpSchema = z.object({

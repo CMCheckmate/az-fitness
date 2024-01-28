@@ -4,6 +4,7 @@ import { useFormState } from 'react-dom';
 import { useEffect, useState } from 'react';
 import { updateSchedule, deleteSchedule } from '@/app/lib/actions';
 import { QueryResultRow } from '@vercel/postgres';
+import { CircularProgress } from '@mui/material';
 
 export default function EditSchedules({ data, className }: { data: QueryResultRow, className?: string}) {
     const [action, setAction] = useState<string>();
@@ -40,11 +41,12 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
             </div>
             <div className='table-cell p-2 border-2'>
                 <div className='grid grid-cols-2'>
-                    <button type='submit' onClick={() => { setAction('edit'); }} className='m-2 p-2 bg-blue-600 rounded-md text-white font-bold'>Edit</button>
-                    <button type='submit' onClick={() => { setAction('delete'); }} className='m-2 p-2 bg-red-600 rounded-md text-white font-bold'>Delete</button>
+                    <button type='submit' onClick={() => { setAction('edit'); setResponse('Loading...'); }} className='m-2 p-2 bg-blue-600 rounded-md text-white font-bold'>Edit</button>
+                    <button type='submit' onClick={() => { setAction('delete'); setResponse('Loading...'); }} className='m-2 p-2 bg-red-600 rounded-md text-white font-bold'>Delete</button>
                     
-                    <div className='col-span-2' aria-live="polite" aria-atomic="true">
-                        {response && (<p className="text-red-600">{response}</p>)}
+                    <div className='flex justify-center items-center col-span-2' aria-live="polite" aria-atomic="true">
+                        {response && <p className="py-2 text-red-600">{response}</p>}
+                        {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
                     </div>
                 </div>
             </div>

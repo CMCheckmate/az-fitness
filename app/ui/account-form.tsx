@@ -4,8 +4,9 @@ import { useEffect, useState, useRef } from 'react';
 import { useFormState } from 'react-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { authenticate, signUp } from '@/app/lib/actions';
+import { CircularProgress } from '@mui/material';
 
-export default function Login() {
+export default function AccountForm() {
     const accountForm = useRef(null);
     const [formType, setFormType] = useState<string>('login');
     const [captcha, setCaptcha] = useState<string | null>();
@@ -63,8 +64,9 @@ export default function Login() {
                     </div>
             }
 
-            <div className='py-4' aria-live='polite' aria-atomic='true'>
-                {response && (<p className='text-red-600'>{response}</p>)}
+            <div className='py-4 flex items-center' aria-live='polite' aria-atomic='true'>
+                {response && <p className='text-red-600'>{response}</p>}
+                {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
             </div>
 
             <button type='button' onClick={() => {
@@ -77,7 +79,7 @@ export default function Login() {
                 form.reset(); 
             }} className='text-left text-sm underline'>{formType == 'login' ? 'New user? Sign up here' : 'Return to login'}</button>
 
-            <button type='submit' className='my-5 p-5 text-white bg-red-600'>Submit</button>
+            <button type='submit' onClick={() => {setResponse('Loading...')}} className='my-5 p-5 text-white bg-red-600'>Submit</button>
         </form>
     )
 };

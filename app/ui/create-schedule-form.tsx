@@ -3,6 +3,7 @@
 import { useFormState } from 'react-dom';
 import { useRef, useState, useEffect } from 'react';
 import { addSchedules } from '@/app/lib/actions';
+import { CircularProgress } from '@mui/material';
 
 export default function CreateSchedules() {
     const scheduleForm = useRef(null);
@@ -12,6 +13,8 @@ export default function CreateSchedules() {
         
         const form = scheduleForm.current as unknown as HTMLFormElement;
         form.reset();
+
+        setResponse('');
 
         return dispatch;
     }, undefined);
@@ -35,11 +38,12 @@ export default function CreateSchedules() {
             <label htmlFor='comments' className='mt-2 px-2 text-red-600'>Comments</label>
             <textarea name='comments' id='comments' placeholder='Enter any comments' className='mb-2 p-2 border-b-2' />
             
-            <div className='' aria-live="polite" aria-atomic="true">
-                {response && (<p className="text-red-600">{response}</p>)}
+            <div className='flex items-center' aria-live="polite" aria-atomic="true">
+                {response && (<p className="py-4 text-red-600">{response}</p>)}
+                {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
             </div>
 
-            <button type='submit' className='my-5 p-5 text-white bg-red-600'>Submit</button>
+            <button type='submit' onClick={() => { setResponse('Loading...'); }} className='my-5 p-5 text-white bg-red-600'>Submit</button>
         </form>
     );
 }
