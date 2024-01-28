@@ -6,38 +6,19 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import bcrypt from 'bcrypt';
 
-const data = [
-    {
-        'name': 'Sussy Baka',
-        'date': '01/04/2024',
-        'time': '6:00',
-        'length': '1',
-        'comments': '',
-    },
-    {
-        'name': 'Mike Oxlong',
-        'date': '06/06/2024',
-        'time': '6:09',
-        'length': '69',
-        'comments': '69 baby!',
-    },
-    {
-        'name': 'Ming Ray Goy',
-        'date': '01/01/2024',
-        'time': '14:00',
-        'length': '0.5',
-        'comments': 'Leg Day :T',
-    }
-];
-
-const FormSchema = z.object({
+const scheduleSchema = z.object({
     date: z.string(),
     time: z.string(),
-    length: z.coerce
-        .number()
-        .gt(0, { message: 'Please enter session length greater than 0 hours.' }),
+    length: z.coerce.number(),
     comments: z.string(),
+});
+const signUpSchema = z.object({
+    name: z.string(),
+    email: z.string(),
+    password: z.string(),
+    confirmPassword: z.string()
 });
 
 export async function getSchedules(user: Session['user'] | undefined) {
@@ -57,16 +38,14 @@ export async function getSchedules(user: Session['user'] | undefined) {
 export async function addSchedules(prevState: string | undefined, formData: FormData) {
     try {
         const session = await auth();
-        const validatedFields = FormSchema.safeParse({
+        const validatedFields = scheduleSchema.safeParse({
             date: formData.get('date'),
             time: formData.get('time'),
             length: formData.get('length'),
             comments: formData.get('comments')
         });
 
-        if (!validatedFields.success) {
-            return 'Invalid entries. Failed to add schedule.';
-        } else {
+        if (validatedFields.success) {
             const { date, time, length, comments } = validatedFields.data;
             try {
                 await sql`INSERT INTO schedules (user_id, date_time, length, comments)
@@ -74,6 +53,8 @@ export async function addSchedules(prevState: string | undefined, formData: Form
             } catch (error) {
                 return 'Database error: Failed to add schedule.';
             }
+        } else {
+            return 'Invalid entries. Failed to add schedule.';
         }
     } catch (error) {
         return 'User session not detected. Try relogging in.';
@@ -84,27 +65,25 @@ export async function addSchedules(prevState: string | undefined, formData: Form
 }
 
 export async function updateSchedule(prevState: string | undefined, scheduleID: string, formData: FormData) {
-    const validatedFields = FormSchema.safeParse({
+    const validatedFields = scheduleSchema.safeParse({
         date: formData.get('date'),
         time: formData.get('time'),
         length: formData.get('length'),
         comments: formData.get('comments')
     });
 
-    if (!validatedFields.success) {
-        return 'Invalid entries. Failed to update schedule.';
-    } else {
+    if (validatedFields.success) {
         const { date, time, length, comments } = validatedFields.data;
         try {
             await sql`UPDATE schedules SET date_time = ${`${date} ${time}`}, length = ${length}, comments = ${comments} WHERE schedule_id = ${scheduleID};`;
         } catch (error) {
             return 'Database error: Failed to update schedule.';
         }
+    } else {
+        return 'Invalid entries. Failed to update schedule.';
     }
 
     return 'Schedule updated';
-    // revalidatePath('/schedules');
-    // redirect('/schedules');
 }
 
 export async function deleteSchedule(scheduleID: string) {
@@ -116,6 +95,34 @@ export async function deleteSchedule(scheduleID: string) {
 
     revalidatePath('/schedules');
     redirect('/schedules');
+}
+
+export async function signUp(prevState: string | undefined, formData: FormData) {
+    const validatedFields = signUpSchema.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        confirmPassword: formData.get('confirmPassword')
+    });
+
+    if (validatedFields.success) {
+        const { name, email, password, confirmPassword } = validatedFields.data;
+        if (password == confirmPassword) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            try {
+                await sql`INSERT INTO users(name, email, password, status, date) 
+            VALUES(${name}, ${email}, ${hashedPassword}, ${'member'}, ${(new Date).toISOString().split('T')[0]});`;
+            } catch (error) {
+                return 'Database error. Failed to add user.';
+            }
+            return 'Successful signup';
+        } else {
+            return 'Passwords do not match.';
+        }
+    } else {
+        return 'Invalid Fields';
+    }
 }
 
 export async function authenticate(prevState: string | undefined, formData: FormData) {
@@ -131,5 +138,5 @@ export async function authenticate(prevState: string | undefined, formData: Form
             }
         }
     }
-    return 'Successful login';
+    redirect('/schedules');
 }

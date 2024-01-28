@@ -34,6 +34,30 @@ const schedules = [
     }
 ]
 
+const data = [
+    {
+        'name': 'Sussy Baka',
+        'date': '01/04/2024',
+        'time': '6:00',
+        'length': '1',
+        'comments': '',
+    },
+    {
+        'name': 'Mike Oxlong',
+        'date': '06/06/2024',
+        'time': '6:09',
+        'length': '69',
+        'comments': '69 baby!',
+    },
+    {
+        'name': 'Ming Ray Goy',
+        'date': '01/01/2024',
+        'time': '14:00',
+        'length': '0.5',
+        'comments': 'Leg Day :T',
+    }
+];
+
 module.exports = {
     users,
     schedules,
