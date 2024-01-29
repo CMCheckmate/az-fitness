@@ -55,7 +55,7 @@ export default function Gallery() {
         wrapper.scrollTo({ left: (index + 1) * currentImage.clientWidth - wrapper.clientWidth / 2 });
 
         setImageIndex(index);
-    }, []);
+    }, [imageIndex]);
 
     useEffect(() => {
         if (!document.hidden) {
