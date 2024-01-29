@@ -68,7 +68,7 @@ export default function Gallery() {
             }, transitionTime);
             return () => { clearTimeout(timeout); };
         }
-    }, [imageIndex, images, scroll]);
+    }, [imageIndex]);
 
     return (
         <div ref={gallery} className='flex overflow-x-auto no-scrollbar scroll-smooth cursor-pointer'>

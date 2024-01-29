@@ -67,7 +67,7 @@ export default function TestimonialDisplay() {
             }, transitionTime);
             return () => { clearTimeout(timeout); };
         }
-    }, [testimonialIndex, swap]);
+    }, [testimonialIndex]);
 
     return (
         <div className='relative py-32 flex justify-center items-center text-center overflow-x-hidden'>
