@@ -19,7 +19,7 @@ export default function CreateSchedules() {
     }, undefined);
 
     return (
-        <form ref={scheduleForm} action={dispatch} className='flex flex-col'>
+        <form ref={scheduleForm} action={dispatch} onSubmit={() => { setResponse('Loading...') }} className='flex flex-col'>
             <h2 className='my-5 text-3xl text-red-600 font-bold'>Enter New Schedule Details</h2>
 
             <label htmlFor='date' className='mt-2 px-2 text-red-600'>Date</label>
@@ -36,7 +36,7 @@ export default function CreateSchedules() {
                 {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
             </div>
 
-            <button type='submit' onClick={() => { setResponse('Loading...'); }} className='my-5 p-5 text-white bg-red-600'>Submit</button>
+            <button type='submit' className='my-5 p-5 text-white bg-red-600'>Submit</button>
         </form>
     );
 }

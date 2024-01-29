@@ -20,7 +20,7 @@ export default function AccountForm() {
             if (dispatch == 'Successful signup') {
                 const form = accountForm.current as unknown as HTMLFormElement;
                 form.reset();
-
+                
                 setFormType('login');
             }
             return dispatch;
@@ -28,7 +28,7 @@ export default function AccountForm() {
     }, undefined);
 
     return (
-        <form ref={accountForm} action={dispatch} className='flex flex-col'>
+        <form ref={accountForm} action={dispatch} onSubmit={() => { setResponse('Loading...') }} className='flex flex-col'>
             {
                 formType == 'login' ? 
                     <div className='flex flex-col'>
@@ -66,11 +66,14 @@ export default function AccountForm() {
                 } else {
                     setFormType('login');
                 }
+                setResponse('');
+                setCaptcha(null);
+
                 const form = accountForm.current as unknown as HTMLFormElement;
                 form.reset(); 
             }} className='text-left text-sm underline'>{formType == 'login' ? 'New user? Sign up here' : 'Return to login'}</button>
 
-            <button type='submit' onClick={() => {setResponse('Loading...')}} className='my-5 p-5 text-white bg-red-600'>Submit</button>
+            <button type='submit' className='my-5 p-5 text-white bg-red-600'>Submit</button>
         </form>
     )
 };
