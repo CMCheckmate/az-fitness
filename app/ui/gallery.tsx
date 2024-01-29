@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import outdoorFitness from '@/public/outdoor_fitness.png';
 import fitnessArmband from '@/public/fitness_armband.png';
@@ -39,7 +39,7 @@ export default function Gallery() {
     const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
     const [imageIndex, setImageIndex] = useState(0);
 
-    function scroll(index: number) {
+    const scroll = useCallback((index: number) => {
         const wrapper = gallery.current as unknown as HTMLElement;
         const currentImage = imageRefs.current[index] as HTMLElement;
         const previousImage = imageRefs.current[imageIndex] as HTMLElement;
@@ -52,10 +52,10 @@ export default function Gallery() {
         currentImage.classList.add('unfaded');
         currentImage.style.pointerEvents = 'none';
 
-        wrapper.scrollTo({ left: (index + 1) * currentImage.clientWidth - wrapper.clientWidth / 2});
+        wrapper.scrollTo({ left: (index + 1) * currentImage.clientWidth - wrapper.clientWidth / 2 });
 
         setImageIndex(index);
-    }
+    }, []);
 
     useEffect(() => {
         if (!document.hidden) {
@@ -68,7 +68,7 @@ export default function Gallery() {
             }, transitionTime);
             return () => { clearTimeout(timeout); };
         }
-    }, [imageIndex]);
+    }, [imageIndex, images.length, scroll]);
 
     return (
         <div ref={gallery} className='flex overflow-x-auto no-scrollbar scroll-smooth cursor-pointer'>
