@@ -25,18 +25,18 @@ export default function TestimonialForm() {
 
                 <input type='email' name='email' id='email' placeholder='Email' className='m-5 p-5 border-b-2' required />
 
-                <input type='tel' name='phone' id='phone' placeholder='Phone' className='m-5 p-5 border-b-2' />
+                <input type='tel' pattern='[0-9]{10}' name='phone' id='phone' placeholder='Phone (format: 0123456789)' className='m-5 p-5 border-b-2' />
 
                 <input type='text' name='review' id='review' placeholder='Write your review here' className='col-span-2 m-5 p-5 border-b-2' required />
 
                 <p className='col-span-2 m-5 text-white'>Would you recommend us to your friends?</p>
                 <label htmlFor='Yes' className='mx-5'>
-                    <input type='radio' name='recommend' id='Yes' value='Yes' />
+                    <input type='radio' name='recommend' id='Yes' value='Yes' required />
                     <span className='p-5 text-white'>Yes</span>
                 </label>
 
                 <label htmlFor='No' className='mx-5'>
-                    <input type='radio' name='recommend' id='No' value='No' />
+                    <input type='radio' name='recommend' id='No' value='No' required />
                     <span className='p-5 text-white'>No</span>
                 </label>
 

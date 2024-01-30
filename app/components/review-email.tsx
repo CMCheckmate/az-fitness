@@ -8,9 +8,9 @@ export default function TestimonialEmail(data: any) {
 
             <div style='padding: 5px; text-align: center;'>
                 <h2 style='font-size: 1.5em; font-weight: bold;'>Review Received From:</h2>
-                <h2 style='font-size: 1em;'>${data.firstName} ${data.lastName}</h2>
+                <h2 style='font-size: 1em;'>${data.firstName}${data.lastName && ` ${data.lastName}`}</h2>
                 <h2 style='font-size: 0.875em; font-style: italic;'>Email: ${data.email}</h2>
-                <h2 style='font-size: 0.875em; font-style: italic;'>Phone: ${data.phone}</h2>
+                <h2 style='font-size: 0.875em; font-style: italic;'>Phone: ${data.phone ? data.phone : '-' }</h2>
             </div>
 
             <div style='padding: 5px; text-align: center;'>
@@ -22,7 +22,7 @@ export default function TestimonialEmail(data: any) {
                 <h2 style='font-size: 1.5em; font-weight: bold;'>Message:</h2>
                 <p style='font-size: 1em;'>${data.review}</p>
                 <h3 style='font-size: 1em; font-weight: bold;'>Extra:</h3>
-                <p style='font-size: 1em;'>${data.extra}</p>
+                <p style='font-size: 1em;'>${data.extra ? data.extra : '-'}</p>
             </div>
         </div>
     </div>
