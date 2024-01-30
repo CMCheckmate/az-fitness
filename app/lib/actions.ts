@@ -151,7 +151,9 @@ export async function sendContactForm(prevState: string | undefined, formData: F
         const headersList = headers();
         const domain = headersList.get('host') || '';
         const protocol = headersList.get('x-forwarded-proto') || '';
-        await fetch(`${protocol}://${domain}/api/contact`, {
+        console.log(`${protocol}://${domain}/api/contact`);
+        
+        const response = await fetch(`${protocol}://${domain}/api/contact`, {
             method: 'POST',
             body: JSON.stringify(formValues),
             headers: {
@@ -159,6 +161,12 @@ export async function sendContactForm(prevState: string | undefined, formData: F
                 'Accept': 'application.json'
             }
         });
+
+        if (response.ok) {
+            return 'Message successfully sent.';
+        } else {
+            return 'Something went wrong. Could not send contact form.';
+        }
     } catch (error) {
         return 'Something went wrong. Could not send contact form.';
     }

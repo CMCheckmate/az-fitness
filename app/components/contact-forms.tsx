@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { useFormState } from 'react-dom';
 import { sendContactForm } from '@/app/lib/actions';
+import { CircularProgress } from '@mui/material';
 import Link from 'next/link';
 
 export function TestimonialForm() {
@@ -44,10 +46,16 @@ export function TestimonialForm() {
 }
 
 export default function ContactForm() {
-    const [responseMessage, dispatch] = useFormState(sendContactForm, undefined);
+    const [response, setResponse] = useState<string>();
+    const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
+        const dispatch = await sendContactForm(state, formData);
+        setResponse(dispatch);
+
+        return dispatch;
+    }, undefined);
 
     return (
-        <form action={dispatch} className='flex flex-col'>
+        <form action={dispatch} onSubmit={() => { setResponse('Loading...'); }} className='flex flex-col'>
             <h2 className='text-center text-4xl text-red-600 font-bold'>CONTACT ME</h2>
 
             <label htmlFor='name' className='mt-2 px-2 text-red-600'>Name *</label>
@@ -58,6 +66,11 @@ export default function ContactForm() {
             <input type='text' name='subject' id='subject' placeholder='Type the Subject' className='p-2 border-b-2' />
             <label htmlFor='message' className='mt-2 px-2 text-red-600'>Message</label>
             <textarea name='message' id='message' placeholder='Type your message here...' className='p-2 border-b-2' required />
+            
+            <div className='flex items-center' aria-live="polite" aria-atomic="true">
+                {response && (<p className="py-4 text-red-600">{response}</p>)}
+                {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
+            </div>
 
             <button type='submit' className='w-full my-5 p-5 text-white bg-red-600'>Submit</button>
         </form>
