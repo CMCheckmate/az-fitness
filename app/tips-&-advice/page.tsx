@@ -1,6 +1,6 @@
-import Image from 'next/image'
-import InfoLayout from '@/app/ui/info-layout'
-import placeholder from '@/public/placeholder.svg'
+import Image from 'next/image';
+import InfoLayout from '@/app/components/info-layout';
+import placeholder from '@/public/placeholder.svg';
 
 function TipsAndAdvice() {
     return (

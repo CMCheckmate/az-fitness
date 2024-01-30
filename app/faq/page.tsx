@@ -1,8 +1,8 @@
-import Image from 'next/image'
-import InfoLayout from '@/app/ui/info-layout'
-import outdoorExercise from '@/public/outdoor_exercise.png'
-import yogaClass from '@/public/yoga_class.png'
-import workoutLesson from '@/public/workout_lesson.png'
+import Image from 'next/image';
+import InfoLayout from '@/app/components/info-layout';
+import outdoorExercise from '@/public/outdoor_exercise.png';
+import yogaClass from '@/public/yoga_class.png';
+import workoutLesson from '@/public/workout_lesson.png';
 
 function FAQ() {
     return (

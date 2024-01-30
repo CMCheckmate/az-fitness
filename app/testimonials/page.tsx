@@ -1,8 +1,8 @@
 import Image from 'next/image';
-import InfoLayout from '@/app/ui/info-layout'
-import TestimonialDisplay from '@/app/ui/testimonials';
+import InfoLayout from '@/app/components/info-layout'
+import TestimonialDisplay from '@/app/components/testimonials';
 import womenRunning from '@/public/women_running.png';
-import { TestimonialForm } from '@/app/ui/contact-forms';
+import { TestimonialForm } from '@/app/components/contact-forms';
 
 function Testimonials() {
     return (

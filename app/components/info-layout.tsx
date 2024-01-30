@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import { inter } from '@/app/ui/fonts';
+import { inter } from '@/app/components/fonts';
 import { auth } from '@/auth';
 import Link from 'next/link';
-import Navigation from '@/app/ui/navigation';
-import Loader from '@/app/ui/loader';
-import Sidebar from '@/app/ui/sidebar';
-import SignOut from '@/app/ui/signout-button';
+import Navigation from '@/app/components/navigation';
+import Loader from '@/app/components/loader';
+import Sidebar from '@/app/components/sidebar';
+import SignOut from '@/app/components/signout-button';
 
 export const metadata: Metadata = {
     title: 'AZ-Fitness',

@@ -1,8 +1,8 @@
 import { auth } from '@/auth';
 import { getSchedules } from '@/app/lib/actions';
-import CreateSchedules from '@/app/ui/create-schedule-form';
-import EditSchedules from '@/app/ui/edit-schedule-form';
-import SignOut from '@/app/ui/signout-button';
+import CreateSchedules from '@/app/components/create-schedule-form';
+import EditSchedules from '@/app/components/edit-schedule-form';
+import SignOut from '@/app/components/signout-button';
 
 export default async function SchedulePage() {
     const session = await auth();

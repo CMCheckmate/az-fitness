@@ -20,6 +20,7 @@
     "framer-motion": "^10.18.0",
     "next": "^14.1.0",
     "next-auth": "^5.0.0-beta.5",
+    "nodemailer": "^6.9.8",
     "react": "^18",
     "react-dom": "^18",
     "react-google-recaptcha": "^3.1.0",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.14",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",

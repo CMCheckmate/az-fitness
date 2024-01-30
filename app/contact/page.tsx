@@ -1,6 +1,6 @@
-import InfoLayout from '@/app/ui/info-layout';
-import ContactForm from '@/app/ui/contact-forms';
-import Map from '@/app/ui/map';
+import InfoLayout from '@/app/components/info-layout';
+import ContactForm from '@/app/components/contact-forms';
+import Map from '@/app/components/map';
 
 function Contact() {
     return (

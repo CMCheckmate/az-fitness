@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import bcrypt from 'bcrypt';
 
 const scheduleSchema = z.object({
@@ -138,4 +139,27 @@ export async function authenticate(prevState: string | undefined, formData: Form
         }
     }
     redirect('/schedules')
+}
+
+export async function sendContactForm(prevState: string | undefined, formData: FormData) {
+    try {
+        const formValues: { [key: string]: any } = {};
+        formData.forEach((value, key) => {
+            formValues[key] = value;
+        });
+        
+        const headersList = headers();
+        const domain = headersList.get('host') || '';
+        const protocol = headersList.get('x-forwarded-proto') || '';
+        await fetch(`${protocol}://${domain}/api/contact`, {
+            method: 'POST',
+            body: JSON.stringify(formValues),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application.json'
+            }
+        });
+    } catch (error) {
+        return 'Something went wrong. Could not send contact form.';
+    }
 }
