@@ -141,12 +141,13 @@ export async function authenticate(prevState: string | undefined, formData: Form
     redirect('/schedules')
 }
 
-export async function sendContactForm(prevState: string | undefined, formData: FormData) {
+export async function sendEmailForm(prevState: string | undefined, formType: string, formData: FormData) {
     try {
         const formValues: { [key: string]: any } = {};
         formData.forEach((value, key) => {
             formValues[key] = value;
         });
+        formValues['formType'] = formType;
         
         const headersList = headers();
         const domain = headersList.get('host') || '';
@@ -165,9 +166,9 @@ export async function sendContactForm(prevState: string | undefined, formData: F
         if (response.ok) {
             return 'Message successfully sent.';
         } else {
-            return 'Something went wrong. Could not send contact form.';
+            return 'Something went wrong. Could not send form.';
         }
     } catch (error) {
-        return 'Something went wrong. Could not send contact form.';
+        return 'Something went wrong. Could not send form.';
     }
 }

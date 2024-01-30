@@ -1,0 +1,38 @@
+'use client';
+
+import { useState } from 'react';
+import { useFormState } from 'react-dom';
+import { sendEmailForm } from '@/app/lib/actions';
+import { CircularProgress } from '@mui/material';
+
+export default function ContactForm() {
+    const [response, setResponse] = useState<string>();
+    const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
+        const dispatch = await sendEmailForm(state, 'contact', formData);
+        setResponse(dispatch);
+
+        return dispatch;
+    }, undefined);
+
+    return (
+        <form action={dispatch} onSubmit={() => { setResponse('Loading...'); }} className='flex flex-col'>
+            <h2 className='text-center text-4xl text-red-600 font-bold'>CONTACT ME</h2>
+
+            <label htmlFor='name' className='mt-2 px-2 text-red-600'>Name *</label>
+            <input type='text' name='name' id='name' placeholder='Enter your name' className='p-2 border-b-2' required />
+            <label htmlFor='email' className='mt-2 px-2 text-red-600'>Email *</label>
+            <input type='email' name='email' id='email' placeholder='Enter your email' className='p-2 border-b-2' required />
+            <label htmlFor='subject' className='mt-2 px-2 text-red-600'>Subject</label>
+            <input type='text' name='subject' id='subject' placeholder='Type the Subject' className='p-2 border-b-2' />
+            <label htmlFor='message' className='mt-2 px-2 text-red-600'>Message</label>
+            <textarea name='message' id='message' placeholder='Type your message here...' className='p-2 border-b-2' required />
+            
+            <div className='flex items-center' aria-live='polite' aria-atomic='true'>
+                {response && (<p className='py-4 text-red-600'>{response}</p>)}
+                {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
+            </div>
+
+            <button type='submit' className='w-full my-5 p-5 text-white bg-red-600'>Submit</button>
+        </form>
+    );
+}

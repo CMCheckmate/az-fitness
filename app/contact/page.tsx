@@ -1,5 +1,5 @@
 import InfoLayout from '@/app/components/info-layout';
-import ContactForm from '@/app/components/contact-forms';
+import ContactForm from '@/app/components/contact-form';
 import Map from '@/app/components/map';
 
 function Contact() {
