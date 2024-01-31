@@ -7,6 +7,7 @@ import { CircularProgress } from '@mui/material';
 
 export default function CreateSchedules() {
     const scheduleForm = useRef(null);
+    const [submitting, setSubmitting] = useState<boolean>(false);
     const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
         const dispatch = await addSchedules(state, formData);
@@ -14,29 +15,32 @@ export default function CreateSchedules() {
 
         const form = scheduleForm.current as unknown as HTMLFormElement;
         form.reset();
+        setSubmitting(false);
 
         return dispatch;
     }, undefined);
 
     return (
-        <form ref={scheduleForm} action={dispatch} onSubmit={() => { setResponse('Loading...') }} className='flex flex-col'>
-            <h2 className='my-5 text-3xl text-red-600 font-bold'>Enter New Schedule Details</h2>
+        <form ref={scheduleForm} action={dispatch} onSubmit={() => { setSubmitting(true); setResponse('Loading...') }}>
+            <fieldset className='flex flex-col' disabled={submitting}>
+                <h2 className='my-5 text-3xl text-red-600 font-bold'>Enter New Schedule Details</h2>
 
-            <label htmlFor='date' className='mt-2 px-2 text-red-600'>Date</label>
-            <input type="date" name='date' id='date' className='p-2 border-b-2' required />
-            <label htmlFor='time' className='mt-2 px-2 text-red-600'>Time</label>
-            <input type="time" name='time' id='time' className='p-2 border-b-2' required />
-            <label htmlFor='length' className='mt-2 px-2 text-red-600'>Length</label>
-            <input type='number' name='length' id='length' placeholder='Schedule Length' min={0} className='p-2 border-b-2' required />
-            <label htmlFor='comments' className='mt-2 px-2 text-red-600'>Comments</label>
-            <textarea name='comments' id='comments' placeholder='Enter any comments' className='mb-2 p-2 border-b-2' />
-            
-            <div className='flex items-center' aria-live="polite" aria-atomic="true">
-                {response && (<p className="py-4 text-red-600">{response}</p>)}
-                {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
-            </div>
+                <label htmlFor='date' className='mt-2 px-2 text-red-600'>Date</label>
+                <input type="date" name='date' id='date' className='p-2 border-b-2' required />
+                <label htmlFor='time' className='mt-2 px-2 text-red-600'>Time</label>
+                <input type="time" name='time' id='time' className='p-2 border-b-2' required />
+                <label htmlFor='length' className='mt-2 px-2 text-red-600'>Length</label>
+                <input type='number' name='length' id='length' placeholder='Schedule Length' min={0} className='p-2 border-b-2' required />
+                <label htmlFor='comments' className='mt-2 px-2 text-red-600'>Comments</label>
+                <textarea name='comments' id='comments' placeholder='Enter any comments' className='mb-2 p-2 border-b-2' />
 
-            <button type='submit' className='my-5 p-5 text-white bg-red-600'>Submit</button>
+                <div className='flex items-center' aria-live="polite" aria-atomic="true">
+                    {response && (<p className="py-4 text-red-600">{response}</p>)}
+                    {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
+                </div>
+
+                <button type='submit' className='my-5 p-5 text-white bg-red-600'>Submit</button>
+            </fieldset>
         </form>
     );
 }

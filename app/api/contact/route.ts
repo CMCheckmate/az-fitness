@@ -11,7 +11,7 @@ export async function POST(request: Request) {
         
         await transporter.sendMail({
             ...mailOptions,
-            subject: data.formType == 'contact' ? `Contact - ${data.subject}` : 'Review',
+            subject: data.formType,
             html: data.formType == 'contact' ? ContactEmail(data) : TestimonialEmail(data)
         });
 

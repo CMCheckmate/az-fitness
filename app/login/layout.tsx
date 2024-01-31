@@ -8,6 +8,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link className='text-5xl text-white font-bold' href='/'>AZ-Fitness</Link>
             </div>
 
+            <div className='flex justify-center items-center'>
+                <Link className='p-5 text-xl font-bold underline' href='/'>Back to Home</Link>
+            </div>
+
             <main>
                 {children}
             </main>

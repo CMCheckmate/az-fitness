@@ -7,14 +7,14 @@ export default function ContactEmail(data: any) {
                 AZ-Fitness</h1>
 
             <div style='padding: 5px; text-align: center;'>
-                <h2 style='font-size: 1.5em; font-weight: bold;'>Contact Message Received From:</h2>
+                <h2 style='font-size: 1.5em; font-weight: bold;'>Message Received From:</h2>
                 <h2 style='font-size: 1em;'>${data.name}</h2>
                 <h2 style='font-size: 0.875em; font-style: italic;'>${data.email}</h2>
             </div>
 
             <div style='padding: 5px; text-align: center;'>
                 <h2 style='font-size: 1.5em; font-weight: bold;'>Subject:</h2>
-                <h2 style='font-size: 1em;'>${data.subject}</h2>
+                <h2 style='font-size: 1em;'>${data.subject ? data.subject : '-'}</h2>
             </div>
 
             <div style='padding: 5px; text-align: center;'>

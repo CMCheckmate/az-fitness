@@ -18,13 +18,12 @@ export default async function InfoLayout({ content }: { content: React.ReactNode
     return (
         <div className={`${inter.className} antialiased`}>
             <div className='pt-10 pb-2'>
-                <div className='shadow-lg'>
+                <div className=''>
                     <div className='mx-44 py-5 flex items-end border-b-2 border-red-600'>
                         <Link className='flex-1 text-5xl text-red-600 font-bold' href='/'>A to Z Fitness</Link>
                     </div>
-                    <div className='mx-72 p-5'>
-                        <Navigation />
-                    </div>
+                    
+                    <Navigation />
                 </div>
             </div>
 

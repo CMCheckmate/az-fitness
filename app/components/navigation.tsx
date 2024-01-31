@@ -15,10 +15,14 @@ export default function Navigation() {
     const pathname = usePathname();
 
     return (
-        <div className='flex justify-center items-center'>
-            {links.map((link) => (
-                <Link key={link['name']} className={`px-5 text-center text-xl ${pathname == link.href ? 'text-red-400' : 'text-red-600'} hover:text-red-400`} href={link.href}>{link.name}</Link>
-            ))}
+        <div className='p-5 px-72 shadow-lg'>
+            < div className = 'flex justify-center items-center' >
+            {
+                links.map((link) => (
+                    <Link key={link['name']} className={`px-5 text-center text-xl ${pathname == link.href ? 'text-red-400' : 'text-red-600'} hover:text-red-400`} href={link.href}>{link.name}</Link>
+                ))
+            }
+            </div >
         </div>
     );
 }

@@ -53,7 +53,7 @@ export default function SideBar({ session, signOutButton } : { session : Session
                                     {signOutButton}
                                 </div>
                             </div> :
-                            <Link className='w-min my-5 p-2 bg-blue-600 rounded-md text-white font-bold' href='/login'>Login/Signup</Link>
+                            <Link className='w-min my-5 p-2 bg-gray-400 rounded-md text-white font-bold' href='/login'>Login/Signup</Link>
                         }
                     </div>
                 </div>

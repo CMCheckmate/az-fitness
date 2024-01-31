@@ -6,7 +6,7 @@ export default async function LoginPage() {
     const session = await auth();
 
     return (
-        <div className='p-10 flex justify-center items-center'>
+        <div className='p-5 flex justify-center items-center'>
             <div className='w-1/2 p-10 shadow-lg'>
                 {
                     session?.user ? 
