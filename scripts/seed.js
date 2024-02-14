@@ -61,7 +61,7 @@ async function seedSchedules(client) {
                 schedule_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
                 user_id UUID DEFAULT uuid_generate_v4() NOT NULL,
                 date_time TIMESTAMP NOT NULL UNIQUE,
-                length INT NOT NULL,
+                length DECIMAL(3, 1) NOT NULL,
                 comments VARCHAR(45),
                 CONSTRAINT user_id
                     FOREIGN KEY (user_id)

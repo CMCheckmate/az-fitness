@@ -40,21 +40,23 @@ export default function Gallery() {
     const [imageIndex, setImageIndex] = useState(0);
 
     const scroll = useCallback((index: number) => {
-        const wrapper = gallery.current as unknown as HTMLElement;
-        const currentImage = imageRefs.current[index] as HTMLElement;
-        const previousImage = imageRefs.current[imageIndex] as HTMLElement;
+        if (imageIndex != index) {
+            const wrapper = gallery.current as unknown as HTMLElement;
+            const currentImage = imageRefs.current[index] as HTMLElement;
+            const previousImage = imageRefs.current[imageIndex] as HTMLElement;
 
-        previousImage.classList.remove('unfaded');
-        previousImage.offsetHeight;
-        previousImage.classList.add('faded');
-        currentImage.classList.remove('faded');
-        currentImage.offsetHeight;
-        currentImage.classList.add('unfaded');
-        currentImage.style.pointerEvents = 'none';
+            previousImage.classList.remove('unfaded');
+            previousImage.offsetHeight;
+            previousImage.classList.add('faded');
+            currentImage.classList.remove('faded');
+            currentImage.offsetHeight;
+            currentImage.classList.add('unfaded');
+            currentImage.style.pointerEvents = 'none';
 
-        wrapper.scrollTo({ left: (index + 1) * currentImage.clientWidth - wrapper.clientWidth / 2 });
+            wrapper.scrollTo({ left: (index + 1) * currentImage.clientWidth - wrapper.clientWidth / 2 });
 
-        setImageIndex(index);
+            setImageIndex(index);
+        }
     }, [imageIndex]);
 
     useEffect(() => {
@@ -71,12 +73,16 @@ export default function Gallery() {
     });
 
     return (
-        <div ref={gallery} className='flex overflow-x-auto no-scrollbar scroll-smooth cursor-pointer'>
-            <Image onClick={() => { scroll(images.length - 1); }} src={images[images.length - 1].src} alt={images[images.length - 1].alt} className='w-1/4 object-cover object-right opacity-75' />
-            {images.map((image, index) => (
-                <Image key={`image${index}`} ref={(img) => { imageRefs.current.push(img) }} onClick={() => { scroll(index); }} onAnimationEnd={() => { const block = imageRefs.current[index] as unknown as HTMLElement; block.style.pointerEvents = 'auto'; }} src={image.src} alt={image.alt} className={`w-1/2 ${index == 0 ? 'opacity-100' : 'opacity-75'}`} />
-            ))}
-            <Image onClick={() => { scroll(0); }} src={images[0].src} alt={images[0].alt} className='w-1/4 object-cover object-left opacity-75' />
+        <div className='relative'>
+            <div ref={gallery} className='flex overflow-x-auto no-scrollbar scroll-smooth cursor-pointer'>
+                <Image onClick={() => { scroll(images.length - 1); }} src={images[images.length - 1].src} alt={images[images.length - 1].alt} className='w-1/4 object-cover object-right opacity-75' />
+                {images.map((image, index) => (
+                    <Image key={`image${index}`} ref={(img) => { imageRefs.current.push(img) }} onClick={() => { scroll(index); }} onAnimationEnd={() => { const block = imageRefs.current[index] as unknown as HTMLElement; block.style.pointerEvents = 'auto'; }} src={image.src} alt={image.alt} className={`w-1/2 ${index == 0 ? 'opacity-100' : 'opacity-75'}`} />
+                ))}
+                <Image onClick={() => { scroll(0); }} src={images[0].src} alt={images[0].alt} className='w-1/4 object-cover object-left opacity-75' />
+            </div>
+            <button onClick={() => { if (imageIndex > 0) { scroll(imageIndex - 1); } else { scroll(images.length - 1); } }} className='absolute top-1/2 left-16 translate-y-[-50%] font-semibold text-7xl text-white hover:text-gray-200'>{`<`}</button>
+            <button onClick={() => { if (imageIndex < images.length - 1) { scroll(imageIndex + 1); } else { scroll(0); } }} className='absolute top-1/2 right-16 translate-y-[-50%] font-semibold text-7xl text-white hover:text-gray-200'>{`>`}</button>
         </div>
     );
 }
