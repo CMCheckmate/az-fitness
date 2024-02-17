@@ -12,7 +12,7 @@ export async function POST(request: Request) {
         await transporter.sendMail({
             ...mailOptions,
             subject: data.formType,
-            html: data.formType == 'contact' ? ContactEmail(data) : TestimonialEmail(data)
+            html: data.formType == 'Contact' ? ContactEmail(data) : TestimonialEmail(data)
         });
 
         return NextResponse.json({ messsage: data });

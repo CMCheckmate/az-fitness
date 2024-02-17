@@ -3,6 +3,7 @@
 import { useFormState } from 'react-dom';
 import { useRef, useState } from 'react';
 import { addSchedules } from '@/app/lib/actions';
+import { addDays, format } from 'date-fns';
 import { CircularProgress } from '@mui/material';
 
 export default function CreateSchedules() {
@@ -26,11 +27,11 @@ export default function CreateSchedules() {
                 <h2 className='my-5 text-3xl text-red-600 font-bold'>Enter New Schedule Details</h2>
 
                 <label htmlFor='date' className='mt-2 px-2 text-red-600'>Date</label>
-                <input type="date" name='date' id='date' className='p-2 border-b-2' required />
+                <input type="date" name='date' id='date' min={format(addDays((new Date()), 3), 'yyyy-MM-dd')} className='p-2 border-b-2' required />
                 <label htmlFor='time' className='mt-2 px-2 text-red-600'>Time</label>
-                <input type="time" name='time' id='time' className='p-2 border-b-2' required />
+                <input type="time" name='time' id='time' min='06:00' max='18:00' step='1800' className='p-2 border-b-2' required />
                 <label htmlFor='length' className='mt-2 px-2 text-red-600'>Length</label>
-                <input type='number' name='length' id='length' placeholder='Schedule Length' min={0} className='p-2 border-b-2' required />
+                <input type='number' name='length' id='length' placeholder='Schedule Length' min={0.5} max={2} step={0.5} className='p-2 border-b-2' required />
                 <label htmlFor='comments' className='mt-2 px-2 text-red-600'>Comments</label>
                 <textarea name='comments' id='comments' placeholder='Enter any comments' className='mb-2 p-2 border-b-2' />
 

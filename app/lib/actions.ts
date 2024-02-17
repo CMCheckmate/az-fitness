@@ -2,11 +2,12 @@
 
 import { auth, signIn } from '@/auth';
 import { Session, AuthError } from 'next-auth';
-import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
+import { z } from 'zod';
+import { parse, addHours, format } from 'date-fns';
 import bcrypt from 'bcrypt';
 
 const scheduleSchema = z.object({
@@ -48,11 +49,17 @@ export async function addSchedules(prevState: string | undefined, formData: Form
 
         if (validatedFields.success) {
             const { date, time, length, comments } = validatedFields.data;
-            try {
-                await sql`INSERT INTO schedules (user_id, date_time, length, comments)
+
+            const validDate = await validateSchedule(date, time, length);
+            if (validDate) {
+                try {
+                    await sql`INSERT INTO schedules (user_id, date_time, length, comments)
                 VALUES ((SELECT user_id FROM users WHERE email = ${session?.user.email}), ${`${date} ${time}`}, ${length}, ${comments});`;
-            } catch (error) {
-                return 'Database error: Failed to add schedule.';
+                } catch (error) {
+                    return 'Database error: Failed to add schedule.';
+                }
+            } else {
+                return 'Schedule clashes with an existing one, please try again.';
             }
         } else {
             return 'Invalid entries. Failed to add schedule.';
@@ -95,6 +102,23 @@ export async function deleteSchedule(scheduleID: string) {
     }
 
     revalidatePath('/schedules');
+}
+
+export async function validateSchedule(scheduleDate: string, scheduleTime: string, scheduleLength: number) {
+    try {
+        const schedules = await sql`SELECT date_time, length FROM schedules;`;
+        for (const schedule of schedules.rows) {
+            if (schedule.date_time.toISOString().split('T')[0] == scheduleDate) {
+                if ((schedule.date_time.toTimeString().split(' ')[0] > scheduleTime && format(addHours(parse(scheduleTime, 'HH:mm', new Date()), scheduleLength), 'HH:mm') > schedule.date_time.toTimeString().split(' ')[0]) ||
+                    (schedule.date_time.toTimeString().split(' ')[0] < scheduleTime && format(addHours(schedule.date_time, schedule.length), 'HH:mm') > scheduleTime)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    } catch (error) {
+        return error;
+    }
 }
 
 export async function signUp(prevState: string | undefined, formData: FormData) {

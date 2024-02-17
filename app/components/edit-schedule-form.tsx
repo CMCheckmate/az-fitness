@@ -16,16 +16,16 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     }
     const defaultData = {
         ...data,
-        'date': data.date_time.toISOString().split('T')[0],
-        'time': data.date_time.toTimeString().split(' ')[0],
-        'length': data.length.replace('.0', '')
+        date: data.date_time.toISOString().split('T')[0],
+        time: data.date_time.toTimeString().split(' ')[0],
+        length: data.length.replace('.0', '')
     } as Data;
     const [action, setAction] = useState<string>();
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
         for (const [input, value] of formData.entries()) {
-            if (value != defaultData[input as keyof Data]) {
+            if (String(value).replace('.0', '') != defaultData[input as keyof Data] || action == 'delete') {
                 const dispatch = action == 'edit' ? await updateSchedule(state, data.schedule_id, formData) : await deleteSchedule(data.schedule_id);
                 if (dispatch) {
                     setResponse(dispatch);
@@ -45,13 +45,13 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
             <div className='table-cell p-2 border-2 text-center'>{data.number}</div>
             {'name' in data && <div className='table-cell p-2 border-2'>{data.name}</div>}
             <div className='table-cell border-2'>
-                <input type='date' name='date' id='date' defaultValue={defaultData.date} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
+                <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
             </div>
             <div className='table-cell border-2'>
-                <input type="time" name='time' id='time' defaultValue={defaultData.time} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
+                <input type="time" name='time' id='time' min='06:00' max='18:00' step='1800' defaultValue={defaultData.time} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
             </div>
             <div className='table-cell border-2'>
-                <input type='number' name='length' id='length' min={0.5} max={24} step='0.5' defaultValue={defaultData.length} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
+                <input type='number' name='length' id='length' min={0.5} max={2} step={0.5} defaultValue={defaultData.length} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
             </div>
             <div className='table-cell border-2'>
                 <textarea name='comments' id='comments' spellCheck={false} defaultValue={defaultData.comments} className='w-full p-4 align-middle text-center bg-transparent' disabled={submitting} />
