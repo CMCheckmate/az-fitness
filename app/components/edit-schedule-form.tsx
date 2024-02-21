@@ -49,7 +49,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
 
     function generateEndTimes(givenTime: string) {
         const times = [];
-        if (startTimes) {
+        if (startTimes && givenTime) {
             const chosenTime = parse(givenTime, 'hh:mm a', new Date());
             while (times.length < 2 / 0.5) {
                 chosenTime.setMinutes(chosenTime.getMinutes() + 30);
