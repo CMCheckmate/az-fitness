@@ -1,10 +1,9 @@
-const { db}  = require('@vercel/postgres');
+const { db }  = require('@vercel/postgres');
+const { format } = require('date-fns');
 const bcrypt = require('bcrypt');
 const { users, schedules } = require('../app/lib/data.js');
 
-const currentDate = new Date();
-const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
-const formattedTime = `${currentDate.getHours()}:${currentDate.getMinutes()}`;
+const currentDate = format(new Date(), 'yyyy-MM-dd');
 
 async function seedUsers(client) {
     try {
@@ -37,7 +36,7 @@ async function seedUsers(client) {
 
                 return client.sql`
                     INSERT INTO users (name, email, password, status, date)
-                    VALUES (${user.name}, ${user.email}, ${hashedPassword}, ${user.status}, ${formattedDate})
+                    VALUES (${user.name}, ${user.email}, ${hashedPassword}, ${user.status}, ${currentDate})
                     ON CONFLICT (email) DO NOTHING;
                 `;
             }),
@@ -60,8 +59,8 @@ async function seedSchedules(client) {
         const createTable = await client.sql`CREATE TABLE IF NOT EXISTS schedules (
                 schedule_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
                 user_id UUID DEFAULT uuid_generate_v4() NOT NULL,
-                date_time TIMESTAMP NOT NULL UNIQUE,
-                length DECIMAL(3, 1) NOT NULL,
+                start_time TIMESTAMP NOT NULL UNIQUE,
+                end_time TIMESTAMP NOT NULL UNIQUE,
                 comments VARCHAR(45),
                 CONSTRAINT user_id
                     FOREIGN KEY (user_id)
@@ -74,9 +73,9 @@ async function seedSchedules(client) {
         const insertedSchedules = await Promise.all(
             schedules.map(async (schedule) => {
                 return client.sql`
-                    INSERT INTO schedules (user_id, date_time, length, comments)
-                    VALUES ((SELECT user_id FROM users WHERE email = ${schedule.email}), ${schedule.dateTime}, ${schedule.length}, ${schedule.comment})
-                    ON CONFLICT (date_time) DO NOTHING;
+                    INSERT INTO schedules (user_id, start_time, end_time, comments)
+                    VALUES ((SELECT user_id FROM users WHERE email = ${schedule.email}), ${schedule.startTime}, ${schedule.endTime}, ${schedule.comment})
+                    ON CONFLICT DO NOTHING;
                 `;
             }),
         );

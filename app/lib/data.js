@@ -16,47 +16,35 @@ const users = [
         email: 'mikeoxlong@yahoo.com',
         password: '$mikeoxlong69',
         status: 'member'
+    },
+    {
+        name: 'Hatsune Miku',
+        email: 'hatsunemiku@hotmail.com',
+        password: 'SEKAIIIII de ichiban ohime sama',
+        status: 'member'
     }
 ]
 
 const schedules = [
     {
         email: 'sussybaka@gmail.com',
-        dateTime: '2024-01-17 14:30',
-        length: '2',
+        startTime: '2024-01-01 2:30 pm',
+        endTime: '2024-01-01 3:30 pm',
         comment: 'no comment'
     },
     {
         email: 'mikeoxlong@yahoo.com',
-        dateTime: '2024-04-01 06:09',
-        length: '69',
+        startTime: '2024-01-17 06:00 am',
+        endTime: '2024-01-17 08:00 am',
         comment: 'mikeoxlong'
-    }
+    },
+    {
+        email: 'hatsunemiku@hotmail.com',
+        startTime: '2024-02-20 06:00 am',
+        endTime: '2024-02-20 08:00 am',
+        comment: 'Sekai wa watashi no mono!'
+    },
 ]
-
-const data = [
-    {
-        'name': 'Sussy Baka',
-        'date': '01/04/2024',
-        'time': '6:00',
-        'length': '1',
-        'comments': '',
-    },
-    {
-        'name': 'Mike Oxlong',
-        'date': '06/06/2024',
-        'time': '6:09',
-        'length': '69',
-        'comments': '69 baby!',
-    },
-    {
-        'name': 'Ming Ray Goy',
-        'date': '01/01/2024',
-        'time': '14:00',
-        'length': '0.5',
-        'comments': 'Leg Day :T',
-    }
-];
 
 module.exports = {
     users,

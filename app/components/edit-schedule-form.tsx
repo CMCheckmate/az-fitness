@@ -1,28 +1,34 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { format, parse } from 'date-fns';
 import { redirect } from 'next/navigation';
-import { updateSchedule, deleteSchedule } from '@/app/lib/actions';
+import { generateStartTimes, updateSchedule, deleteSchedule } from '@/app/lib/actions';
 import { QueryResultRow } from '@vercel/postgres';
 import { CircularProgress } from '@mui/material';
 
 export default function EditSchedules({ data, className }: { data: QueryResultRow, className?: string}) {
     interface Data {
         date: string,
-        time: string,
-        length: number,
+        start_time: string,
+        end_time: string,
         comments: string
     }
     const defaultData = {
         ...data,
-        date: data.date_time.toISOString().split('T')[0],
-        time: data.date_time.toTimeString().split(' ')[0],
-        length: data.length.replace('.0', '')
+        date: format(data.start_time, 'yyyy-MM-dd'),
+        start_time: format(data.start_time, 'hh:mm a'),
+        end_time: format(data.end_time, 'hh:mm a')
     } as Data;
+    const datePicker = useRef(null);
+    const startPicker = useRef(null);
+    const endPicker = useRef(null);
     const [action, setAction] = useState<string>();
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [response, setResponse] = useState<string>();
+    const [startTimes, setStartTimes] = useState<string[]>();
+    const [endTimes, setEndTimes] = useState<string[]>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
         for (const [input, value] of formData.entries()) {
             if (String(value).replace('.0', '') != defaultData[input as keyof Data] || action == 'delete') {
@@ -40,18 +46,63 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
         setSubmitting(false);
     }, undefined);
 
+    function generateEndTimes(givenTime: string) {
+        const times = [];
+        if (startTimes) {
+            const chosenTime = parse(givenTime, 'hh:mm a', new Date());
+            while (times.length < 2 / 0.5) {
+                chosenTime.setMinutes(chosenTime.getMinutes() + 30);
+                const time = format(chosenTime, 'hh:mm a');
+                times.push(time);
+                if (!startTimes.includes(time)) {
+                    break;
+                }
+            }
+            (endPicker.current as unknown as HTMLSelectElement).selectedIndex = 0;
+        }
+        return times;
+    }
+
+    useEffect(() => {
+        if (startTimes) {
+            const startIndex = (datePicker.current as unknown as HTMLInputElement).value == defaultData.date ? startTimes.indexOf(defaultData.start_time) : 0;
+            (startPicker.current as unknown as HTMLSelectElement).selectedIndex = startIndex;
+            setEndTimes(generateEndTimes(startTimes[startIndex]));
+        } else {
+            const initialise = async() => {
+                setStartTimes(await generateStartTimes(defaultData.date, defaultData.start_time));
+            }
+            initialise();
+        }
+    }, [startTimes]);
+
+    useEffect(() => {
+        if (endTimes) {
+            const endIndex = (datePicker.current as unknown as HTMLInputElement).value == defaultData.date ? endTimes.indexOf(defaultData.end_time) : 0;
+            (endPicker.current as unknown as HTMLSelectElement).selectedIndex = endIndex;
+        }
+    }, [endTimes])
+
     return (
         <form action={dispatch} onSubmit={() => { setSubmitting(true); setResponse('Loading...') }} className={`${className} table-row text-red-400 font-bold`}>
             <div className='table-cell p-2 border-2 text-center'>{data.number}</div>
             {'name' in data && <div className='table-cell p-2 border-2'>{data.name}</div>}
             <div className='table-cell border-2'>
-                <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
+                <input ref={datePicker} type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={async (event) => { setStartTimes(await generateStartTimes(event.target.value, defaultData.start_time)); }} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
             </div>
             <div className='table-cell border-2'>
-                <input type="time" name='time' id='time' min='06:00' max='18:00' step='1800' defaultValue={defaultData.time} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
+                <select ref={startPicker} id='startTime' name='startTime' onChange={(event) => { setEndTimes(generateEndTimes(event.target.value)); }} className='w-full p-2 appearance-none bg-transparent text-center'>
+                    {startTimes ? startTimes.map((time, index) => (
+                        <option key={`start_time${index}`} value={time}>{time}</option>
+                    )) : <option disabled value=''>No available times</option>}
+                </select>
             </div>
             <div className='table-cell border-2'>
-                <input type='number' name='length' id='length' min={0.5} max={2} step={0.5} defaultValue={defaultData.length} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
+                <select ref={endPicker} id='endTime' name='endTime' className='w-full p-2 appearance-none bg-transparent text-center'>
+                    {endTimes ? endTimes.map((time, index) => (
+                        <option key={`end_time${index}`} value={time}>{time}</option>
+                    )) : <option disabled value=''>No available times</option>}
+                </select>
             </div>
             <div className='table-cell border-2'>
                 <textarea name='comments' id='comments' spellCheck={false} defaultValue={defaultData.comments} className='w-full p-4 align-middle text-center bg-transparent' disabled={submitting} />

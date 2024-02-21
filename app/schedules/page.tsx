@@ -26,15 +26,15 @@ export default async function SchedulePage() {
                             <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Session Number</div>
                             {session?.user.status == 'administrator' && <div className='table-cell text-center p-2 border-2 text-l text-white font-bold'>Name</div>}
                             <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Date</div>
-                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Time</div>
-                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Length (hours)</div>
+                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Start Time</div>
+                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>End Time</div>
                             <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Comments</div>
                             <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Action</div>
                         </div>
                     </div>
 
                     <div className='table-row-group border-2'>
-                        {schedules.map((schedule, index) => (
+                        {schedules && schedules.map((schedule, index) => (
                             <EditSchedules key={`row${index + 1}`} data={{...schedule, 'number': index + 1}} className={`${index % 2 != 0 && 'bg-gray-300'}`} />
                         ))}
                     </div>
