@@ -20,7 +20,7 @@ const users = [
     {
         name: 'Hatsune Miku',
         email: 'hatsunemiku@hotmail.com',
-        password: 'SEKAIIIII de ichiban ohime sama',
+        password: 'SEKAIIIII',
         status: 'member'
     }
 ]
@@ -30,18 +30,21 @@ const schedules = [
         email: 'sussybaka@gmail.com',
         startTime: '2024-01-01 2:30 pm',
         endTime: '2024-01-01 3:30 pm',
+        address: 'The Foundation 270 Oteha Valley Road, Albany, Auckland 0630',
         comment: 'no comment'
     },
     {
         email: 'mikeoxlong@yahoo.com',
         startTime: '2024-01-17 06:00 am',
         endTime: '2024-01-17 08:00 am',
+        address: '252 Oteha Valley Road, Albany, Auckland 0632',
         comment: 'mikeoxlong'
     },
     {
         email: 'hatsunemiku@hotmail.com',
-        startTime: '2024-02-20 06:00 am',
-        endTime: '2024-02-20 08:00 am',
+        startTime: '2024-02-26 08:00 am',
+        endTime: '2024-02-26 09:30 am',
+        address: '2 Rothwell Avenue, Albany, Auckland 0632',
         comment: 'Sekai wa watashi no mono!'
     },
 ]

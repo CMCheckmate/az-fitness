@@ -24,7 +24,8 @@ function Home() {
             Getting in shape shouldn’t be a punishment. It’s an amazing and empowering lifestyle decision that anyone can make.
             I believe in finding the pleasurable side of fitness;
             and while there may be a sore muscle or two along the way, the benefits of fitness are worth the challenge.
-            I have developed my training regime by working with a variety of people, and constantly adapting my program to the needs of my new clients.
+            I have developed my training regime by working with a variety of people, and constantly adapting my programs to the needs of my clients. 
+            As your personal trainer, I will ensure the workouts I give are easy to incorporate into your schedule, sustainable long-term, and will meet all of your individual needs and goals.
           </p>
         </div>
         <Image src={training} alt='Training' className='w-full object-cover' />
@@ -33,34 +34,28 @@ function Home() {
       <div className='p-10 text-center'>
         <h2 className='p-5 text-3xl text-red-600 font-bold'>Services</h2>
         <p className='text-red-600'>
-          Provide a general description of the items below and introduce the services you offer. Click on the text box to edit the content.
+          My services ensure my clients’ goals are met and that they see constant improvement in their body and lifestyle.
         </p>
         <div className='p-20 grid grid-cols-3'>
           <div className='p-5 flex flex-col items-center'>
             <Image src={placeholder} alt='Placeholder 1' className='w-3/4 p-5 rounded-full' />
-            <h3 className='p-5 text-2xl text-red-600 font-bold'>Service 1</h3>
+            <h3 className='p-5 text-2xl text-red-600 font-bold'>Personal Training</h3>
             <p className='text-red-600'>
-              Describe your service here. What makes it great?
-              Use short catchy text to tell people what you offer, and the benefits they will receive.
-              A great description gets readers in the mood, and makes them more likely to go ahead and book.
+              Personal training allows me to be there every step of the way, motivating you to push yourself, keeping you safe, and teaching you how to do all exercises properly.
             </p>
           </div>
           <div className='p-5 flex flex-col items-center'>
             <Image src={placeholder} alt='Placeholder 2' className='w-3/4 p-5 rounded-full' />
-            <h3 className='p-5 text-2xl text-red-600 font-bold'>Service 2</h3>
+            <h3 className='p-5 text-2xl text-red-600 font-bold'>Program Creation</h3>
             <p className='text-red-600'>
-              Describe your service here. What makes it great?
-              Use short catchy text to tell people what you offer, and the benefits they will receive.
-              A great description gets readers in the mood, and makes them more likely to go ahead and book.
+              Designing programs based on the parameters you set, fit for your lifestyle and schedule, and free for any adjustments or changes you would like to have made to them.
             </p>
           </div>
           <div className='p-5 flex flex-col items-center'>
             <Image src={placeholder} alt='Placeholder 3' className='w-3/4 p-5 rounded-full' />
-            <h3 className='p-5 text-2xl text-red-600 font-bold'>Service 3</h3>
+            <h3 className='p-5 text-2xl text-red-600 font-bold'>Monitoring Progress</h3>
             <p className='text-red-600'>
-              Describe your service here. What makes it great?
-              Use short catchy text to tell people what you offer, and the benefits they will receive.
-              A great description gets readers in the mood, and makes them more likely to go ahead and book.
+              Tracking changes in your fitness level by running fun and harmless tests that we can use to see how you improve and how best to train you over the time you are with me.
             </p>
           </div>
         </div>

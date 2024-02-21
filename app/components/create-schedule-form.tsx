@@ -21,7 +21,6 @@ export default function CreateSchedules() {
         const form = scheduleForm.current as unknown as HTMLFormElement;
         form.reset();
         setStartTimes([]);
-        setEndTimes([]);
         setSubmitting(false);
 
         return dispatch;
@@ -29,7 +28,7 @@ export default function CreateSchedules() {
 
     function generateEndTimes(givenTime: string) {
         const times = [];
-        if (startTimes) {
+        if (startTimes && givenTime) {
             const chosenTime = parse(givenTime, 'hh:mm a', new Date());
             while (times.length < 2 / 0.5) {
                 chosenTime.setMinutes(chosenTime.getMinutes() + 30);
@@ -71,6 +70,8 @@ export default function CreateSchedules() {
                         <option key={`end_time${index}`} value={time}>{time}</option>
                     )) : <option disabled value=''>No available times</option>}
                 </select>
+                <label htmlFor='address' className='mt-2 px-2 text-red-600'>Session Address</label>
+                <textarea name='address' id='address' spellCheck={false} maxLength={95} placeholder='Enter your desired address' className='mb-2 p-2 border-b-2' required />
                 <label htmlFor='comments' className='mt-2 px-2 text-red-600'>Comments</label>
                 <textarea name='comments' id='comments' placeholder='Enter any comments' className='mb-2 p-2 border-b-2' />
 

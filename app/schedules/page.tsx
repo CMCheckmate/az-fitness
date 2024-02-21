@@ -28,6 +28,7 @@ export default async function SchedulePage() {
                             <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Date</div>
                             <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Start Time</div>
                             <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>End Time</div>
+                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Session Address</div>
                             <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Comments</div>
                             <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Action</div>
                         </div>

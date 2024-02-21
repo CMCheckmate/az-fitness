@@ -13,6 +13,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
         date: string,
         start_time: string,
         end_time: string,
+        address: string,
         comments: string
     }
     const defaultData = {
@@ -77,7 +78,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     }, [startTimes]);
 
     useEffect(() => {
-        if (endTimes) {
+        if (endTimes && endTimes.includes(defaultData.end_time)) {
             const endIndex = (datePicker.current as unknown as HTMLInputElement).value == defaultData.date ? endTimes.indexOf(defaultData.end_time) : 0;
             (endPicker.current as unknown as HTMLSelectElement).selectedIndex = endIndex;
         }
@@ -91,21 +92,24 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                 <input ref={datePicker} type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={async (event) => { setStartTimes(await generateStartTimes(event.target.value, defaultData.start_time)); }} className='w-full p-2 text-center bg-transparent' disabled={submitting} required />
             </div>
             <div className='table-cell border-2'>
-                <select ref={startPicker} id='startTime' name='startTime' onChange={(event) => { setEndTimes(generateEndTimes(event.target.value)); }} className='w-full p-2 appearance-none bg-transparent text-center'>
+                <select ref={startPicker} id='startTime' name='startTime' onChange={(event) => { setEndTimes(generateEndTimes(event.target.value)); }} className='w-full p-2 appearance-none bg-transparent text-center' required >
                     {startTimes ? startTimes.map((time, index) => (
                         <option key={`start_time${index}`} value={time}>{time}</option>
                     )) : <option disabled value=''>No available times</option>}
                 </select>
             </div>
             <div className='table-cell border-2'>
-                <select ref={endPicker} id='endTime' name='endTime' className='w-full p-2 appearance-none bg-transparent text-center'>
+                <select ref={endPicker} id='endTime' name='endTime' className='w-full p-2 appearance-none bg-transparent text-center' required >
                     {endTimes ? endTimes.map((time, index) => (
                         <option key={`end_time${index}`} value={time}>{time}</option>
                     )) : <option disabled value=''>No available times</option>}
                 </select>
             </div>
             <div className='table-cell border-2'>
-                <textarea name='comments' id='comments' spellCheck={false} defaultValue={defaultData.comments} className='w-full p-4 align-middle text-center bg-transparent' disabled={submitting} />
+                <textarea name='address' id='address' spellCheck={false} defaultValue={defaultData.address} placeholder='Enter your desired address' className='w-full p-4 align-middle text-center bg-transparent' disabled={submitting} required />
+            </div>
+            <div className='table-cell border-2'>
+                <textarea name='comments' id='comments' spellCheck={false} defaultValue={defaultData.comments} placeholder='Enter any comments' className='w-full p-4 align-middle text-center bg-transparent' disabled={submitting} />
             </div>
             <div className='table-cell p-2 border-2'>
                 <div className='grid grid-cols-2'>

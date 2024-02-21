@@ -11,7 +11,7 @@ function FAQ() {
             <h3 className='p-5 text-red-600'>Find the Answers</h3>
             <p className='mb-32 text-red-600'>There are always a lot of questions when it comes to fitness. 
                 Below are answers to some of the most common questions I’ve received. 
-                There are obviously a lot more questions, so feel free to get in touch with me and ask away.
+                There are obviously a lot more questions, so feel free to get in touch through the contact page and ask away.
             </p>
                 
             <Image src={outdoorExercise} alt='Outdoor Exercise' className='w-full' />
