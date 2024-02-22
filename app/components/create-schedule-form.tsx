@@ -2,6 +2,7 @@
 
 import { useFormState } from 'react-dom';
 import { useRef, useEffect, useState } from 'react';
+import { redirect } from 'next/navigation';
 import { generateStartTimes, addSchedules } from '@/app/lib/actions';
 import { addDays, parse, format } from 'date-fns';
 import { CircularProgress } from '@mui/material';
@@ -23,7 +24,7 @@ export default function CreateSchedules() {
         setStartTimes([]);
         setSubmitting(false);
 
-        return dispatch;
+        redirect('/schedules');
     }, undefined);
 
     function generateEndTimes(givenTime: string) {

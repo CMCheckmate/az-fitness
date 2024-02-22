@@ -7,9 +7,18 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { z } from 'zod';
-import { subHours, format } from 'date-fns';
+import { subHours, parse, format } from 'date-fns';
 import bcrypt from 'bcrypt';
 
+const excludedTimes = {
+    1: [['00:00', '06:00'], ['21:00', '24:00']],
+    2: [['00:00', '06:00'], ['01:00', '16:00'], ['21:00', '24:00']],
+    3: [['00:00', '06:00'], ['18:00', '24:00']],
+    4: [['00:00', '06:00'], ['11:00', '15:00'], ['21:00', '24:00']],
+    5: [['00:00', '06:00'], ['21:00', '24:00']],
+    6: [['00:00', '06:00'], ['21:00', '24:00']],
+    0: [['00:00', '06:00'], ['21:00', '24:00']],
+}
 const scheduleSchema = z.object({
     date: z.string(),
     startTime: z.string(),
@@ -96,14 +105,13 @@ export async function addSchedules(prevState: string | undefined, formData: Form
     }
     
     revalidatePath('/schedules');
-    redirect('/schedules');
 }
 
 export async function updateSchedule(prevState: string | undefined, scheduleID: string, formData: FormData) {
     const validatedFields = scheduleSchema.safeParse({
         date: formData.get('date'),
-        startTime: formData.get('startTime'),
-        endTime: formData.get('endTime'),
+        startTime: formData.get('start_time'),
+        endTime: formData.get('end_time'),
         address: formData.get('address'),
         comments: formData.get('comments')
     });
