@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { inter } from '@/app/components/fonts';
+import { use } from 'react';
 import { auth } from '@/auth';
 import Link from 'next/link';
 import Navigation from '@/app/components/navigation';
