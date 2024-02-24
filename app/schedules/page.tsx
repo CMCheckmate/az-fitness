@@ -6,7 +6,7 @@ import CreateSchedules from '@/app/components/create-schedule-form';
 import EditSchedules from '@/app/components/edit-schedule-form';
 import SignOut from '@/app/components/signout-button';
 
-export default async function SchedulePage() {
+export default function SchedulePage() {
     const session = use(auth());
     const schedules = use(getSchedules(session?.user));
     const scheduleTimes = use(getScheduleTimes());
