@@ -7,18 +7,9 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { z } from 'zod';
-import { subHours, parse, format } from 'date-fns';
+import { subMinutes, format } from 'date-fns';
 import bcrypt from 'bcrypt';
 
-const excludedTimes = {
-    1: [['00:00', '06:00'], ['21:00', '24:00']],
-    2: [['00:00', '06:00'], ['01:00', '16:00'], ['21:00', '24:00']],
-    3: [['00:00', '06:00'], ['18:00', '24:00']],
-    4: [['00:00', '06:00'], ['11:00', '15:00'], ['21:00', '24:00']],
-    5: [['00:00', '06:00'], ['21:00', '24:00']],
-    6: [['00:00', '06:00'], ['21:00', '24:00']],
-    0: [['00:00', '06:00'], ['21:00', '24:00']],
-}
 const scheduleSchema = z.object({
     date: z.string(),
     startTime: z.string(),
@@ -33,6 +24,26 @@ const signUpSchema = z.object({
     confirmPassword: z.string()
 });
 
+export async function getExcludedTimes() {
+    interface DateExclusions {
+        [key: string]: { start: string, end: string }[]
+    }
+    try {
+        const scheduleTimes = {} as DateExclusions;
+        const schedules = await sql`SELECT DATE(start_time), start_time, end_time FROM schedules ORDER BY start_time;`;
+        for (const schedule of schedules.rows) {
+            const date = format(schedule.date, 'yyyy-MM-dd');
+            if (!scheduleTimes[date]) {
+                scheduleTimes[date] = [];
+            }
+            scheduleTimes[date].push({start: format(schedule.start_time, 'HH:mm'), end: format(schedule.end_time, 'HH:mm')});
+        }
+        return scheduleTimes;
+    } catch (error) {
+        return {};
+    }
+}
+
 export async function generateStartTimes(date: string, currentTime: string = '00:00', startHour: number = 6, endHour: number = 21) {
     const times = [];
     const time = new Date(0);
@@ -43,7 +54,7 @@ export async function generateStartTimes(date: string, currentTime: string = '00
         while (time.getHours() < endHour || (time.getHours() == endHour && time.getMinutes() == 0)) {
             const initialTime = format(time, 'HH:mm');
             for (const schedule of schedules.rows) {
-                if (initialTime >= format(subHours(schedule.start_time, 0.5), 'HH:mm') && initialTime <= format(schedule.end_time, 'HH:mm')) {
+                if (initialTime >= format(subMinutes(schedule.start_time, 30), 'HH:mm') && initialTime <= format(schedule.end_time, 'HH:mm')) {
                     if (format(schedule.start_time, 'yyyy-MM-dd HH:mm') != format(`${date} ${currentTime}`, 'yyyy-MM-dd HH:mm')) {
                         time.setMinutes(time.getMinutes() + 30);
                         break;
@@ -66,10 +77,10 @@ export async function generateStartTimes(date: string, currentTime: string = '00
 export async function getSchedules(user: Session['user'] | undefined) {
     try {
         if (user?.status == 'administrator') {
-            const schedules = await sql`SELECT schedule_id, name, start_time, end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id;`;
+            const schedules = await sql`SELECT schedule_id, name, DATE(start_time), start_time, end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id;`;
             return schedules.rows;
         } else {
-            const schedules = await sql`SELECT schedule_id, start_time, end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email};`;
+            const schedules = await sql`SELECT schedule_id, DATE(start_time), start_time, end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email};`;
             return schedules.rows;
         }
     } catch (error) {
@@ -110,8 +121,8 @@ export async function addSchedules(prevState: string | undefined, formData: Form
 export async function updateSchedule(prevState: string | undefined, scheduleID: string, formData: FormData) {
     const validatedFields = scheduleSchema.safeParse({
         date: formData.get('date'),
-        startTime: formData.get('start_time'),
-        endTime: formData.get('end_time'),
+        startTime: formData.get('startTime'),
+        endTime: formData.get('endTime'),
         address: formData.get('address'),
         comments: formData.get('comments')
     });
@@ -120,7 +131,7 @@ export async function updateSchedule(prevState: string | undefined, scheduleID: 
         const { date, startTime, endTime, address, comments } = validatedFields.data;
 
         try {
-            await sql`UPDATE schedules SET start_time = ${`${date} ${startTime}`}, end_time = ${`${date} ${endTime}`}, address = ${address}, comments = ${comments} WHERE schedule_id = ${scheduleID};`;
+            await sql`UPDATE schedules SET startTime = ${`${date} ${startTime}`}, end_time = ${`${date} ${endTime}`}, address = ${address}, comments = ${comments} WHERE schedule_id = ${scheduleID};`;
         } catch (error) {
             return 'Database error: Failed to update schedule.';
         }

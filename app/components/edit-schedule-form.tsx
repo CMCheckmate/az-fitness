@@ -1,10 +1,10 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { useRef, useState, useEffect } from 'react';
-import { format, parse } from 'date-fns';
+import { useState } from 'react';
+import { subMinutes, addMinutes, format } from 'date-fns';
 import { redirect } from 'next/navigation';
-import { generateStartTimes, updateSchedule, deleteSchedule } from '@/app/lib/actions';
+import { updateSchedule, deleteSchedule } from '@/app/lib/actions';
 import { QueryResultRow } from '@vercel/postgres';
 import { CircularProgress } from '@mui/material';
 
@@ -14,22 +14,21 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
         start_time: string,
         end_time: string,
         address: string,
-        comments: string
+        comments: string,
+        schedules: { [key: string]: { [key: string]: string[] } }
     }
     const defaultData = {
         ...data,
-        date: format(data.start_time, 'yyyy-MM-dd'),
+        date: format(data.date, 'yyyy-MM-dd'),
         start_time: format(data.start_time, 'hh:mm a'),
-        end_time: format(data.end_time, 'hh:mm a')
+        end_time: format(data.end_time, 'hh:mm a'),
+        schedules: getScheduleTimes()
     } as Data;
-    const datePicker = useRef(null);
-    const startPicker = useRef(null);
-    const endPicker = useRef(null);
+    const [date, setDate] = useState<string>(defaultData.date);
+    const [chosenTimes, setChosenTimes] = useState<{ start: string, end: string }>({ start: defaultData.start_time, end: defaultData.end_time });
     const [action, setAction] = useState<string>();
-    const [submittable, setSubmittable] = useState<boolean>(true);
+    const [submitting, setSubmitting] = useState<boolean>(false);
     const [response, setResponse] = useState<string>();
-    const [startTimes, setStartTimes] = useState<string[]>();
-    const [endTimes, setEndTimes] = useState<string[]>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
         if (action == 'delete') {
             await deleteSchedule(data.schedule_id);
@@ -40,7 +39,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                     const dispatch = await updateSchedule(state, data.schedule_id, formData);
                     if (dispatch) {
                         setResponse(dispatch);
-                        setSubmittable(true);
+                        setSubmitting(false);
                         setAction('');
                         return dispatch;
                     } else {
@@ -49,69 +48,66 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                 }
             }
             setResponse('');
-            setSubmittable(true);
+            setSubmitting(false);
         }
     }, undefined);
 
-    function generateEndTimes(givenTime: string) {
-        const times = [];
-        if (startTimes && givenTime) {
-            const chosenTime = parse(givenTime, 'hh:mm a', new Date());
-            while (times.length < 2 / 0.5) {
-                chosenTime.setMinutes(chosenTime.getMinutes() + 30);
-                const time = format(chosenTime, 'hh:mm a');
-                times.push(time);
-                if (!startTimes.includes(time)) {
-                    break;
+    function getScheduleTimes(interval: number = 30, maxScheduleTime: number = 120) {
+        const date = format(data.start_time, 'yyyy-MM-dd');
+        const currentSchedules = {[date]: {}} as Data['schedules'];
+        const startTime = new Date(subMinutes(data.start_time, interval));
+        while (startTime < data.end_time || (startTime.getTime() == data.end_time.getTime() && format(addMinutes(data.end_time, interval), 'hh:mm a') in data.schedules[date])) {
+            if (!(startTime < data.start_time) || format(subMinutes(startTime, interval), 'hh:mm a') in data.schedules[date]) {
+                const initialTime = format(startTime, 'hh:mm a');
+                const time = new Date(startTime);
+                currentSchedules[date][initialTime] = [];
+                while (currentSchedules[date][initialTime].length < maxScheduleTime / interval) {
+                    time.setMinutes(time.getMinutes() + interval);
+                    const currentTime = format(time, 'hh:mm a');
+                    currentSchedules[date][initialTime].push(currentTime);
+                    if (time > data.end_time && !(currentTime in data.schedules[date])) {
+                        break;
+                    }
                 }
             }
-            (endPicker.current as unknown as HTMLSelectElement).selectedIndex = 0;
+            startTime.setMinutes(startTime.getMinutes() + interval);
         }
-        return times;
+        const newSchedules = { ...data.schedules };
+        const scheduleTimes = Object.keys(data.schedules[date]);
+        newSchedules[date] = {};
+        for (const time of scheduleTimes) {
+            const currentTime = new Date(`${date} ${time}`);
+            if (currentSchedules[date] && (currentTime > data.start_time)) {
+                for (const newTime of Object.keys(currentSchedules[date])) {
+                    newSchedules[date][newTime] = currentSchedules[date][newTime];
+                }
+                currentSchedules[date] = {};
+            }
+            newSchedules[date][time] = data.schedules[date][time];
+        }
+        if (currentSchedules[date]) {
+            newSchedules[date] = Object.assign(newSchedules[date], currentSchedules[date]);
+        }
+        return newSchedules;
     }
 
-    useEffect(() => {
-        if (action == 'edit') {
-            const initialise = async () => {
-                setStartTimes(await generateStartTimes(defaultData.date, defaultData.start_time));
-            };
-            initialise();
-        }
-    }, [action]);
-
-    useEffect(() => {
-        if (action == 'edit' && startTimes) {
-            const startIndex = (datePicker.current as unknown as HTMLInputElement).value == defaultData.date ? startTimes.indexOf(defaultData.start_time) : 0;
-            (startPicker.current as unknown as HTMLSelectElement).selectedIndex = startIndex;
-            setEndTimes(generateEndTimes(startTimes[startIndex]));
-        }
-    }, [startTimes]);
-
-    useEffect(() => {
-        if (action == 'edit' && endTimes && endTimes.includes(defaultData.end_time)) {
-            const endIndex = (datePicker.current as unknown as HTMLInputElement).value == defaultData.date ? endTimes.indexOf(defaultData.end_time) : 0;
-            (endPicker.current as unknown as HTMLSelectElement).selectedIndex = endIndex;
-            setSubmittable(true);
-        }
-    }, [endTimes])
-
     return (
-        <form action={dispatch} onSubmit={() => { setSubmittable(false); setResponse('Loading...') }} className={`${className} table-row text-red-400 font-bold`}>
+        <form action={dispatch} onSubmit={() => { setSubmitting(true); setResponse('Loading...') }} className={`${className} table-row text-red-400 font-bold`}>
             <div className='table-cell p-2 border-2 text-center'>{data.number}</div>
             {'name' in data && <div className='table-cell p-2 border-2'>{data.name}</div>}
             <div className='table-cell border-2'>
                 {
-                    action == 'edit' ?
-                    <input ref={datePicker} type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={async (event) => { setStartTimes(await generateStartTimes(event.target.value, defaultData.start_time)); }} className='w-full p-2 text-center bg-transparent' disabled={!submittable} required /> :
+                    action == 'edit' ? 
+                    <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={(event) => { const date = event.target.value in defaultData.schedules ? event.target.value : String(new Date(event.target.value).getDay()); setDate(date); if (date == defaultData.date) { setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }) } else { setChosenTimes({ start: Object.keys(defaultData.schedules[date])[0], end: Object.values(defaultData.schedules[date])[0][0] }) } }} className='w-full p-2 text-center bg-transparent' disabled={submitting} required /> :
                     <span className='w-full p-4 text-center bg-transparent'>{format(defaultData.date, 'dd/MM/yyyy')}</span>
                 }
             </div>
             <div className='table-cell border-2'>
                 {
                     action == 'edit' ?
-                    <select ref={startPicker} id='start_time' name='start_time' onChange={(event) => { setEndTimes(generateEndTimes(event.target.value)); }} className='w-full p-2 appearance-none bg-transparent text-center' required >
-                        {startTimes ? startTimes.map((time, index) => (
-                            <option key={`start_time${index}`} value={time}>{time}</option>
+                    <select id='startTime' name='startTime' value={chosenTimes.start} onChange={(event) => { setChosenTimes({ start: event.target.value, end: chosenTimes.end }); } } className='w-full p-2 appearance-none bg-transparent text-center' required >
+                        {defaultData.schedules[date] ? Object.keys(defaultData.schedules[date]).map((time, index) => (
+                            <option key={`start_time_${index + 1}`} value={time}>{time}</option>
                         )) : <option disabled value=''>No available times</option>}
                     </select> :
                     <span className='w-full p-4 text-center bg-transparent'>{defaultData.start_time}</span>
@@ -120,36 +116,36 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
             <div className='table-cell border-2'>
                 {
                     action == 'edit' ?
-                    <select ref={endPicker} id='end_time' name='end_time' className='w-full p-2 appearance-none bg-transparent text-center' required >
-                        {endTimes ? endTimes.map((time, index) => (
-                            <option key={`end_time${index}`} value={time}>{time}</option>
+                    <select id='endTime' name='endTime' value={chosenTimes.end} onChange={(event) => { setChosenTimes({ start: chosenTimes.start, end: event.target.value }); }} className='w-full p-2 appearance-none bg-transparent text-center' required >
+                        {defaultData.schedules[date][chosenTimes.start] ? Object.values(defaultData.schedules[date][chosenTimes.start]).map((time, index) => (
+                            <option key={`end_time_${index + 1}`} value={time}>{time}</option>
                         )) : <option disabled value=''>No available times</option>}
                     </select> : 
                     <span className='w-full p-4 text-center bg-transparent'>{defaultData.end_time}</span>
                 }
             </div>
             <div className='table-cell border-2'>
-                <textarea name='address' id='address' spellCheck={false} defaultValue={defaultData.address} placeholder='Enter session address' className='w-full p-4 align-middle text-center bg-transparent' disabled={!submittable || action != 'edit'} required />
+                <textarea name='address' id='address' spellCheck={false} defaultValue={defaultData.address} placeholder='Enter session address' className='w-full p-4 align-middle text-center bg-transparent' disabled={submitting || action != 'edit'} required />
             </div>
             <div className='table-cell border-2'>
-                <textarea name='comments' id='comments' spellCheck={false} defaultValue={defaultData.comments} placeholder='-' className='w-full p-4 align-middle text-center bg-transparent' disabled={!submittable || action != 'edit'} />
+                <textarea name='comments' id='comments' spellCheck={false} defaultValue={defaultData.comments} placeholder='-' className='w-full p-4 align-middle text-center bg-transparent' disabled={submitting || action != 'edit'} />
             </div>
             <div className='table-cell p-2 border-2'>
                 <div className='flex justify-center items-center'>
                     {
                         action == 'edit' &&
                             <div className='flex justify-center items-center'>
-                                <button type='submit' className='m-2 p-2 bg-green-600 rounded-md text-white font-bold' disabled={!submittable}>Change</button>
-                                <button type='button' onClick={() => { setAction('') }} className='m-2 p-2 bg-gray-400 rounded-md text-white font-bold' disabled={!submittable}>Cancel</button>
+                                <button type='submit' className='m-2 p-2 bg-green-600 rounded-md text-white font-bold' disabled={submitting}>Change</button>
+                                <button type='button' onClick={() => { setAction('') }} className='m-2 p-2 bg-gray-400 rounded-md text-white font-bold' disabled={submitting}>Cancel</button>
                             </div>
                     }
                     {
                         action != 'edit' &&
                             <div className='flex justify-center items-center'>
-                                <button type='button' onClick={() => { setAction('edit'); setSubmittable(false); }} className='m-2 p-2 bg-blue-600 rounded-md text-white font-bold'>Edit</button>
+                                <button type='button' onClick={() => { setAction('edit'); }} className='m-2 p-2 bg-blue-600 rounded-md text-white font-bold'>Edit</button>
                             </div>
                     }
-                    <button type='submit' onClick={() => { setAction('delete'); }} className='m-2 p-2 bg-red-600 rounded-md text-white font-bold' disabled={!submittable}>Delete</button>
+                    <button type='submit' onClick={() => { setAction('delete'); }} className='m-2 p-2 bg-red-600 rounded-md text-white font-bold' disabled={submitting}>Delete</button>
                 </div>
                 <div className='flex justify-center items-center col-span-2' aria-live="polite" aria-atomic="true">
                     {response && <p className="py-2 text-red-600">{response}</p>}
