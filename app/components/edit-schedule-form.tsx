@@ -53,11 +53,12 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     }, undefined);
 
     function getScheduleTimes(interval: number = 30, maxScheduleTime: number = 120) {
+        console.log(data);
         const date = format(data.start_time, 'yyyy-MM-dd');
         const currentSchedules = {[date]: {}} as Data['schedules'];
         const startTime = new Date(subMinutes(data.start_time, interval));
-        while (startTime < data.end_time || (startTime.getTime() == data.end_time.getTime() && Object.keys(data.schedules[date]).includes(format(addMinutes(data.end_time, interval), 'hh:mm a')))) {
-            if (!(startTime < data.start_time) || Object.keys(data.schedules[date]).includes(format(subMinutes(startTime, interval), 'hh:mm a'))) {
+        while (startTime < data.end_time || (startTime.getTime() == data.end_time.getTime() && format(addMinutes(data.end_time, interval), 'hh:mm a') in data.schedules[date])) {
+            if (!(startTime < data.start_time) || format(subMinutes(startTime, interval), 'hh:mm a') in data.schedules[date]) {
                 const initialTime = format(startTime, 'hh:mm a');
                 const time = new Date(startTime);
                 currentSchedules[date][initialTime] = [];
@@ -65,7 +66,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                     time.setMinutes(time.getMinutes() + interval);
                     const currentTime = format(time, 'hh:mm a');
                     currentSchedules[date][initialTime].push(currentTime);
-                    if (time > data.end_time && !Object.keys(data.schedules[date]).includes(currentTime)) {
+                    if (time > data.end_time && !(currentTime in data.schedules[date])) {
                         break;
                     }
                 }
@@ -98,7 +99,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
             <div className='table-cell border-2'>
                 {
                     action == 'edit' ? 
-                        <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={(event) => { const date = Object.keys(defaultData.schedules).includes(event.target.value) ? event.target.value : String(new Date(event.target.value).getDay()); setDate(date); if (date == defaultData.date) { setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }) } else { setChosenTimes({ start: Object.keys(defaultData.schedules[date])[0], end: Object.values(defaultData.schedules[date])[0][0] }) } }} className='w-full p-2 text-center bg-transparent' disabled={submitting} required /> :
+                    <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={(event) => { const date = event.target.value in defaultData.schedules ? event.target.value : String(new Date(event.target.value).getDay()); setDate(date); if (date == defaultData.date) { setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }) } else { setChosenTimes({ start: Object.keys(defaultData.schedules[date])[0], end: Object.values(defaultData.schedules[date])[0][0] }) } }} className='w-full p-2 text-center bg-transparent' disabled={submitting} required /> :
                     <span className='w-full p-4 text-center bg-transparent'>{format(defaultData.date, 'dd/MM/yyyy')}</span>
                 }
             </div>
