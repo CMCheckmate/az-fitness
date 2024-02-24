@@ -53,8 +53,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     }, undefined);
 
     function getScheduleTimes(interval: number = 30, maxScheduleTime: number = 120) {
-        return data.schedules;
-        const date = format(data.start_time, 'yyyy-MM-dd');
+        const date = format(data.date, 'yyyy-MM-dd');
         const currentSchedules = {[date]: {}} as Data['schedules'];
         const startTime = new Date(subMinutes(data.start_time, interval));
         while (startTime < data.end_time || (startTime.getTime() == data.end_time.getTime() && format(addMinutes(data.end_time, interval), 'hh:mm a') in data.schedules[date])) {
