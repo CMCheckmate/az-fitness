@@ -44,36 +44,6 @@ export async function getExcludedTimes() {
     }
 }
 
-export async function generateStartTimes(date: string, currentTime: string = '00:00', startHour: number = 6, endHour: number = 21) {
-    const times = [];
-    const time = new Date(0);
-    time.setHours(startHour, 0);
-
-    try {
-        const schedules = await sql`SELECT start_time, end_time FROM schedules WHERE DATE(start_time) = ${date};`;
-        while (time.getHours() < endHour || (time.getHours() == endHour && time.getMinutes() == 0)) {
-            const initialTime = format(time, 'HH:mm');
-            for (const schedule of schedules.rows) {
-                if (initialTime >= format(subMinutes(schedule.start_time, 30), 'HH:mm') && initialTime <= format(schedule.end_time, 'HH:mm')) {
-                    if (format(schedule.start_time, 'yyyy-MM-dd HH:mm') != format(`${date} ${currentTime}`, 'yyyy-MM-dd HH:mm')) {
-                        time.setMinutes(time.getMinutes() + 30);
-                        break;
-                    }
-                }
-            }
-            
-            if (initialTime == format(time, 'HH:mm')) {
-                times.push(format(time, 'hh:mm a'));
-                time.setMinutes(time.getMinutes() + 30);
-            }
-        }
-
-        return times;
-    } catch(error) {
-        return [];
-    }
-}
-
 export async function getSchedules(user: Session['user'] | undefined) {
     try {
         if (user?.status == 'administrator') {
