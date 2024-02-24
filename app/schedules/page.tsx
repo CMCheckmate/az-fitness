@@ -9,7 +9,7 @@ export default async function SchedulePage() {
     const session = await auth();
     const schedules = await getSchedules(session?.user);
     const scheduleTimes = await getScheduleTimes();
-    console.log(scheduleTimes);
+
     async function getScheduleTimes(
         interval: number = 30,
         dayExclusions: { [key: number]: { start: string, end: string, excluded: { start: string, end: string }[] } } = {
