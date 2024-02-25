@@ -1,4 +1,3 @@
-import { use } from 'react';
 import { auth } from '@/auth';
 import SignOut from '@/app/components/signout-button';
 import AccountForm from '@/app/components/account-form';
