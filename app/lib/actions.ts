@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { z } from 'zod';
-import { subMinutes, format } from 'date-fns';
+import { format } from 'date-fns';
 import bcrypt from 'bcrypt';
 
 const scheduleSchema = z.object({
@@ -36,7 +36,7 @@ export async function getExcludedTimes() {
             if (!scheduleTimes[date]) {
                 scheduleTimes[date] = [];
             }
-            scheduleTimes[date].push({start: format(schedule.start_time, 'HH:mm'), end: format(schedule.end_time, 'HH:mm')});
+            scheduleTimes[date].push({start: format(new Date(schedule.start_time), 'HH:mm'), end: format(new Date(schedule.end_time), 'HH:mm')});
         }
         return scheduleTimes;
     } catch (error) {
