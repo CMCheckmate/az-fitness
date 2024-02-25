@@ -47,10 +47,10 @@ export async function getExcludedTimes() {
 export async function getSchedules(user: Session['user'] | undefined) {
     try {
         if (user?.status == 'administrator') {
-            const schedules = await sql`SELECT schedule_id, name, DATE(start_time), start_time, end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id;`;
+            const schedules = await sql`SELECT schedule_id, name, TO_CHAR(start_time, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id;`;
             return schedules.rows;
         } else {
-            const schedules = await sql`SELECT schedule_id, DATE(start_time), start_time, end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email};`;
+            const schedules = await sql`SELECT schedule_id, TO_CHAR(start_time, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email};`;
             return schedules.rows;
         }
     } catch (error) {

@@ -2,7 +2,7 @@
 
 import { useFormState } from 'react-dom';
 import { useState } from 'react';
-import { subMinutes, addMinutes, format } from 'date-fns';
+import { subMinutes, addMinutes, parse, format } from 'date-fns';
 import { redirect } from 'next/navigation';
 import { updateSchedule, deleteSchedule } from '@/app/lib/actions';
 import { QueryResultRow } from '@vercel/postgres';
@@ -19,9 +19,9 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     }
     const defaultData = {
         ...data,
-        date: format(data.date, 'yyyy-MM-dd'),
-        start_time: format(data.start_time, 'hh:mm a'),
-        end_time: format(data.end_time, 'hh:mm a'),
+        // date: format(data.date, 'yyyy-MM-dd'),
+        // start_time: format(new Date(data.start_time), 'hh:mm a'),
+        // end_time: format(new Date(data.end_time), 'hh:mm a'),
         schedules: getScheduleTimes()
     } as Data;
     const [date, setDate] = useState<string>(defaultData.date);
@@ -53,10 +53,12 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     }, undefined);
 
     function getScheduleTimes(interval: number = 30, maxScheduleTime: number = 120) {
-        const date = format(data.date, 'yyyy-MM-dd');
+        const date = data.date;
         const currentSchedules = {[date]: {}} as Data['schedules'];
-        const startTime = new Date(subMinutes(data.start_time, interval));
-        while (startTime < data.end_time || (startTime.getTime() == data.end_time.getTime() && format(addMinutes(data.end_time, interval), 'hh:mm a') in data.schedules[date])) {
+        const startParse = parse(data.start_time, 'hh:mm a', new Date());
+        const endTime = parse(data.end_time, 'hh:mm a', new Date());
+        const startTime = new Date(subMinutes(startParse, interval));
+        while (startTime < endTime || (startTime.getTime() == endTime.getTime() && format(addMinutes(endTime, interval), 'hh:mm a') in data.schedules[date])) {
             if (!(startTime < data.start_time) || format(subMinutes(startTime, interval), 'hh:mm a') in data.schedules[date]) {
                 const initialTime = format(startTime, 'hh:mm a');
                 const time = new Date(startTime);
@@ -65,7 +67,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                     time.setMinutes(time.getMinutes() + interval);
                     const currentTime = format(time, 'hh:mm a');
                     currentSchedules[date][initialTime].push(currentTime);
-                    if (time > data.end_time && !(currentTime in data.schedules[date])) {
+                    if (time > endTime && !(currentTime in data.schedules[date])) {
                         break;
                     }
                 }
@@ -76,8 +78,8 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
         const scheduleTimes = Object.keys(data.schedules[date]);
         newSchedules[date] = {};
         for (const time of scheduleTimes) {
-            const currentTime = new Date(`${date} ${time}`);
-            if (currentSchedules[date] && (currentTime > data.start_time)) {
+            const currentTime = parse(time, 'hh:mm a', new Date());
+            if (currentSchedules[date] && currentTime > startParse) {
                 for (const newTime of Object.keys(currentSchedules[date])) {
                     newSchedules[date][newTime] = currentSchedules[date][newTime];
                 }
