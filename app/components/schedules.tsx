@@ -67,6 +67,10 @@ export function SchedulesSkeleton() {
 
 export default async function Schedules({ session }: { session: Session | null}) {
     const schedules = await getSchedules(session?.user);
+    for (const schedule of schedules) {
+        console.log(format(schedule.start_time, 'hh:mm a'));
+        console.log(format(schedule.end_time, 'hh:mm a'));
+    }
     const scheduleTimes = await getScheduleTimes();
 
     async function getScheduleTimes(

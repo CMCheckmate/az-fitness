@@ -20,8 +20,8 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     const defaultData = {
         ...data,
         date: format(data.date, 'yyyy-MM-dd'),
-        start_time: format(new Date(data.start_time), 'hh:mm a'),
-        end_time: format(new Date(data.end_time), 'hh:mm a'),
+        start_time: format(data.start_time, 'hh:mm a'),
+        end_time: format(data.end_time, 'hh:mm a'),
         schedules: getScheduleTimes()
     } as Data;
     const [date, setDate] = useState<string>(defaultData.date);
