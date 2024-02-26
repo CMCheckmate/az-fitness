@@ -14,7 +14,6 @@ export function SchedulesSkeleton() {
                     <thead className='border-2'>
                         <tr className='divide-x-2 bg-red-600'>
                             <th className='table-cell p-2 text-center text-l text-white font-bold'>Session Number</th>
-                            {/* {session?.user.status == 'administrator' && <th className='table-cell text-center p-2 border-2 text-l text-white font-bold'>Name</th>} */}
                             <th className='table-cell p-2 text-center text-l text-white font-bold'>Date</th>
                             <th className='table-cell p-2 text-center text-l text-white font-bold'>Start Time</th>
                             <th className='table-cell p-2 text-center text-l text-white font-bold'>End Time</th>
@@ -33,31 +32,6 @@ export function SchedulesSkeleton() {
                             <td>-</td>
                             <td>-</td>
                         </tr>
-                        {/* {schedules && schedules.map((schedule, index) => (
-                    <tr key={`schedule_${index}`} className={`${index % 2 != 0 && 'bg-gray-300'} divide-x-2 text-red-400 font-bold`}>
-                        <td className='text-center'>
-                            {index + 1}
-                        </td>
-                        <td className='p-4 text-center'>
-                            {format(schedule.start_time, 'dd/MM/yyyy')}
-                        </td>
-                        <td className='p-4 text-center'>
-                            {format(schedule.start_time, 'hh:mm a')}
-                        </td>
-                        <td className='p-4 text-center'>
-                            {format(schedule.end_time, 'hh:mm a')}
-                        </td>
-                        <td className='w-max-64 p-4 text-center'>
-                            {schedule.address}
-                        </td>
-                        <td className='w-max-64 p-4 text-center'>
-                            {schedule.comments}
-                        </td>
-                        <td>
-                            <button type='button' className='m-2 p-2 bg-blue-600 rounded-md text-white font-bold'>Edit</button>
-                        </td>
-                    </tr>
-                ))} */}
                     </tbody>
                 </table>
             </div>
@@ -73,9 +47,9 @@ export default async function Schedules({ session }: { session: Session | null})
         interval: number = 30,
         dayExclusions: { [key: number]: { start: string, end: string, excluded: { start: string, end: string }[] } } = {
             1: { start: '06:00', end: '21:00', excluded: [] },
-            2: { start: '06:00', end: '21:00', excluded: [{ start: '13:00', end: '16:00' }] },
-            3: { start: '06:00', end: '18:00', excluded: [{ start: '13:00', end: '16:00' }] },
-            4: { start: '06:00', end: '21:00', excluded: [{ start: '11:00', end: '15:00' }] },
+            2: { start: '06:00', end: '21:00', excluded: [{ start: '13:30', end: '16:00' }] },
+            3: { start: '06:00', end: '18:00', excluded: [{ start: '13:30', end: '16:00' }] },
+            4: { start: '06:00', end: '21:00', excluded: [{ start: '11:30', end: '15:00' }] },
             5: { start: '06:00', end: '21:00', excluded: [] },
             6: { start: '06:00', end: '21:00', excluded: [] },
             0: { start: '06:00', end: '21:00', excluded: [] }
@@ -113,6 +87,7 @@ export default async function Schedules({ session }: { session: Session | null})
         }
         const scheduleTimes = {} as ScheduleTimes;
         for (const [date, times] of Object.entries(startTimes)) {
+            const day = /^\d+$/.test(date) ? Number(date) : parse(date, 'yyyy-MM-dd', new Date()).getDay();
             scheduleTimes[date] = {};
             for (const time of times) {
                 scheduleTimes[date][time] = [];
@@ -121,7 +96,7 @@ export default async function Schedules({ session }: { session: Session | null})
                     initialTime.setMinutes(initialTime.getMinutes() + interval);
                     const currentTime = format(initialTime, 'hh:mm a');
                     scheduleTimes[date][time].push(currentTime);
-                    if (!startTimes[date].includes(currentTime)) {
+                    if (!startTimes[date].includes(currentTime) && format(initialTime, 'HH:mm') <= dayExclusions[day].end) {
                         break;
                     }
                 }

@@ -19,10 +19,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     }
     const defaultData = {
         ...data,
-        // date: format(data.date, 'yyyy-MM-dd'),
-        // start_time: format(new Date(data.start_time), 'hh:mm a'),
-        // end_time: format(new Date(data.end_time), 'hh:mm a'),
-        schedules: getScheduleTimes()
+        schedules: getScheduleTimes(data.date)
     } as Data;
     const [date, setDate] = useState<string>(defaultData.date);
     const [chosenTimes, setChosenTimes] = useState<{ start: string, end: string }>({ start: defaultData.start_time, end: defaultData.end_time });
@@ -52,8 +49,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
         }
     }, undefined);
 
-    function getScheduleTimes(interval: number = 30, maxScheduleTime: number = 120) {
-        const date = data.date;
+    function getScheduleTimes(date: string, interval: number = 30, maxScheduleTime: number = 120) {
         const currentSchedules = {[date]: {}} as Data['schedules'];
         const startParse = parse(data.start_time, 'hh:mm a', new Date());
         const endTime = parse(data.end_time, 'hh:mm a', new Date());

@@ -58,6 +58,19 @@ export async function getSchedules(user: Session['user'] | undefined) {
     }
 }
 
+async function validateSchedule(startDateTime: string) {
+    try {
+        const clashes = await sql`SELECT * FROM schedules WHERE ${startDateTime} BETWEEN start_time AND end_time AND start_time != ${startDateTime}`;
+        if (clashes.rows.length == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        return error;
+    }
+}
+
 export async function addSchedules(prevState: string | undefined, formData: FormData) {
     try {
         const session = await auth();
@@ -71,13 +84,13 @@ export async function addSchedules(prevState: string | undefined, formData: Form
 
         if (validatedFields.success) {
             const { date, startTime, endTime, address, comments } = validatedFields.data;
-
-            try {
-                await sql`INSERT INTO schedules (user_id, start_time, end_time, address, comments)
+            
+                try {
+                    await sql`INSERT INTO schedules (user_id, start_time, end_time, address, comments)
             VALUES ((SELECT user_id FROM users WHERE email = ${session?.user.email}), ${`${date} ${startTime}`}, ${`${date} ${endTime}`}, ${address}, ${comments});`;
-            } catch (error) {
-                return 'Database error: Failed to add schedule.';
-            }
+                } catch (error) {
+                    return 'Database error. Failed to add schedule.';
+                }
         } else {
             return 'Invalid entries. Failed to add schedule.';
         }
@@ -100,10 +113,14 @@ export async function updateSchedule(prevState: string | undefined, scheduleID: 
     if (validatedFields.success) {
         const { date, startTime, endTime, address, comments } = validatedFields.data;
 
-        try {
-            await sql`UPDATE schedules SET startTime = ${`${date} ${startTime}`}, end_time = ${`${date} ${endTime}`}, address = ${address}, comments = ${comments} WHERE schedule_id = ${scheduleID};`;
-        } catch (error) {
-            return 'Database error: Failed to update schedule.';
+        if (await validateSchedule(`${date} ${startTime}`)) {
+            try {
+                await sql`UPDATE schedules SET start_time = ${`${date} ${startTime}`}, end_time = ${`${date} ${endTime}`}, address = ${address}, comments = ${comments} WHERE schedule_id = ${scheduleID};`;
+            } catch (error) {
+                return 'Database error: Failed to update schedule.';
+            }
+        } else {
+            return 'Schedule clash detected. Failed to add schedule.';
         }
     } else {
         return 'Invalid entries. Failed to update schedule.';
