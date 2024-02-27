@@ -1,16 +1,13 @@
 const { db }  = require('@vercel/postgres');
-const { format } = require('date-fns');
 const bcrypt = require('bcrypt');
 const { users, schedules } = require('../app/lib/data.js');
-
-const currentDate = format(new Date(), 'yyyy-MM-dd');
 
 async function seedUsers(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
         const createTable = await client.sql`
-            CREATE OR REPLACE FUNCTION create_user_status()
+            CREATE OR REPLACE FUNCTION create_enums()
             RETURNS VOID AS $$
             BEGIN
                 IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_status') THEN
@@ -18,7 +15,7 @@ async function seedUsers(client) {
                 END IF;
             END;
             $$ LANGUAGE plpgsql;
-            SELECT create_user_status();
+            SELECT create_enums();
 
             CREATE TABLE IF NOT EXISTS users (
                 user_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -26,7 +23,7 @@ async function seedUsers(client) {
                 email VARCHAR(45) NOT NULL UNIQUE,
                 password TEXT NOT NULL,
                 status user_status NOT NULL,
-                date DATE NOT NULL
+                signup_date DATE NOT NULL
             );
         `;
 
@@ -35,8 +32,8 @@ async function seedUsers(client) {
                 const hashedPassword = await bcrypt.hash(user.password, 10);
 
                 return client.sql`
-                    INSERT INTO users (name, email, password, status, date)
-                    VALUES (${user.name}, ${user.email}, ${hashedPassword}, ${user.status}, ${currentDate})
+                    INSERT INTO users (name, email, password, status, signup_date)
+                    VALUES (${user.name}, ${user.email}, ${hashedPassword}, ${user.status}, ${user.signUpDate})
                     ON CONFLICT (email) DO NOTHING;
                 `;
             }),
@@ -59,8 +56,9 @@ async function seedSchedules(client) {
         const createTable = await client.sql`CREATE TABLE IF NOT EXISTS schedules (
                 schedule_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
                 user_id UUID DEFAULT uuid_generate_v4() NOT NULL,
-                start_time TIMESTAMP NOT NULL UNIQUE,
-                end_time TIMESTAMP NOT NULL UNIQUE,
+                date DATE NOT NULL,
+                start_time TIME NOT NULL,
+                end_time TIME NOT NULL,
                 address VARCHAR(95),
                 comments VARCHAR(45),
                 CONSTRAINT user_id
@@ -74,8 +72,8 @@ async function seedSchedules(client) {
         const insertedSchedules = await Promise.all(
             schedules.map(async (schedule) => {
                 return client.sql`
-                    INSERT INTO schedules (user_id, start_time, end_time, address, comments)
-                    VALUES ((SELECT user_id FROM users WHERE email = ${schedule.email}), ${schedule.startTime}, ${schedule.endTime}, ${schedule.address}, ${schedule.comment})
+                    INSERT INTO schedules (user_id, date, start_time, end_time, address, comments)
+                    VALUES ((SELECT user_id FROM users WHERE email = ${schedule.email}), ${schedule.date}, ${schedule.startTime}, ${schedule.endTime}, ${schedule.address}, ${schedule.comment})
                     ON CONFLICT DO NOTHING;
                 `;
             }),

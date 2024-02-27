@@ -7,7 +7,6 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { z } from 'zod';
-import { format } from 'date-fns';
 import bcrypt from 'bcrypt';
 
 const scheduleSchema = z.object({
@@ -30,13 +29,12 @@ export async function getExcludedTimes() {
     }
     try {
         const scheduleTimes = {} as DateExclusions;
-        const schedules = await sql`SELECT DATE(start_time), start_time, end_time FROM schedules ORDER BY start_time;`;
+        const schedules = await sql`SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH24:MI') AS start_time, TO_CHAR(end_time, 'HH24:MI') AS end_time FROM schedules ORDER BY start_time;`;
         for (const schedule of schedules.rows) {
-            const date = format(schedule.date, 'yyyy-MM-dd');
-            if (!scheduleTimes[date]) {
-                scheduleTimes[date] = [];
+            if (!scheduleTimes[schedule.date]) {
+                scheduleTimes[schedule.date] = [];
             }
-            scheduleTimes[date].push({start: format(new Date(schedule.start_time), 'HH:mm'), end: format(new Date(schedule.end_time), 'HH:mm')});
+            scheduleTimes[schedule.date].push({ start: schedule.start_time, end: schedule.end_time });
         }
         return scheduleTimes;
     } catch (error) {
@@ -47,10 +45,10 @@ export async function getExcludedTimes() {
 export async function getSchedules(user: Session['user'] | undefined) {
     try {
         if (user?.status == 'administrator') {
-            const schedules = await sql`SELECT schedule_id, name, TO_CHAR(start_time, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id;`;
+            const schedules = await sql`SELECT schedule_id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id;`;
             return schedules.rows;
         } else {
-            const schedules = await sql`SELECT schedule_id, TO_CHAR(start_time, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email};`;
+            const schedules = await sql`SELECT schedule_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email};`;
             return schedules.rows;
         }
     } catch (error) {
@@ -58,9 +56,9 @@ export async function getSchedules(user: Session['user'] | undefined) {
     }
 }
 
-async function validateSchedule(startDateTime: string) {
+async function validateSchedule(startTime: string, scheduleID: string) {
     try {
-        const clashes = await sql`SELECT * FROM schedules WHERE ${startDateTime} BETWEEN start_time AND end_time AND start_time != ${startDateTime}`;
+        const clashes = await sql`SELECT * FROM schedules WHERE ${startTime} BETWEEN start_time AND end_time AND schedule_id != ${scheduleID};`;
         if (clashes.rows.length == 0) {
             return true;
         } else {
@@ -84,28 +82,28 @@ export async function addSchedules(prevState: string | undefined, formData: Form
 
         if (validatedFields.success) {
             const { date, startTime, endTime, address, comments } = validatedFields.data;
-            
-                try {
-                    await sql`INSERT INTO schedules (user_id, start_time, end_time, address, comments)
-            VALUES ((SELECT user_id FROM users WHERE email = ${session?.user.email}), ${`${date} ${startTime}`}, ${`${date} ${endTime}`}, ${address}, ${comments});`;
-                } catch (error) {
-                    return 'Database error. Failed to add schedule.';
-                }
+
+            try {
+                await sql`INSERT INTO schedules (user_id, date, start_time, end_time, address, comments)
+            VALUES ((SELECT user_id FROM users WHERE email = ${session?.user.email}), ${date}, ${startTime}, ${endTime}, ${address}, ${comments});`;
+            } catch (error) {
+                return 'Database error. Failed to add schedule.';
+            }
         } else {
             return 'Invalid entries. Failed to add schedule.';
         }
     } catch (error) {
         return 'User session not detected. Try relogging in.';
     }
-    
+
     revalidatePath('/schedules');
 }
 
 export async function updateSchedule(prevState: string | undefined, scheduleID: string, formData: FormData) {
     const validatedFields = scheduleSchema.safeParse({
         date: formData.get('date'),
-        startTime: formData.get('startTime'),
-        endTime: formData.get('endTime'),
+        startTime: formData.get('start_time'),
+        endTime: formData.get('end_time'),
         address: formData.get('address'),
         comments: formData.get('comments')
     });
@@ -113,9 +111,9 @@ export async function updateSchedule(prevState: string | undefined, scheduleID: 
     if (validatedFields.success) {
         const { date, startTime, endTime, address, comments } = validatedFields.data;
 
-        if (await validateSchedule(`${date} ${startTime}`)) {
+        if (await validateSchedule(`${date} ${startTime}`, scheduleID)) {
             try {
-                await sql`UPDATE schedules SET start_time = ${`${date} ${startTime}`}, end_time = ${`${date} ${endTime}`}, address = ${address}, comments = ${comments} WHERE schedule_id = ${scheduleID};`;
+                await sql`UPDATE schedules SET date = ${date}, start_time = ${startTime}, end_time = ${endTime}, address = ${address}, comments = ${comments} WHERE schedule_id = ${scheduleID};`;
             } catch (error) {
                 return 'Database error: Failed to update schedule.';
             }
@@ -153,7 +151,7 @@ export async function signUp(prevState: string | undefined, formData: FormData) 
             const hashedPassword = await bcrypt.hash(password, 10);
 
             try {
-                await sql`INSERT INTO users(name, email, password, status, date) 
+                await sql`INSERT INTO users(name, email, password, status, signup_date) 
             VALUES(${name}, ${email}, ${hashedPassword}, ${'member'}, ${(new Date).toISOString().split('T')[0]});`;
             } catch (error) {
                 return 'Database error. Failed to add user.';
@@ -190,12 +188,11 @@ export async function sendEmailForm(prevState: string | undefined, formType: str
             formValues[key] = value;
         });
         formValues['formType'] = formType;
-        
+
         const headersList = headers();
         const domain = headersList.get('host') || '';
         const protocol = headersList.get('x-forwarded-proto') || '';
-        console.log(`${protocol}://${domain}/api/contact`);
-        
+
         const response = await fetch(`${protocol}://${domain}/api/contact`, {
             method: 'POST',
             body: JSON.stringify(formValues),

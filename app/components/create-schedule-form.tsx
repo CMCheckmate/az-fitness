@@ -10,7 +10,7 @@ import { CircularProgress } from '@mui/material';
 
 export default function CreateSchedules({ scheduleData }: { scheduleData: QueryResultRow }) {
     const scheduleForm = useRef(null);
-    const [date, setDate] = useState<string>(''); 
+    const [date, setDate] = useState<string>('');
     const [chosenTimes, setChosenTimes] = useState<{ start: string, end: string }>({ start: '', end: '' });
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [response, setResponse] = useState<string>();

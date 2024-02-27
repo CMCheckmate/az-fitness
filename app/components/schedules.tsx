@@ -1,5 +1,5 @@
 import { Session } from 'next-auth';
-import { subMinutes, parse, format } from 'date-fns';
+import { addMinutes, parse, format } from 'date-fns';
 import { getSchedules, getExcludedTimes } from '@/app/lib/actions';
 import CreateSchedules from '@/app/components/create-schedule-form';
 import EditSchedules from '@/app/components/edit-schedule-form';
@@ -39,70 +39,126 @@ export function SchedulesSkeleton() {
     );
 }
 
-export default async function Schedules({ session }: { session: Session | null}) {
+export default async function Schedules({ session }: { session: Session | null }) {
+    interface StartTimes {
+        [key: string]: string[]
+    };
+    interface ScheduleTimes {
+        [key: string]: StartTimes
+    };
+
+    const excludedDayTimes = {
+        1: { start: '06:00', end: '21:00', excluded: [] },
+        2: { start: '06:00', end: '21:00', excluded: [{ start: '13:30', end: '16:00' }] },
+        3: { start: '06:00', end: '18:00', excluded: [{ start: '13:30', end: '16:00' }] },
+        4: { start: '06:00', end: '21:00', excluded: [{ start: '11:30', end: '15:00' }] },
+        5: { start: '06:00', end: '21:00', excluded: [] },
+        6: { start: '06:00', end: '21:00', excluded: [] },
+        0: { start: '06:00', end: '21:00', excluded: [] }
+    } as { [key: number]: { start: string, end: string, excluded: { start: string, end: string }[] } };
+    const scheduleInterval = 30;
+    const maxScheduleLength = 120;
     const schedules = await getSchedules(session?.user);
     const scheduleTimes = await getScheduleTimes();
 
-    async function getScheduleTimes(
-        interval: number = 30,
-        dayExclusions: { [key: number]: { start: string, end: string, excluded: { start: string, end: string }[] } } = {
-            1: { start: '06:00', end: '21:00', excluded: [] },
-            2: { start: '06:00', end: '21:00', excluded: [{ start: '13:30', end: '16:00' }] },
-            3: { start: '06:00', end: '18:00', excluded: [{ start: '13:30', end: '16:00' }] },
-            4: { start: '06:00', end: '21:00', excluded: [{ start: '11:30', end: '15:00' }] },
-            5: { start: '06:00', end: '21:00', excluded: [] },
-            6: { start: '06:00', end: '21:00', excluded: [] },
-            0: { start: '06:00', end: '21:00', excluded: [] }
-        },
-        maxScheduleTime: number = 120
-    ) {
-        interface OptionTimes {
-            [key: string]: string[]
-        }
-        interface ScheduleTimes {
-            [key: string]: OptionTimes
-        }
-        const startTimes = {} as OptionTimes;
-        for (const [date, exclusions] of Object.entries(Object.assign(await getExcludedTimes(), dayExclusions))) {
+    async function getScheduleTimes() {
+        const startTimes = {} as StartTimes;
+        const scheduleTimes = {} as ScheduleTimes;
+
+        for (const [date, exclusions] of Object.entries(Object.assign(await getExcludedTimes(), excludedDayTimes))) {
+            const day = /^[0-6]+$/.test(date) ? Number(date) : parse(date, 'yyyy-MM-dd', new Date()).getDay();
+            const startTime = parse(excludedDayTimes[day].start, 'HH:mm', new Date());
+
             if (!startTimes[date]) {
                 startTimes[date] = [];
             }
-            const day = /^\d+$/.test(date) ? Number(date) : parse(date, 'yyyy-MM-dd', new Date()).getDay();
-            const time = new Date(0);
-            time.setHours(parse(dayExclusions[day].start, 'HH:mm', new Date()).getHours());
-            while (format(time, 'HH:mm') <= dayExclusions[day].end) {
-                const initialTime = format(time, 'HH:mm');
-                const exclusionList = 'excluded' in exclusions ? exclusions.excluded as { start: string; end: string; }[] : exclusions.concat(dayExclusions[day].excluded);
+            while (format(startTime, 'HH:mm') <= excludedDayTimes[day].end) {
+                const time = format(startTime, 'HH:mm');
+                const exclusionList = 'excluded' in exclusions ? exclusions.excluded as [] : exclusions.concat(excludedDayTimes[day].excluded);
+
                 for (const exclusion of exclusionList) {
-                    if (initialTime >= format(subMinutes(parse(exclusion.start, 'HH:mm', new Date()), interval), 'HH:mm') && initialTime <= exclusion.end) {
-                        time.setMinutes(time.getMinutes() + interval);
+                    if (format(addMinutes(startTime, scheduleInterval), 'HH:mm') >= exclusion.start && time <= exclusion.end) {
+                        startTime.setMinutes(startTime.getMinutes() + scheduleInterval);
                         break;
                     }
                 }
-                if (initialTime == format(time, 'HH:mm')) {
-                    startTimes[date].push(format(time, 'hh:mm a'));
-                    time.setMinutes(time.getMinutes() + interval);
+                if (format(startTime, 'HH:mm') == time) {
+                    startTimes[date].push(format(startTime, 'hh:mm a'));
+                    startTime.setMinutes(startTime.getMinutes() + scheduleInterval);
                 }
             }
         }
-        const scheduleTimes = {} as ScheduleTimes;
         for (const [date, times] of Object.entries(startTimes)) {
-            const day = /^\d+$/.test(date) ? Number(date) : parse(date, 'yyyy-MM-dd', new Date()).getDay();
+            const day = /^[0-6]+$/.test(date) ? Number(date) : parse(date, 'yyyy-MM-dd', new Date()).getDay();
+
             scheduleTimes[date] = {};
-            for (const time of times) {
-                scheduleTimes[date][time] = [];
-                const initialTime = parse(time, 'hh:mm a', new Date());
-                while (scheduleTimes[date][time].length < maxScheduleTime / interval) {
-                    initialTime.setMinutes(initialTime.getMinutes() + interval);
-                    const currentTime = format(initialTime, 'hh:mm a');
-                    scheduleTimes[date][time].push(currentTime);
-                    if (!startTimes[date].includes(currentTime) && format(initialTime, 'HH:mm') <= dayExclusions[day].end) {
-                        break;
-                    }
-                }
+            for (const startTime of times) {
+                scheduleTimes[date][startTime] = getEndTimes(startTime, day, startTimes[date]);
             }
         }
         return scheduleTimes;
+    }
+
+    function getEndTimes(startTime: string, day: number, startTimes: string[]) {
+        const endTimes = [];
+        const time = parse(startTime, 'hh:mm a', new Date());
+
+        while (endTimes.length < maxScheduleLength / scheduleInterval) {
+            time.setMinutes(time.getMinutes() + scheduleInterval);
+
+            const endTime = format(time, 'hh:mm a');
+
+            endTimes.push(endTime);
+            if (!startTimes.includes(endTime) && format(time, 'HH:mm') <= excludedDayTimes[day].end) {
+                break;
+            }
+        }
+        return endTimes;
+    }
+
+    function getSpecificSchedules(schedule: ScheduleTimes, date: string, start: string, end: string) {
+        const specificTimes = [];
+        const day = parse(date, 'yyyy-MM-dd', new Date()).getDay();
+        const startTime = parse(start, 'hh:mm a', new Date());
+        const startingTime = format(startTime, 'HH:mm');
+        const endingTime = format(parse(end, 'hh:mm a', new Date()), 'HH:mm');
+
+        if (startingTime != excludedDayTimes[day].start) {
+            startTime.setMinutes(startTime.getMinutes() - scheduleInterval);
+        }
+        while (format(startTime, 'HH:mm') <= endingTime) {
+            specificTimes.push(format(startTime, 'hh:mm a'));
+            startTime.setMinutes(startTime.getMinutes() + scheduleInterval);
+        }
+
+        const updatedSchedule = {} as StartTimes;
+        const specificSchedule = { ...schedule } as ScheduleTimes;
+        const startTimes = Object.keys(specificSchedule[date]);
+        const updatedStartTimes = startTimes.concat(specificTimes);
+
+        for (const [time, endTimes] of Object.entries(specificSchedule[date])) {
+            const startTime = parse(time, 'hh:mm a', new Date());
+            const starterTime = format(startTime, 'HH:mm');
+
+            if (!updatedSchedule[end] && (starterTime > startingTime) || time == startTimes[startTimes.length - 1]) {
+                if (time == startTimes[startTimes.length - 1]) {
+                    updatedSchedule[time] = endTimes;
+                }
+                for (const time of specificTimes) {
+                    if (format(parse(time, 'hh:mm a', new Date()), 'HH:mm') <= excludedDayTimes[day].end) {
+                        updatedSchedule[time] = getEndTimes(time, day, updatedStartTimes);
+                    }
+                }
+            }
+            if (starterTime < startingTime && format(addMinutes(startTime, scheduleInterval), 'HH:mm') >= startingTime) {
+                endTimes.concat(getEndTimes(endTimes[endTimes.length - 1], day, updatedStartTimes));
+            }
+            if (!updatedSchedule[time]) {
+                updatedSchedule[time] = endTimes;
+            }
+        }
+        specificSchedule[date] = updatedSchedule;
+        return specificSchedule;
     }
 
     return (
@@ -110,23 +166,23 @@ export default async function Schedules({ session }: { session: Session | null})
             <div className='m-5 flex flex-col items-center justify-center'>
                 <h2 className='p-5 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
 
-                <div className='table'>
-                    <div className='table-header-group border-2'>
-                        <div className='table-row bg-red-600'>
-                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Session Number</div>
-                            {session?.user.status == 'administrator' && <div className='table-cell text-center p-2 border-2 text-l text-white font-bold'>Name</div>}
-                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Date</div>
-                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Start Time</div>
-                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>End Time</div>
-                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Session Address</div>
-                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Comments</div>
-                            <div className='table-cell p-2 border-2 text-center text-l text-white font-bold'>Action</div>
+                <div className='table border-2'>
+                    <div className='table-header-group'>
+                        <div className='table-row divide-x-2 bg-red-600'>
+                            <div className='table-cell p-2 text-center text-l text-white font-bold'>Session Number</div>
+                            {session?.user.status == 'administrator' && <div className='table-cell text-center p-2 text-l text-white font-bold'>Name</div>}
+                            <div className='table-cell p-2 text-center text-l text-white font-bold'>Date</div>
+                            <div className='table-cell p-2 text-center text-l text-white font-bold'>Start Time</div>
+                            <div className='table-cell p-2 text-center text-l text-white font-bold'>End Time</div>
+                            <div className='table-cell p-2 text-center text-l text-white font-bold'>Session Address</div>
+                            <div className='table-cell p-2 text-center text-l text-white font-bold'>Comments</div>
+                            <div className='table-cell p-2 text-center text-l text-white font-bold'>Action</div>
                         </div>
                     </div>
 
-                    <div className='table-row-group border-2'>
+                    <div className='table-row-group'>
                         {schedules && schedules.map((schedule, index) => (
-                            <EditSchedules key={`row_${index + 1}`} data={{ ...schedule, number: index + 1, schedules: scheduleTimes }} className={`${index % 2 != 0 && 'bg-gray-300'}`} />
+                            <EditSchedules key={`row_${index + 1}`} data={{ ...schedule, number: index + 1, schedules: getSpecificSchedules(scheduleTimes, schedule.date, schedule.start_time, schedule.end_time) }} className={`${index % 2 != 0 && 'bg-gray-300'}`} />
                         ))}
                     </div>
                 </div>
