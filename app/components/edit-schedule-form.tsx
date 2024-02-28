@@ -81,7 +81,20 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                 }
             </div>
             <div className='table-cell'>
-                <textarea name='address' id='address' spellCheck={false} defaultValue={defaultData.address} placeholder='Enter session address' className='w-full p-4 align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} required />
+                {/* <textarea name='address' id='address' spellCheck={false} defaultValue={defaultData.address} placeholder='Enter session address' className='w-full p-4 align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} required /> */}
+                {
+                    action == 'edit' ?
+                        <div>
+                            <input type='text' name='address' list='addressList' spellCheck={false} maxLength={95} defaultValue={defaultData.address} placeholder='Enter your desired address' className='p-4 bg-transparent text-center' disabled={submitting || action != 'edit'} required />
+                            <datalist id='addressList'>
+                                <option value='252 Oteha Valley Road, Albany'>252 Oteha Valley Road, Albany</option>
+                                <option value='The Foundation 270 Oteha Valley Road, Albany'>The Foundation 270 Oteha Valley Road, Albany</option>
+                                <option value='C3/65 Greville Road, Pinehill'>C3/65 Greville Road, Pinehill</option>
+                                <option value='24 Tawa Drive, Albany'>24 Tawa Drive, Albany</option>
+                            </datalist>
+                        </div> :
+                        <span className='w-full p-4 bg-transparent'>{defaultData.address}</span>
+                }
             </div>
             <div className='table-cell'>
                 <textarea name='comments' id='comments' spellCheck={false} defaultValue={defaultData.comments} placeholder='-' className='w-full p-4 align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} />

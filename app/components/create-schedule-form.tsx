@@ -7,6 +7,7 @@ import { addSchedules } from '@/app/lib/actions';
 import { addDays, format } from 'date-fns';
 import { QueryResultRow } from '@vercel/postgres';
 import { CircularProgress } from '@mui/material';
+import Map from '@/app/components/map';
 
 export default function CreateSchedules({ scheduleData }: { scheduleData: QueryResultRow }) {
     const scheduleForm = useRef(null);
@@ -46,7 +47,18 @@ export default function CreateSchedules({ scheduleData }: { scheduleData: QueryR
                     )) : <option disabled value=''>No available times</option>}
                 </select>
                 <label htmlFor='address' className='mt-2 px-2 text-red-600'>Session Address</label>
-                <textarea name='address' id='address' spellCheck={false} maxLength={95} placeholder='Enter your desired address' className='mb-2 p-2 border-b-2' required />
+                {/* <textarea name='address' id='address' spellCheck={false} maxLength={95} placeholder='Enter your desired address' className='mb-2 p-2 border-b-2' required /> */}
+                <input type='text' name='address' list='addressList' spellCheck={false} maxLength={95} placeholder='Enter your desired address' className='mb-2 p-2 border-b-2' required />
+                <datalist id='addressList'>
+                    <option value='252 Oteha Valley Road, Albany'>252 Oteha Valley Road, Albany</option>
+                    <option value='The Foundation 270 Oteha Valley Road, Albany'>The Foundation 270 Oteha Valley Road, Albany</option>
+                    <option value='C3/65 Greville Road, Pinehill'>C3/65 Greville Road, Pinehill</option>
+                    <option value='24 Tawa Drive, Albany'>24 Tawa Drive, Albany</option>
+                </datalist>
+                <div className='flex justify-center items-center'>
+                    <Map />
+                </div>
+
                 <label htmlFor='comments' className='mt-2 px-2 text-red-600'>Comments</label>
                 <textarea name='comments' id='comments' placeholder='Enter any comments' className='mb-2 p-2 border-b-2' />
 

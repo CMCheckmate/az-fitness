@@ -16,11 +16,7 @@ function Contact() {
                 </div>
             </div>
 
-            <div className='p-20 flex justify-center items-center'>
-                <Map />
-            </div>
-
-            <div className='p-10 py-44 flex flex-col justify-center items-center bg-red-600'>
+            <div className='p-10 py-32 flex flex-col justify-center items-center bg-red-600'>
                 <h2 className='text-4xl text-white font-bold underline'>SOCIALS</h2>
                 <div className='p-10 grid grid-cols-4'>
                     <a target='_blank' href={'https://www.instagram.com/sorrylibrary/'} className='mx-10 flex justify-center items-center text-white hover:text-red-200'>
@@ -39,6 +35,12 @@ function Contact() {
                         <Image src={twitterX} alt='Twitter' className='w-min object-cover' />
                         <h3 className='text-xl font-bold'>Twitter</h3>
                     </a>
+                </div>
+            </div>
+
+            <div className='flex justify-center items-center bg-gray-100'>
+                <div className='p-20 w-3/4 flex justify-center items-center'>
+                    <Map />
                 </div>
             </div>
         </div>
