@@ -23,13 +23,19 @@ const signUpSchema = z.object({
     confirmPassword: z.string()
 });
 
-export async function getExcludedTimes() {
+export async function getExcludedTimes(dateTime: { date: string, time: string } | null = null) {
     interface DateExclusions {
         [key: string]: { start: string, end: string }[]
     }
+
     try {
         const scheduleTimes = {} as DateExclusions;
-        const schedules = await sql`SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH24:MI') AS start_time, TO_CHAR(end_time, 'HH24:MI') AS end_time FROM schedules ORDER BY start_time;`;
+        const schedules = dateTime ? await sql`SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH24:MI') AS start_time, TO_CHAR(end_time, 'HH24:MI') AS end_time FROM schedules WHERE date != ${dateTime.date} OR start_time != ${dateTime.time} ORDER BY date, start_time;` :
+            await sql`SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH24:MI') AS start_time, TO_CHAR(end_time, 'HH24:MI') AS end_time FROM schedules ORDER BY date, start_time;`
+        
+        if (dateTime) {
+            scheduleTimes[dateTime.date] = [];
+        }
         for (const schedule of schedules.rows) {
             if (!scheduleTimes[schedule.date]) {
                 scheduleTimes[schedule.date] = [];
@@ -44,13 +50,10 @@ export async function getExcludedTimes() {
 
 export async function getSchedules(user: Session['user'] | undefined) {
     try {
-        if (user?.status == 'administrator') {
-            const schedules = await sql`SELECT schedule_id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id;`;
-            return schedules.rows;
-        } else {
-            const schedules = await sql`SELECT schedule_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email};`;
-            return schedules.rows;
-        }
+        const schedules = user?.status == 'administrator' ? await sql`SELECT schedule_id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id;` :
+            await sql`SELECT schedule_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email};`;
+
+        return schedules.rows;
     } catch (error) {
         return [];
     }
@@ -58,7 +61,9 @@ export async function getSchedules(user: Session['user'] | undefined) {
 
 async function validateSchedule(date: string, startTime: string, scheduleID: string | null = null) {
     try {
-        const clashes = await sql`SELECT * FROM schedules WHERE date = ${date} AND ${startTime} BETWEEN start_time AND end_time${scheduleID && ` AND schedule_id != ${scheduleID}`};`;
+        const clashes = scheduleID ? await sql`SELECT * FROM schedules WHERE date = ${date} AND ${startTime} BETWEEN start_time AND end_time AND schedule_id != ${scheduleID};` : 
+            await sql`SELECT * FROM schedules WHERE date = ${date} AND ${startTime} BETWEEN start_time AND end_time;`;
+        
         if (clashes.rows.length == 0) {
             return true;
         } else {
@@ -151,6 +156,7 @@ export async function signUp(prevState: string | undefined, formData: FormData) 
 
     if (validatedFields.success) {
         const { name, email, password, confirmPassword } = validatedFields.data;
+
         if (password == confirmPassword) {
             const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -187,15 +193,15 @@ export async function authenticate(prevState: string | undefined, formData: Form
 
 export async function sendEmailForm(prevState: string | undefined, formType: string, formData: FormData) {
     try {
+        const headersList = headers();
+        const domain = headersList.get('host') || '';
+        const protocol = headersList.get('x-forwarded-proto') || '';
         const formValues: { [key: string]: any } = {};
+
         formData.forEach((value, key) => {
             formValues[key] = value;
         });
         formValues['formType'] = formType;
-
-        const headersList = headers();
-        const domain = headersList.get('host') || '';
-        const protocol = headersList.get('x-forwarded-proto') || '';
 
         const response = await fetch(`${protocol}://${domain}/api/contact`, {
             method: 'POST',

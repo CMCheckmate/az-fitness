@@ -59,13 +59,15 @@ export default async function Schedules({ session }: { session: Session | null }
     const scheduleInterval = 30;
     const maxScheduleLength = 120;
     const schedules = await getSchedules(session?.user);
-    const scheduleTimes = await getScheduleTimes();
+    const scheduleTimes = await Promise.all(schedules.map(async (schedule) => {
+        return await getScheduleTimes({ date: schedule.date, time: schedule.start_time });
+    }));
 
-    async function getScheduleTimes() {
+    async function getScheduleTimes(dateTime: { date: string, time: string } | null = null) {
         const startTimes = {} as StartTimes;
         const scheduleTimes = {} as ScheduleTimes;
 
-        for (const [date, exclusions] of Object.entries(Object.assign(await getExcludedTimes(), excludedDayTimes))) {
+        for (const [date, exclusions] of Object.entries(Object.assign(await getExcludedTimes(dateTime), excludedDayTimes))) {
             const day = /^[0-6]+$/.test(date) ? Number(date) : parse(date, 'yyyy-MM-dd', new Date()).getDay();
             const startTime = parse(excludedDayTimes[day].start, 'HH:mm', new Date());
 
@@ -93,7 +95,19 @@ export default async function Schedules({ session }: { session: Session | null }
 
             scheduleTimes[date] = {};
             for (const startTime of times) {
-                scheduleTimes[date][startTime] = getEndTimes(startTime, day, startTimes[date]);
+                const time = parse(startTime, 'hh:mm a', new Date());
+
+                scheduleTimes[date][startTime] = [];
+                while (scheduleTimes[date][startTime].length < maxScheduleLength / scheduleInterval) {
+                    time.setMinutes(time.getMinutes() + scheduleInterval);
+
+                    const endTime = format(time, 'hh:mm a');
+
+                    scheduleTimes[date][startTime].push(endTime);
+                    if (!startTimes[date].includes(endTime) && format(time, 'HH:mm') <= excludedDayTimes[day].end) {
+                        break;
+                    }
+                }
             }
         }
         return scheduleTimes;
@@ -116,50 +130,50 @@ export default async function Schedules({ session }: { session: Session | null }
         return endTimes;
     }
 
-    function getSpecificSchedules(schedule: ScheduleTimes, date: string, start: string, end: string) {
-        const specificTimes = [];
-        const day = parse(date, 'yyyy-MM-dd', new Date()).getDay();
-        const startTime = parse(start, 'hh:mm a', new Date());
-        const startingTime = format(startTime, 'HH:mm');
-        const endingTime = format(parse(end, 'hh:mm a', new Date()), 'HH:mm');
+    // function getSpecificSchedules(schedule: ScheduleTimes, date: string, start: string, end: string) {
+    //     const specificTimes = [];
+    //     const day = parse(date, 'yyyy-MM-dd', new Date()).getDay();
+    //     const startTime = parse(start, 'hh:mm a', new Date());
+    //     const startingTime = format(startTime, 'HH:mm');
+    //     const endingTime = format(parse(end, 'hh:mm a', new Date()), 'HH:mm');
 
-        if (startingTime != excludedDayTimes[day].start) {
-            startTime.setMinutes(startTime.getMinutes() - scheduleInterval);
-        }
-        while (format(startTime, 'HH:mm') <= endingTime) {
-            specificTimes.push(format(startTime, 'hh:mm a'));
-            startTime.setMinutes(startTime.getMinutes() + scheduleInterval);
-        }
+    //     if (startingTime != excludedDayTimes[day].start) {
+    //         startTime.setMinutes(startTime.getMinutes() - scheduleInterval);
+    //     }
+    //     while (format(startTime, 'HH:mm') <= endingTime) {
+    //         specificTimes.push(format(startTime, 'hh:mm a'));
+    //         startTime.setMinutes(startTime.getMinutes() + scheduleInterval);
+    //     }
 
-        const updatedSchedule = {} as StartTimes;
-        const specificSchedule = { ...schedule } as ScheduleTimes;
-        const startTimes = Object.keys(specificSchedule[date]);
-        const updatedStartTimes = startTimes.concat(specificTimes);
+    //     const updatedSchedule = {} as StartTimes;
+    //     const specificSchedule = { ...schedule } as ScheduleTimes;
+    //     const startTimes = Object.keys(specificSchedule[date]);
+    //     const updatedStartTimes = startTimes.concat(specificTimes);
 
-        for (const [time, endTimes] of Object.entries(specificSchedule[date])) {
-            const startTime = parse(time, 'hh:mm a', new Date());
-            const starterTime = format(startTime, 'HH:mm');
+    //     for (const [time, endTimes] of Object.entries(specificSchedule[date])) {
+    //         const startTime = parse(time, 'hh:mm a', new Date());
+    //         const starterTime = format(startTime, 'HH:mm');
 
-            if (!updatedSchedule[end] && (starterTime > startingTime) || time == startTimes[startTimes.length - 1]) {
-                if (time == startTimes[startTimes.length - 1]) {
-                    updatedSchedule[time] = endTimes;
-                }
-                for (const time of specificTimes) {
-                    if (format(parse(time, 'hh:mm a', new Date()), 'HH:mm') <= excludedDayTimes[day].end) {
-                        updatedSchedule[time] = getEndTimes(time, day, updatedStartTimes);
-                    }
-                }
-            }
-            if (starterTime < startingTime && format(addMinutes(startTime, scheduleInterval), 'HH:mm') >= startingTime) {
-                endTimes.concat(getEndTimes(endTimes[endTimes.length - 1], day, updatedStartTimes));
-            }
-            if (!updatedSchedule[time]) {
-                updatedSchedule[time] = endTimes;
-            }
-        }
-        specificSchedule[date] = updatedSchedule;
-        return specificSchedule;
-    }
+    //         if (!updatedSchedule[end] && (starterTime > startingTime) || time == startTimes[startTimes.length - 1]) {
+    //             if (time == startTimes[startTimes.length - 1]) {
+    //                 updatedSchedule[time] = endTimes;
+    //             }
+    //             for (const time of specificTimes) {
+    //                 if (format(parse(time, 'hh:mm a', new Date()), 'HH:mm') <= excludedDayTimes[day].end) {
+    //                     updatedSchedule[time] = getEndTimes(time, day, updatedStartTimes);
+    //                 }
+    //             }
+    //         }
+    //         if (starterTime < startingTime && format(addMinutes(startTime, scheduleInterval), 'HH:mm') >= startingTime) {
+    //             endTimes.concat(getEndTimes(endTimes[endTimes.length - 1], day, updatedStartTimes));
+    //         }
+    //         if (!updatedSchedule[time]) {
+    //             updatedSchedule[time] = endTimes;
+    //         }
+    //     }
+    //     specificSchedule[date] = updatedSchedule;
+    //     return specificSchedule;
+    // }
 
     return (
         <div>
@@ -182,7 +196,7 @@ export default async function Schedules({ session }: { session: Session | null }
 
                     <div className='table-row-group'>
                         {schedules && schedules.map((schedule, index) => (
-                            <EditSchedules key={`row_${index + 1}`} data={{ ...schedule, number: index + 1, schedules: getSpecificSchedules(scheduleTimes, schedule.date, schedule.start_time, schedule.end_time) }} className={`${index % 2 != 0 && 'bg-gray-300'}`} />
+                            <EditSchedules key={`row_${index + 1}`} data={{ ...schedule, number: index + 1, schedules: scheduleTimes[index] }} className={`${index % 2 != 0 && 'bg-gray-300'}`} />
                         ))}
                     </div>
                 </div>
@@ -192,7 +206,7 @@ export default async function Schedules({ session }: { session: Session | null }
                 session?.user.status == 'member' &&
                 <div className='m-5 flex justify-center items-center'>
                     <div className='w-1/2 p-10 shadow-lg'>
-                        <CreateSchedules scheduleData={scheduleTimes} />
+                        <CreateSchedules scheduleData={await getScheduleTimes()} />
                     </div>
                 </div>
             }

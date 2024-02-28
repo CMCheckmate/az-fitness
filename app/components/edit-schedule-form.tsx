@@ -17,6 +17,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
         comments: string,
         schedules: { [key: string]: { [key: string]: string[] } }
     }
+
     const defaultData = data as Data;
     const [date, setDate] = useState<string>(defaultData.date);
     const [chosenTimes, setChosenTimes] = useState<{ start: string, end: string }>({ start: defaultData.start_time, end: defaultData.end_time });
@@ -72,7 +73,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                 {
                     action == 'edit' ?
                         <select id='end_time' name='end_time' value={chosenTimes.end} onChange={(event) => { setChosenTimes({ start: chosenTimes.start, end: event.target.value }); }} className='w-full p-2 appearance-none bg-transparent text-center' required >
-                            {defaultData.schedules[date][chosenTimes.start] ? Object.values(defaultData.schedules[date][chosenTimes.start]).map((time, index) => (
+                            {defaultData.schedules[date] && defaultData.schedules[date][chosenTimes.start] ? Object.values(defaultData.schedules[date][chosenTimes.start]).map((time, index) => (
                                 <option key={`end_time_${index + 1}`} value={time}>{time}</option>
                             )) : <option disabled value=''>No available times</option>}
                         </select> :
