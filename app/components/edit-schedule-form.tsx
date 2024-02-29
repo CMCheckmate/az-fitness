@@ -51,11 +51,11 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
         <form action={dispatch} onSubmit={() => { setSubmitting(true); setResponse('Loading...') }} className={`${className} table-row divide-x-2 divide-y-2 text-red-400 text-center font-bold`}>
             <div className='table-cell border-t-2 p-2'>{data.number}</div>
             {'name' in data && <div className='table-cell p-2'>{data.name}</div>}
-            <div className='table-cell'>
+            <div className='table-cell min-w-min'>
                 {
                     action == 'edit' ?
-                        <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={(event) => { const date = event.target.value in defaultData.schedules ? event.target.value : String(new Date(event.target.value).getDay()); setDate(date); if (date == defaultData.date) { setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }) } else { setChosenTimes({ start: Object.keys(defaultData.schedules[date])[0], end: Object.values(defaultData.schedules[date])[0][0] }) } }} className='w-full p-2 bg-transparent' disabled={submitting} required /> :
-                        <span className='w-full p-4 bg-transparent'>{format(defaultData.date, 'dd/MM/yyyy')}</span>
+                        <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={(event) => { const date = event.target.value in defaultData.schedules ? event.target.value : String(new Date(event.target.value).getDay()); setDate(date); if (date == defaultData.date) { setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }) } else { setChosenTimes({ start: Object.keys(defaultData.schedules[date])[0], end: Object.values(defaultData.schedules[date])[0][0] }) } }} className='w-full p-2 bg-transparent text-center' disabled={submitting} required /> :
+                        <span className='w-full p-4 px-10 bg-transparent'>{format(defaultData.date, 'dd/MM/yyyy')}</span>
                 }
             </div>
             <div className='table-cell'>
@@ -85,7 +85,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                 {
                     action == 'edit' ?
                         <div>
-                            <input type='text' name='address' list='addressList' spellCheck={false} maxLength={95} defaultValue={defaultData.address} placeholder='Enter your desired address' className='p-4 bg-transparent text-center' disabled={submitting || action != 'edit'} required />
+                            <input type='text' name='address' list='addressList' maxLength={95} defaultValue={defaultData.address} placeholder='Enter your desired address' className='p-4 bg-transparent text-center' spellCheck={false} disabled={submitting || action != 'edit'} required />
                             <datalist id='addressList'>
                                 <option value='252 Oteha Valley Road, Albany'>252 Oteha Valley Road, Albany</option>
                                 <option value='The Foundation 270 Oteha Valley Road, Albany'>The Foundation 270 Oteha Valley Road, Albany</option>
@@ -93,28 +93,31 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                                 <option value='24 Tawa Drive, Albany'>24 Tawa Drive, Albany</option>
                             </datalist>
                         </div> :
-                        <span className='w-full p-4 bg-transparent'>{defaultData.address}</span>
+                        <textarea value={defaultData.address} placeholder='-' className='w-full p-4 px-10 resize-none align-middle bg-transparent text-center' spellCheck={false} readOnly />
                 }
             </div>
             <div className='table-cell'>
-                <textarea name='comments' id='comments' spellCheck={false} defaultValue={defaultData.comments} placeholder='-' className='w-full p-4 align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} />
+                <textarea name='comments' id='comments' maxLength={95} defaultValue={defaultData.comments} placeholder='-' className='w-full p-4 resize-none align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} />
             </div>
             <div className='table-cell p-2'>
                 <div className='flex justify-center items-center'>
                     {
                         action == 'edit' &&
                         <div className='flex justify-center items-center'>
-                            <button type='submit' className='m-2 p-2 bg-green-600 rounded-md text-white font-bold' disabled={submitting}>Change</button>
+                            <button type='submit' className='m-2 p-2 bg-green-600 rounded-md text-white font-bold' disabled={submitting}>Submit</button>
                             <button type='button' onClick={() => { setAction('') }} className='m-2 p-2 bg-gray-400 rounded-md text-white font-bold' disabled={submitting}>Cancel</button>
                         </div>
                     }
                     {
                         action != 'edit' &&
                         <div className='flex justify-center items-center'>
-                                <button type='button' onClick={() => { setAction('edit'); setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }); }} className='m-2 p-2 bg-blue-600 rounded-md text-white font-bold'>Edit</button>
+                                <button type='button' onClick={() => { setAction('edit'); setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }); }} className='m-2 p-2 bg-blue-600 rounded-md text-white font-bold'>Change</button>
                         </div>
                     }
-                    <button type='submit' onClick={() => { setAction('delete'); }} className='m-2 p-2 bg-red-600 rounded-md text-white font-bold' disabled={submitting}>Delete</button>
+                    {
+                        action != 'edit' && 
+                        <button type='submit' onClick={() => { setAction('delete'); }} className='m-2 p-2 bg-red-600 rounded-md text-white font-bold' disabled={submitting}>Delete</button>
+                    }
                 </div>
                 <div className='flex justify-center items-center col-span-2' aria-live="polite" aria-atomic="true">
                     {response && <p className="py-2 text-red-600">{response}</p>}

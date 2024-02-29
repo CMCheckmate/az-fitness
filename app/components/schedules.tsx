@@ -13,7 +13,7 @@ export function SchedulesSkeleton() {
                 <table className='border-2'>
                     <thead className='border-2'>
                         <tr className='divide-x-2 bg-red-600'>
-                            <th className='table-cell p-2 text-center text-l text-white font-bold'>Session Number</th>
+                            <th className='table-cell p-2 text-center text-l text-white font-bold'>Number</th>
                             <th className='table-cell p-2 text-center text-l text-white font-bold'>Date</th>
                             <th className='table-cell p-2 text-center text-l text-white font-bold'>Start Time</th>
                             <th className='table-cell p-2 text-center text-l text-white font-bold'>End Time</th>
@@ -113,22 +113,22 @@ export default async function Schedules({ session }: { session: Session | null }
         return scheduleTimes;
     }
 
-    function getEndTimes(startTime: string, day: number, startTimes: string[]) {
-        const endTimes = [];
-        const time = parse(startTime, 'hh:mm a', new Date());
+    // function getEndTimes(startTime: string, day: number, startTimes: string[]) {
+    //     const endTimes = [];
+    //     const time = parse(startTime, 'hh:mm a', new Date());
 
-        while (endTimes.length < maxScheduleLength / scheduleInterval) {
-            time.setMinutes(time.getMinutes() + scheduleInterval);
+    //     while (endTimes.length < maxScheduleLength / scheduleInterval) {
+    //         time.setMinutes(time.getMinutes() + scheduleInterval);
 
-            const endTime = format(time, 'hh:mm a');
+    //         const endTime = format(time, 'hh:mm a');
 
-            endTimes.push(endTime);
-            if (!startTimes.includes(endTime) && format(time, 'HH:mm') <= excludedDayTimes[day].end) {
-                break;
-            }
-        }
-        return endTimes;
-    }
+    //         endTimes.push(endTime);
+    //         if (!startTimes.includes(endTime) && format(time, 'HH:mm') <= excludedDayTimes[day].end) {
+    //             break;
+    //         }
+    //     }
+    //     return endTimes;
+    // }
 
     // function getSpecificSchedules(schedule: ScheduleTimes, date: string, start: string, end: string) {
     //     const specificTimes = [];
@@ -183,7 +183,7 @@ export default async function Schedules({ session }: { session: Session | null }
                 <div className='table border-2'>
                     <div className='table-header-group'>
                         <div className='table-row divide-x-2 bg-red-600'>
-                            <div className='table-cell p-2 text-center text-l text-white font-bold'>Session Number</div>
+                            <div className='table-cell p-2 text-center text-l text-white font-bold'>Number</div>
                             {session?.user.status == 'administrator' && <div className='table-cell text-center p-2 text-l text-white font-bold'>Name</div>}
                             <div className='table-cell p-2 text-center text-l text-white font-bold'>Date</div>
                             <div className='table-cell p-2 text-center text-l text-white font-bold'>Start Time</div>
@@ -202,14 +202,11 @@ export default async function Schedules({ session }: { session: Session | null }
                 </div>
             </div>
 
-            {
-                session?.user.status == 'member' &&
-                <div className='m-5 flex justify-center items-center'>
-                    <div className='w-1/2 p-10 shadow-lg'>
-                        <CreateSchedules scheduleData={await getScheduleTimes()} />
-                    </div>
+            <div className='m-5 flex justify-center items-center'>
+                <div className='w-1/2 p-10 shadow-lg'>
+                    <CreateSchedules scheduleData={await getScheduleTimes()} />
                 </div>
-            }
+            </div>
         </div>
     );
 }
