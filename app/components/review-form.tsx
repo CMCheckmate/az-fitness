@@ -25,7 +25,7 @@ export default function TestimonialForm() {
             <fieldset disabled={submitting}>
                 <h3 className='text-center text-xl text-white'>How Was Your Experience?</h3>
 
-                <div className=' grid grid-cols-2'>
+                <div className='flex flex-wrap justify-center items-center'>
                     <input type='text' name='firstName' id='firstName' placeholder='First Name' className='m-5 p-5 border-b-2' required />
 
                     <input type='text' name='lastName' id='lastName' placeholder='Last Name' className='m-5 p-5 border-b-2' />
@@ -35,7 +35,7 @@ export default function TestimonialForm() {
                     <input type='tel' pattern='[0-9]{10}' name='phone' id='phone' placeholder='Phone (format: 0123456789)' className='m-5 p-5 border-b-2' />
 
                     <input type='text' name='review' id='review' placeholder='Write your review here' className='col-span-2 m-5 p-5 border-b-2' required />
-
+                    
                     <p className='col-span-2 m-5 text-white'>Would you recommend us to your friends?</p>
                     <label htmlFor='Yes' className='mx-5'>
                         <input type='radio' name='recommend' id='Yes' value='Yes' required />

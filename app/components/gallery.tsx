@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import outdoorFitness from '@/public/outdoor_fitness.png';
 import fitnessArmband from '@/public/fitness_armband.png';
@@ -37,10 +37,11 @@ export default function Gallery() {
     const transitionTime = 10000;
     const gallery = useRef(null);
     const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
+    const timeout = useRef<any>(null);
     const [imageIndex, setImageIndex] = useState(0);
-
-    const scroll = useCallback((index: number) => {
-        if (imageIndex != index) {
+    
+    function scroll(index: number) {
+        if (imageIndex != index && gallery.current) {
             const wrapper = gallery.current as unknown as HTMLElement;
             const currentImage = imageRefs.current[index] as HTMLElement;
             const previousImage = imageRefs.current[imageIndex] as HTMLElement;
@@ -57,32 +58,30 @@ export default function Gallery() {
 
             setImageIndex(index);
         }
-    }, [imageIndex]);
+    }
 
     useEffect(() => {
         if (!document.hidden) {
-            const timeout = setTimeout(() => {
-                if (imageIndex < images.length - 1) {
-                    scroll(imageIndex + 1);
-                } else {
-                    scroll(0);
-                }
-            }, transitionTime);
-            return () => { clearTimeout(timeout); };
+            if (imageIndex < images.length - 1) {
+                timeout.current = setTimeout(() => { scroll(imageIndex + 1); }, transitionTime);
+            } else {
+                timeout.current = setTimeout(() => { scroll(0); }, transitionTime);
+            }
         }
+        return () => { clearTimeout(timeout.current); };
     });
 
     return (
         <div className='relative'>
             <div ref={gallery} className='flex overflow-x-auto no-scrollbar scroll-smooth cursor-pointer'>
-                <Image onClick={() => { scroll(images.length - 1); }} src={images[images.length - 1].src} alt={images[images.length - 1].alt} className='w-1/4 object-cover object-right opacity-75' />
+                <Image onClick={() => { clearTimeout(timeout.current); scroll(images.length - 1); }} src={images[images.length - 1].src} alt={images[images.length - 1].alt} className='w-1/4 object-cover object-right opacity-75' />
                 {images.map((image, index) => (
-                    <Image key={`image${index}`} ref={(img) => { imageRefs.current.push(img) }} onClick={() => { scroll(index); }} onAnimationEnd={() => { const block = imageRefs.current[index] as unknown as HTMLElement; block.style.pointerEvents = 'auto'; }} src={image.src} alt={image.alt} className={`w-1/2 ${index == 0 ? 'opacity-100' : 'opacity-75'}`} />
+                    <Image key={`image${index}`} ref={(img) => { imageRefs.current.push(img) }} onClick={() => { clearTimeout(timeout.current); scroll(index); }} onAnimationEnd={() => { const block = imageRefs.current[index] as unknown as HTMLElement; block.style.pointerEvents = 'auto'; }} src={image.src} alt={image.alt} className={`w-1/2 ${index == 0 ? 'opacity-100' : 'opacity-75'}`} />
                 ))}
-                <Image onClick={() => { scroll(0); }} src={images[0].src} alt={images[0].alt} className='w-1/4 object-cover object-left opacity-75' />
+                <Image onClick={() => { clearTimeout(timeout.current); scroll(0); }} src={images[0].src} alt={images[0].alt} className='w-1/4 object-cover object-left opacity-75' />
             </div>
-            <button onClick={() => { if (imageIndex > 0) { scroll(imageIndex - 1); } else { scroll(images.length - 1); } }} className='absolute top-1/2 left-16 translate-y-[-50%] font-semibold text-7xl text-white hover:text-gray-200'>{`<`}</button>
-            <button onClick={() => { if (imageIndex < images.length - 1) { scroll(imageIndex + 1); } else { scroll(0); } }} className='absolute top-1/2 right-16 translate-y-[-50%] font-semibold text-7xl text-white hover:text-gray-200'>{`>`}</button>
+            {/* <button onClick={() => { clearTimeout(timeout.current); if (imageIndex > 0) { scroll(imageIndex - 1); } else { scroll(images.length - 1); } }} className='absolute top-1/2 left-16 translate-y-[-50%] font-semibold text-7xl text-white hover:text-gray-200'>{`<`}</button>
+            <button onClick={() => { clearTimeout(timeout.current); if (imageIndex < images.length - 1) { scroll(imageIndex + 1); } else { scroll(0); } }} className='absolute top-1/2 right-16 translate-y-[-50%] font-semibold text-7xl text-white hover:text-gray-200'>{`>`}</button> */}
         </div>
     );
 }

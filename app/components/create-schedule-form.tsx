@@ -47,7 +47,6 @@ export default function CreateSchedules({ scheduleData }: { scheduleData: QueryR
                     )) : <option disabled value=''>No available times</option>}
                 </select>
                 <label htmlFor='address' className='mt-2 px-2 text-red-600'>Session Address</label>
-                {/* <textarea name='address' id='address' spellCheck={false} maxLength={95} placeholder='Enter your desired address' className='mb-2 p-2 border-b-2' required /> */}
                 <input type='text' name='address' list='addressList' spellCheck={false} maxLength={95} placeholder='Enter your desired address' className='mb-2 p-2 border-b-2' required />
                 <datalist id='addressList'>
                     <option value='252 Oteha Valley Road, Albany'>252 Oteha Valley Road, Albany</option>

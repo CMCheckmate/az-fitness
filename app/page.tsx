@@ -36,23 +36,23 @@ function Home() {
         <p className='text-red-600'>
           My services ensure my clients’ goals are met and that they see constant improvement in their body and lifestyle.
         </p>
-        <div className='p-20 grid grid-cols-3'>
-          <div className='p-5 flex flex-col items-center'>
-            <Image src={placeholder} alt='Placeholder 1' className='w-3/4 p-5 rounded-full' />
+        <div className='flex flex-wrap justify-center'>
+          <div className='flex-1 min-w-32 m-5 flex flex-col items-center'>
+            <Image src={placeholder} alt='Placeholder 1' className='w-1/2 min-w-32 p-5 rounded-full' />
             <h3 className='p-5 text-2xl text-red-600 font-bold'>Personal Training</h3>
             <p className='text-red-600'>
               Personal training allows me to be there every step of the way, motivating you to push yourself, keeping you safe, and teaching you how to do all exercises properly.
             </p>
           </div>
-          <div className='p-5 flex flex-col items-center'>
-            <Image src={placeholder} alt='Placeholder 2' className='w-3/4 p-5 rounded-full' />
+          <div className='flex-1 min-w-32 m-5 flex flex-col items-center'>
+            <Image src={placeholder} alt='Placeholder 2' className='w-1/2 min-w-32 p-5 rounded-full' />
             <h3 className='p-5 text-2xl text-red-600 font-bold'>Program Creation</h3>
             <p className='text-red-600'>
               Designing programs based on the parameters you set, fit for your lifestyle and schedule, and free for any adjustments or changes you would like to have made to them.
             </p>
           </div>
-          <div className='p-5 flex flex-col items-center'>
-            <Image src={placeholder} alt='Placeholder 3' className='w-3/4 p-5 rounded-full' />
+          <div className='flex-1 min-w-32 m-5 flex flex-col items-center'>
+            <Image src={placeholder} alt='Placeholder 3' className='w-1/2 min-w-32 p-5 rounded-full' />
             <h3 className='p-5 text-2xl text-red-600 font-bold'>Monitoring Progress</h3>
             <p className='text-red-600'>
               Tracking changes in your fitness level by running fun and harmless tests that we can use to see how you improve and how best to train you over the time you are with me.
@@ -61,11 +61,11 @@ function Home() {
         </div>
       </div>
 
-      <div className='flex items-center justify-center p-10 text-center bg-red-600'>
+      <div className='flex flex-wrap items-center justify-center p-10 text-center bg-red-600'>
         <div className='bg-white'>
           <Image src={profile} alt='Profile' className='relative left-4 bottom-4' />
         </div>
-        <div className='px-5'>
+        <div className='p-5'>
           <h2 className='text-4xl text-white font-bold'>Aran Ziegler</h2>
           <h3 className='text-xl text-white'>Personal Trainer</h3>
           <ul className='p-5 text-white'>

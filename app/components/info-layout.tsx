@@ -17,17 +17,15 @@ export default async function InfoLayout({ content }: { content: React.ReactNode
     
     return (
         <div className={`${inter.className} antialiased`}>
-            <div className='pt-10 pb-2'>
-                <div className=''>
-                    <div className='mx-44 py-5 flex items-end border-b-2 border-red-600'>
-                        <Link className='flex-1 text-5xl text-red-600 font-bold' href='/'>A to Z Fitness</Link>
-                    </div>
-                    
-                    <Navigation />
-                </div>
-            </div>
+            <div className='pb-2 flex flex-col justify-center items-center'>
+                <div className='w-3/4 m-10 mb-0 p-5 flex flex-wrap justify-center items-center border-b-2 border-red-600'>
+                    <Link className='flex-1 text-5xl text-red-600 font-bold' href='/'>A to Z Fitness</Link>
 
-            <Sidebar session={session} signOutButton={SignOut()}/>
+                    {/* <Sidebar session={session} signOutButton={SignOut()} /> */}
+                </div>
+                
+                <Navigation />
+            </div>
 
             <main>
                 <Loader component={content} />

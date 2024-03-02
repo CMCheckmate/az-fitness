@@ -46,14 +46,14 @@
   }
 }
 
-@keyframes changeIcon {
+/* @keyframes changeIcon {
   0% {
-    background-image: url('../../public/menu.png');
+    background-image: url('../../public/account.png');
   }
   100% {
     background-image: url('../../public/exit.png');
   }
-}
+} */
 
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
@@ -83,12 +83,11 @@
   }
 
   .hideSidebar {
-    transform: translateX(100%);
     animation: slideRight 0.5s cubic-bezier(0.4, 0, 0.6, 1);
   }
 
-  .showMenu {
-    background-image: url('../../public/menu.png');
+  /* .showMenu {
+    background-image: url('../../public/account.png');
     animation: changeIcon 0.5s cubic-bezier(0.4, 0, 0.6, 1);
     animation-direction: reverse;
   }
@@ -96,5 +95,5 @@
   .showExit {
     background-image: url('../../public/exit.png');
     animation: changeIcon 0.5s cubic-bezier(0.4, 0, 0.6, 1);
-  }
+  } */
 }

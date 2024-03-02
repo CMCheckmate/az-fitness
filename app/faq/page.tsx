@@ -6,7 +6,7 @@ import workoutLesson from '@/public/workout_lesson.png';
 
 function FAQ() {
     return (
-        <div className='flex flex-col justify-center items-center p-40 text-center bg-gray-100'>
+        <div className='flex flex-col justify-center items-center p-16 text-center bg-gray-100'>
             <h2 className='text-4xl text-red-600 font-bold'>FAQS</h2>
             <h3 className='p-5 text-red-600'>Find the Answers</h3>
             <p className='mb-32 text-red-600'>There are always a lot of questions when it comes to fitness. 

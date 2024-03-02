@@ -15,6 +15,7 @@ export default function TestimonialDisplay() {
     const transitionTime = 10000;
     const [testimonialIndex, setTestimonialIndex] = useState(0);
     const testimonialBlocks = useRef<(HTMLDivElement | null)[]>([]);
+    const timeout = useRef<any>(null);
     const [leftButton, rightButton] = [useRef(null), useRef(null)];
 
     function swap(direction: number) {
@@ -62,24 +63,22 @@ export default function TestimonialDisplay() {
 
     useEffect(() => {
         if (!document.hidden) {
-            const timeout = setTimeout(() => {
-                swap(1);
-            }, transitionTime);
-            return () => { clearTimeout(timeout); };
+            timeout.current = setTimeout(() => { swap(1); }, transitionTime);
         }
+        return () => { clearTimeout(timeout.current); };
     });
 
     return (
         <div className='relative py-32 flex justify-center items-center text-center overflow-x-hidden'>
             {testimonials.map((testimonial, index) => (
-                <div key={`testimonial${index + 1}`} ref={(block) => { testimonialBlocks.current.push(block); }} onAnimationEnd={() => { setBlock(index); }} className={`px-72 ${(index == 0 ? 'block' : 'hidden') }`}>
+                <div key={`testimonial${index + 1}`} ref={(block) => { testimonialBlocks.current.push(block); }} onAnimationEnd={() => { setBlock(index); }} className={`w-full ${(index == 0 ? 'block' : 'hidden') }`}>
                     <p className={`mt-5 text-9xl text-red-600 ${nestoCopper.className} leading-[0.5]`}>{'\'\''}</p>
-                    <p className='text-red-600'>{testimonial.text}</p>
+                    <p className='mx-16 text-red-600'>{testimonial.text}</p>
                     <p className='mt-10 text-xl text-red-600'>{testimonial.author}</p>
                 </div>
             ))}
-            <button ref={leftButton} onClick={() => { swap(-1); }} className='absolute top-1/2 left-16 translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`<`}</button>
-            <button ref={rightButton} onClick={() => { swap(1); }} className='absolute top-1/2 right-16 translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`>`}</button>
+            <button ref={leftButton} onClick={() => { clearTimeout(timeout.current); swap(-1); }} className='absolute top-1/2 left-[5%] translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`<`}</button>
+            <button ref={rightButton} onClick={() => { clearTimeout(timeout.current); swap(1); }} className='absolute top-1/2 right-[5%] translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`>`}</button>
         </div>
     );
 }

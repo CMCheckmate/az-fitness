@@ -7,7 +7,7 @@ export default async function LoginPage() {
 
     return (
         <div className='p-5 flex justify-center items-center'>
-            <div className='w-1/2 p-10 shadow-lg'>
+            <div className='w-1/2 p-10 min-w-min shadow-lg'>
                 {
                     session?.user ? 
                         <div className='flex flex-col justify-center items-center'>

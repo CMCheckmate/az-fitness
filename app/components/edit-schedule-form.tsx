@@ -81,7 +81,6 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                 }
             </div>
             <div className='table-cell'>
-                {/* <textarea name='address' id='address' spellCheck={false} defaultValue={defaultData.address} placeholder='Enter session address' className='w-full p-4 align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} required /> */}
                 {
                     action == 'edit' ?
                         <div>
@@ -93,7 +92,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                                 <option value='24 Tawa Drive, Albany'>24 Tawa Drive, Albany</option>
                             </datalist>
                         </div> :
-                        <textarea value={defaultData.address} placeholder='-' className='w-full p-4 px-10 resize-none align-middle bg-transparent text-center' spellCheck={false} readOnly />
+                        <textarea value={defaultData.address} placeholder='-' className='w-full p-4 px-10 resize-none align-middle bg-transparent text-center' disabled/>
                 }
             </div>
             <div className='table-cell'>
