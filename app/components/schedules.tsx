@@ -7,10 +7,10 @@ import EditSchedules from '@/app/components/edit-schedule-form';
 export function SchedulesSkeleton() {
     return (
         <div>
-            <div className='m-5 flex flex-col items-center justify-center'>
-                <h2 className='p-5 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
+            <h2 className='p-5 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
 
-                <table className='border-2'>
+            <div className='m-5 grid place-items-center overflow-auto'>
+                <table className='w-3/4 border-2'>
                     <thead className='border-2'>
                         <tr className='divide-x-2 bg-red-600'>
                             <th className='table-cell p-2 text-center text-l text-white font-bold'>Number</th>
@@ -177,10 +177,10 @@ export default async function Schedules({ session }: { session: Session | null }
 
     return (
         <div>
-            <div className='m-5 flex flex-col items-center justify-center'>
-                <h2 className='p-5 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
+            <h2 className='p-5 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
 
-                <div className='table border-2'>
+            <div className='mx-10 grid place-items-center overflow-auto'>
+                <div className='w-3/4 table border-2'>
                     <div className='table-header-group'>
                         <div className='table-row divide-x-2 bg-red-600'>
                             <div className='table-cell p-2 text-center text-l text-white font-bold'>Number</div>
@@ -202,8 +202,8 @@ export default async function Schedules({ session }: { session: Session | null }
                 </div>
             </div>
 
-            <div className='m-5 flex justify-center items-center'>
-                <div className='w-1/2 p-10 shadow-lg'>
+            <div className='m-5 grid place-items-center overflow-auto'>
+                <div className='w-1/2 min-w-min p-10 shadow-lg'>
                     <CreateSchedules scheduleData={await getScheduleTimes()} />
                 </div>
             </div>

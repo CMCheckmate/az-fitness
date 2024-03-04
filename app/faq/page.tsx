@@ -14,24 +14,24 @@ function FAQ() {
                 There are obviously a lot more questions, so feel free to get in touch through the contact page and ask away.
             </p>
                 
-            <Image src={outdoorExercise} alt='Outdoor Exercise' className='w-full' />
+            <Image src={outdoorExercise} alt='Outdoor Exercise' className='w-full min-w-44' />
 
-            <h2 className='m-10 text-2xl text-red-600 font-bold'>WHAT TYPES OF HOME FITNESS EQUIPMENT DO YOU RECOMMEND?</h2>
-            <p className='mb-32 text-red-600'>Enter your answer here. Be thoughtful, write clearly and concisely, and consider adding written as well as visual examples. 
+            <h2 className='max-w-full m-10 text-2xl text-red-600 font-bold'>WHAT TYPES OF HOME FITNESS EQUIPMENT DO YOU RECOMMEND?</h2>
+            <p className='max-w-full mb-32 text-red-600'>Enter your answer here. Be thoughtful, write clearly and concisely, and consider adding written as well as visual examples. 
                 Go over what you’ve written to make sure that if it was the first time you were visiting the site, you’d understand your answer.
             </p>
 
-            <Image src={yogaClass} alt='Yoga Class' className='w-full' />
+            <Image src={yogaClass} alt='Yoga Class' className='w-full min-w-44' />
 
-            <h2 className='m-10 text-2xl text-red-600 font-bold'>HOW ARE YOU DIFFERENT FROM A REGULAR GYM TRAINER?</h2>
-            <p className='mb-32 text-red-600'>Enter your answer here. Be thoughtful, write clearly and concisely, and consider adding written as well as visual examples. 
+            <h2 className='max-w-full m-10 text-2xl text-red-600 font-bold'>HOW ARE YOU DIFFERENT FROM A REGULAR GYM TRAINER?</h2>
+            <p className='max-w-full mb-32 text-red-600'>Enter your answer here. Be thoughtful, write clearly and concisely, and consider adding written as well as visual examples. 
                 Go over what you’ve written to make sure that if it was the first time you were visiting the site, you’d understand your answer.
             </p>
 
-            <Image src={workoutLesson} alt='Workout Lesson' className='w-full' />
+            <Image src={workoutLesson} alt='Workout Lesson' className='w-full min-w-44' />
 
-            <h2 className='m-10 text-2xl text-red-600 font-bold'>DO YOU CHARGE EXTRA FOR NUTRITIONAL GUIDANCE AND A DIET PLAN?</h2>
-            <p className='text-red-600'>Enter your answer here. Be thoughtful, write clearly and concisely, and consider adding written as well as visual examples. 
+            <h2 className='max-w-full m-10 text-2xl text-red-600 font-bold'>DO YOU CHARGE EXTRA FOR NUTRITIONAL GUIDANCE AND A DIET PLAN?</h2>
+            <p className='max-w-full text-red-600'>Enter your answer here. Be thoughtful, write clearly and concisely, and consider adding written as well as visual examples. 
                 Go over what you’ve written to make sure that if it was the first time you were visiting the site, you’d understand your answer.</p>
         </div>
     );

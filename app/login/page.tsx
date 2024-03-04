@@ -7,10 +7,10 @@ export default async function LoginPage() {
 
     return (
         <div className='p-5 flex justify-center items-center'>
-            <div className='w-1/2 p-10 min-w-min shadow-lg'>
+            <div className='w-1/2 min-w-min shadow-lg'>
                 {
                     session?.user ? 
-                        <div className='flex flex-col justify-center items-center'>
+                        <div className='p-5 flex flex-col justify-center items-center'>
                             <h2 className='my-5 text-2xl font-bold'>{session ? `Logged In As: ${session?.user.name} (${session?.user.status})`: 'Problem with user session'}</h2>
                             <SignOut />
                         </div> :

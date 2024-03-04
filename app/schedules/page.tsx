@@ -8,8 +8,8 @@ export default async function SchedulePage() {
 
     return (
         <div>
-            <div className='m-5 p-2 flex items-center justify-center'>
-                <h3 className='text-2xl font-bold'>{session ? `Logged In As: ${session.user?.name} (${session.user?.status})` : 'Problem with user session'}</h3>
+            <div className='max-w-full m-5 p-2 flex flex-wrap items-center justify-center'>
+                <h3 className='max-w-full text-2xl font-bold'>{session ? `Logged In As: ${session.user?.name} (${session.user?.status})` : 'Problem with user session'}</h3>
                 <div className='mx-5'>
                     <SignOut />
                 </div>

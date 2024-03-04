@@ -30,7 +30,7 @@ export default function CreateSchedules({ scheduleData }: { scheduleData: QueryR
         <form ref={scheduleForm} action={dispatch} onSubmit={() => { setSubmitting(true); setResponse('Loading...') }}>
             <fieldset className='flex flex-col' disabled={submitting}>
 
-                <h2 className='my-5 text-3xl text-red-600 font-bold'>Enter New Schedule Details</h2>
+                <h2 className='my-5 text-3xl text-red-600 font-bold'>Create New Schedule</h2>
 
                 <label htmlFor='date' className='mt-2 px-2 text-red-600'>Date</label>
                 <input type='date' name='date' id='date' min={format(addDays((new Date()), 3), 'yyyy-MM-dd')} onChange={(event) => { const date = event.target.value in scheduleData ? event.target.value : String(new Date(event.target.value).getDay()); setDate(date); setChosenTimes({ start: Object.keys(scheduleData[date])[0], end: (Object.values(scheduleData[date])[0] as string)[0] }); }} className='p-2 border-b-2' disabled={submitting} required />
@@ -54,8 +54,11 @@ export default function CreateSchedules({ scheduleData }: { scheduleData: QueryR
                     <option value='C3/65 Greville Road, Pinehill'>C3/65 Greville Road, Pinehill</option>
                     <option value='24 Tawa Drive, Albany'>24 Tawa Drive, Albany</option>
                 </datalist>
-                <div className='flex justify-center items-center'>
-                    <Map />
+                
+                <div className='p-10 grid place-items-center bg-gray-100'>
+                    <div className='w-3/4 h-full min-w-64 min-h-80 aspect-[5/3]'>
+                        <Map />
+                    </div>
                 </div>
 
                 <label htmlFor='comments' className='mt-2 px-2 text-red-600'>Comments</label>

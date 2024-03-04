@@ -33,10 +33,10 @@ export default function AccountForm() {
 
     return (
         <form ref={accountForm} action={dispatch} onSubmit={() => { setSubmitting(true); setResponse('Loading...'); }}>
-            <fieldset className='flex flex-col' disabled={submitting}>
+            <fieldset className='p-5 flex flex-col' disabled={submitting}>
                 {
                     formType == 'login' ?
-                        <div className='flex flex-col'>
+                        <div className='mb-5 flex flex-col'>
                             <h2 className='my-5 text-3xl text-red-600 font-bold'>Login to Continue</h2>
 
                             <label htmlFor='email' className='mt-4 px-2 text-red-600'>Email</label>
@@ -56,12 +56,12 @@ export default function AccountForm() {
                             <label htmlFor='confirmPassword' className='mt-4 px-2 text-red-600'>Confirm Password</label>
                             <input type='password' name='confirmPassword' id='confirmPassword' placeholder='Re-type your password' className='p-2 border-b-2' required />
 
-                            <ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} onChange={setCaptcha} className='mt-5' />
+                            <ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} onChange={setCaptcha} className='max-w-20 origin-top-left scale-[80%] mt-5' />
                         </div>
                 }
 
-                <div className='py-4 flex items-center' aria-live='polite' aria-atomic='true'>
-                    {response && <p className='text-red-600'>{response}</p>}
+                <div className='flex items-center' aria-live='polite' aria-atomic='true'>
+                    {response && <p className='py-4 text-red-600'>{response}</p>}
                     {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
                 </div>
 

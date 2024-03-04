@@ -25,7 +25,7 @@ export default function TestimonialForm() {
             <fieldset disabled={submitting}>
                 <h3 className='text-center text-xl text-white'>How Was Your Experience?</h3>
 
-                <div className='flex flex-wrap justify-center items-center'>
+                <div className='grid grid-cols-2'>
                     <input type='text' name='firstName' id='firstName' placeholder='First Name' className='m-5 p-5 border-b-2' required />
 
                     <input type='text' name='lastName' id='lastName' placeholder='Last Name' className='m-5 p-5 border-b-2' />
@@ -34,7 +34,7 @@ export default function TestimonialForm() {
 
                     <input type='tel' pattern='[0-9]{10}' name='phone' id='phone' placeholder='Phone (format: 0123456789)' className='m-5 p-5 border-b-2' />
 
-                    <input type='text' name='review' id='review' placeholder='Write your review here' className='col-span-2 m-5 p-5 border-b-2' required />
+                    <textarea name='review' id='review' placeholder='Write your review here' className='col-span-2 m-5 p-5 border-b-2' required />
                     
                     <p className='col-span-2 m-5 text-white'>Would you recommend us to your friends?</p>
                     <label htmlFor='Yes' className='mx-5'>
@@ -47,14 +47,14 @@ export default function TestimonialForm() {
                         <span className='p-5 text-white'>No</span>
                     </label>
 
-                    <textarea name='extra' id='extra' placeholder='Anything else you would like to add?' className='col-span-2 m-5 p-5 border-b-2' />
+                    {/* <textarea name='extra' id='extra' placeholder='Anything else you would like to add?' className='col-span-2 m-5 p-5 border-b-2' /> */}
 
                     <div className='px-5 flex items-center' aria-live='polite' aria-atomic='true'>
                         {response && (<p className='py-4 text-white'>{response}</p>)}
                         {response == 'Loading...' && <CircularProgress className='mx-4 max-w-6 max-h-6' />}
                     </div>
 
-                    <button type='submit' className='m-5 p-5 w-1/2 col-start-1 text-red-600 bg-white'>Submit</button>
+                    <button type='submit' className='m-5 p-5 w-1/2 min-w-min col-start-1 text-red-600 bg-white'>Submit</button>
                 </div>
             </fieldset>
         </form>

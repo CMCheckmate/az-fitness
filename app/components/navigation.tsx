@@ -19,7 +19,7 @@ export default function Navigation() {
             < div className = 'flex flex-wrap justify-center items-center' >
             {
                 links.map((link) => (
-                    pathname != link.href && <Link key={link['name']} className={`px-5 text-center text-xl text-red-600 hover:text-red-400`} href={link.href}>{link.name}</Link>
+                    pathname != link.href && <Link key={link['name']} className={`max-w-full px-5 text-center text-xl text-red-600 hover:text-red-400`} href={link.href}>{link.name}</Link>
                 ))
             }
             </div >

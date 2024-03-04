@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en'>
-      <body className='overflow-x-hidden'>
+      <body className='break-words overflow-x-hidden'>
         {children}
       </body>
     </html>
