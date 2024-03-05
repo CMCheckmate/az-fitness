@@ -1,6 +1,6 @@
 'use server';
 
-import { auth, signIn } from '@/auth';
+import { auth, signIn, signOut } from '@/auth';
 import { Session, AuthError } from 'next-auth';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
@@ -30,9 +30,9 @@ export async function getExcludedTimes(dateTime: { date: string, time: string } 
 
     try {
         const scheduleTimes = {} as DateExclusions;
-        const schedules = dateTime ? await sql`SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH24:MI') AS start_time, TO_CHAR(end_time, 'HH24:MI') AS end_time FROM schedules WHERE date != ${dateTime.date} OR start_time != ${dateTime.time} ORDER BY date, start_time;` :
-            await sql`SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH24:MI') AS start_time, TO_CHAR(end_time, 'HH24:MI') AS end_time FROM schedules ORDER BY date, start_time;`
-        
+        const schedules = dateTime ? await sql`SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH24:MI') AS start_time, TO_CHAR(ending_time, 'HH24:MI') AS end_time FROM schedules WHERE date != ${dateTime.date} OR starting_time != ${dateTime.time} ORDER BY date, starting_time;` :
+            await sql`SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH24:MI') AS start_time, TO_CHAR(ending_time, 'HH24:MI') AS end_time FROM schedules ORDER BY date, starting_time;`
+
         if (dateTime) {
             scheduleTimes[dateTime.date] = [];
         }
@@ -50,8 +50,8 @@ export async function getExcludedTimes(dateTime: { date: string, time: string } 
 
 export async function getSchedules(user: Session['user'] | undefined) {
     try {
-        const schedules = user?.status == 'administrator' ? await sql`SELECT schedule_id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id;` :
-            await sql`SELECT schedule_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(start_time, 'HH:MI AM') AS start_time, TO_CHAR(end_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email};`;
+        const schedules = user?.status == 'administrator' ? await sql`SELECT schedule_id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH:MI AM') AS start_time, TO_CHAR(ending_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id ORDER BY name, date, starting_time;` :
+            await sql`SELECT schedule_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH:MI AM') AS start_time, TO_CHAR(ending_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email} ORDER BY date, starting_time;`;
 
         return schedules.rows;
     } catch (error) {
@@ -61,8 +61,8 @@ export async function getSchedules(user: Session['user'] | undefined) {
 
 async function validateSchedule(date: string, startTime: string, scheduleID: string | null = null) {
     try {
-        const clashes = scheduleID ? await sql`SELECT * FROM schedules WHERE date = ${date} AND ${startTime} BETWEEN start_time AND end_time AND schedule_id != ${scheduleID};` : 
-            await sql`SELECT * FROM schedules WHERE date = ${date} AND ${startTime} BETWEEN start_time AND end_time;`;
+        const clashes = scheduleID ? await sql`SELECT * FROM schedules WHERE date = ${date} AND ${startTime} BETWEEN starting_time AND ending_time AND schedule_id != ${scheduleID};` : 
+            await sql`SELECT * FROM schedules WHERE date = ${date} AND ${startTime} BETWEEN starting_time AND ending_time;`;
         
         if (clashes.rows.length == 0) {
             return true;
@@ -74,7 +74,7 @@ async function validateSchedule(date: string, startTime: string, scheduleID: str
     }
 }
 
-export async function addSchedules(prevState: string | undefined, formData: FormData) {
+export async function addSchedules(formData: FormData) {
     try {
         const session = await auth();
         const validatedFields = scheduleSchema.safeParse({
@@ -90,7 +90,7 @@ export async function addSchedules(prevState: string | undefined, formData: Form
 
             if (await validateSchedule(date, startTime)) {
                 try {
-                    await sql`INSERT INTO schedules (user_id, date, start_time, end_time, address, comments)
+                    await sql`INSERT INTO schedules (user_id, date, starting_time, ending_time, address, comments)
                 VALUES ((SELECT user_id FROM users WHERE email = ${session?.user.email}), ${date}, ${startTime}, ${endTime}, ${address}, ${comments});`;
                 } catch (error) {
                     return 'Database error. Failed to add schedule.';
@@ -108,11 +108,11 @@ export async function addSchedules(prevState: string | undefined, formData: Form
     revalidatePath('/schedules');
 }
 
-export async function updateSchedule(prevState: string | undefined, scheduleID: string, formData: FormData) {
+export async function updateSchedule(scheduleID: string, formData: FormData) {
     const validatedFields = scheduleSchema.safeParse({
         date: formData.get('date'),
-        startTime: formData.get('start_time'),
-        endTime: formData.get('end_time'),
+        startTime: formData.get('startTime'),
+        endTime: formData.get('endTime'),
         address: formData.get('address'),
         comments: formData.get('comments')
     });
@@ -122,7 +122,7 @@ export async function updateSchedule(prevState: string | undefined, scheduleID: 
 
         if (await validateSchedule(date, startTime, scheduleID)) {
             try {
-                await sql`UPDATE schedules SET date = ${date}, start_time = ${startTime}, end_time = ${endTime}, address = ${address}, comments = ${comments} WHERE schedule_id = ${scheduleID};`;
+                await sql`UPDATE schedules SET date = ${date}, starting_time = ${startTime}, ending_time = ${endTime}, address = ${address}, comments = ${comments} WHERE schedule_id = ${scheduleID};`;
             } catch (error) {
                 return 'Database error: Failed to update schedule.';
             }
@@ -146,7 +146,7 @@ export async function deleteSchedule(scheduleID: string) {
     revalidatePath('/schedules');
 }
 
-export async function signUp(prevState: string | undefined, formData: FormData) {
+export async function signUp(formData: FormData) {
     const validatedFields = signUpSchema.safeParse({
         name: formData.get('name'),
         email: formData.get('email'),
@@ -175,7 +175,7 @@ export async function signUp(prevState: string | undefined, formData: FormData) 
     }
 }
 
-export async function authenticate(prevState: string | undefined, formData: FormData) {
+export async function authenticate(formData: FormData) {
     try {
         await signIn('credentials', formData);
     } catch (error) {
@@ -188,10 +188,15 @@ export async function authenticate(prevState: string | undefined, formData: Form
             }
         }
     }
-    redirect('/schedules')
+    redirect('/schedules');
 }
 
-export async function sendEmailForm(prevState: string | undefined, formType: string, formData: FormData) {
+export async function logOut() {
+    await signOut();
+    redirect('/');
+}
+
+export async function sendEmailForm(formType: string, formData: FormData) {
     try {
         const headersList = headers();
         const domain = headersList.get('host') || '';

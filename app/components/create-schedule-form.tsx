@@ -16,7 +16,7 @@ export default function CreateSchedules({ scheduleData }: { scheduleData: QueryR
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
-        const dispatch = await addSchedules(state, formData);
+        const dispatch = await addSchedules(formData);
         setResponse(dispatch);
 
         const form = scheduleForm.current as unknown as HTMLFormElement;

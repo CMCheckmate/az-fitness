@@ -17,7 +17,7 @@ export default function AccountForm() {
             setResponse('Invalid captcha.');
             setSubmitting(false);
         } else {
-            const dispatch = formType == 'login' ? await authenticate(state, formData) : await signUp(state, formData);
+            const dispatch = formType == 'login' ? await authenticate(formData) : await signUp(formData);
             setResponse(dispatch);
             if (dispatch == 'Successful signup') {
                 const form = accountForm.current as unknown as HTMLFormElement;

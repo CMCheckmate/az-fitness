@@ -57,8 +57,8 @@ async function seedSchedules(client) {
                 schedule_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
                 user_id UUID DEFAULT uuid_generate_v4() NOT NULL,
                 date DATE NOT NULL,
-                start_time TIME NOT NULL,
-                end_time TIME NOT NULL,
+                starting_time TIME NOT NULL,
+                ending_time TIME NOT NULL,
                 address VARCHAR(95),
                 comments VARCHAR(45),
                 CONSTRAINT user_id
@@ -72,7 +72,7 @@ async function seedSchedules(client) {
         const insertedSchedules = await Promise.all(
             schedules.map(async (schedule) => {
                 return client.sql`
-                    INSERT INTO schedules (user_id, date, start_time, end_time, address, comments)
+                    INSERT INTO schedules (user_id, date, starting_time, ending_time, address, comments)
                     VALUES ((SELECT user_id FROM users WHERE email = ${schedule.email}), ${schedule.date}, ${schedule.startTime}, ${schedule.endTime}, ${schedule.address}, ${schedule.comment})
                     ON CONFLICT DO NOTHING;
                 `;

@@ -10,7 +10,7 @@ export default function TestimonialForm() {
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
-        const dispatch = await sendEmailForm(state, 'Review', formData);
+        const dispatch = await sendEmailForm('Review', formData);
         setResponse(dispatch);
 
         const form = reviewForm.current as unknown as HTMLFormElement;

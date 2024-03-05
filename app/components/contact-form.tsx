@@ -10,7 +10,7 @@ export default function ContactForm() {
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [response, setResponse] = useState<string>();
     const [responseMessage, dispatch] = useFormState(async (state: string | undefined, formData: FormData) => {
-        const dispatch = await sendEmailForm(state, 'Contact', formData);
+        const dispatch = await sendEmailForm('Contact', formData);
         setResponse(dispatch);
 
         const form = contactForm.current as unknown as HTMLFormElement;

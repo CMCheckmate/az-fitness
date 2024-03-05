@@ -5,8 +5,9 @@ import { Session } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import profile from '@/public/account.png';
+import SignOut from '@/app/components/signout-button';
 
-export default function ProfileBar({ session, signOutButton } : { session : Session | null, signOutButton : React.ReactNode }) {
+export default function ProfileBar({ session } : { session : Session | null }) {
     const profileBar = useRef(null);
     
     function toggleProfile() {
@@ -24,15 +25,15 @@ export default function ProfileBar({ session, signOutButton } : { session : Sess
             <div ref={profileBar} className='absolute right-0 z-50 hidden'>
                 <div className='py-2 flex flex-col justify-center items-end'>
                     <div className='w-0 h-0 mr-3 border-l-[12px] border-r-[12px] border-b-[24px] border-l-transparent border-r-transparent border-b-solid border-red-600'></div>
-                    <div className='p-5 flex flex-col justify-end items-center rounded-md bg-red-600'>
+                    <div className='p-5 flex flex-col justify-end items-end rounded-lg bg-red-600'>
                         {
                             session && session.user ?
                                 <div className='my-5 flex flex-col justify-center items-end'>
                                     <p className='py-2 text-right text-white text-xl'>
                                         {session.user.name}
                                     </p>
-                                    <div className='my-2'>
-                                        {signOutButton}
+                                    <div className='w-full max-w-11/12 my-2'>
+                                        <SignOut />
                                     </div>
                                 </div> :
                                 <div className='my-5 flex flex-col justify-center items-end'>
@@ -40,7 +41,7 @@ export default function ProfileBar({ session, signOutButton } : { session : Sess
                                     <Link className='w-min p-2 bg-gray-400 rounded-md text-white font-bold' href='/login'>Login/Signup</Link>
                                 </div>
                         }
-                        <Link className='w-min my-5 p-2 text-2xl text-white font-bold hover:text-gray-200 hover:underline' href='/schedules'>Schedules</Link>
+                        <Link className='w-min my-5 text-2xl text-white font-bold hover:text-gray-200 hover:underline' href='/schedules'>Schedules</Link>
                     </div>
                 </div>
             </div>

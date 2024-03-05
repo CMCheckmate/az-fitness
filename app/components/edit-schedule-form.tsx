@@ -31,7 +31,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
         } else {
             for (const [input, value] of formData.entries()) {
                 if (value != defaultData[input as keyof Data]) {
-                    const dispatch = await updateSchedule(state, data.schedule_id, formData);
+                    const dispatch = await updateSchedule(data.schedule_id, formData);
                     if (dispatch) {
                         setResponse(dispatch);
                         setSubmitting(false);
@@ -50,8 +50,13 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
     return (
         <form action={dispatch} onSubmit={() => { setSubmitting(true); setResponse('Loading...') }} className={`${className} table-row divide-x-2 divide-y-2 text-red-400 text-center font-bold`}>
             <div className='table-cell border-t-2 p-2'>{data.number}</div>
-            {'name' in data && <div className='table-cell p-2'>{data.name}</div>}
-            <div className='table-cell min-w-min'>
+            {
+                'name' in data && 
+                    <div className='table-cell p-2'>
+                        <p className='min-w-max'>{data.name}</p>
+                    </div>
+            }
+            <div className='table-cell'>
                 {
                     action == 'edit' ?
                         <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={(event) => { const date = event.target.value in defaultData.schedules ? event.target.value : String(new Date(event.target.value).getDay()); setDate(date); if (date == defaultData.date) { setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }) } else { setChosenTimes({ start: Object.keys(defaultData.schedules[date])[0], end: Object.values(defaultData.schedules[date])[0][0] }) } }} className='w-full p-2 bg-transparent text-center' disabled={submitting} required /> :
@@ -61,23 +66,23 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
             <div className='table-cell'>
                 {
                     action == 'edit' ?
-                        <select id='start_time' name='start_time' value={chosenTimes.start} onChange={(event) => { setChosenTimes({ start: event.target.value, end: chosenTimes.end }); }} className='w-full p-2 appearance-none bg-transparent text-center' required >
+                        <select id='startTime' name='startTime' value={chosenTimes.start} onChange={(event) => { setChosenTimes({ start: event.target.value, end: chosenTimes.end }); }} className='w-full min-w-max p-2 appearance-none bg-transparent text-center' required >
                             {defaultData.schedules[date] ? Object.keys(defaultData.schedules[date]).map((time, index) => (
                                 <option key={`start_time_${index + 1}`} value={time}>{time}</option>
                             )) : <option disabled value=''>No available times</option>}
                         </select> :
-                        <p className='w-full p-4 bg-transparent'>{defaultData.start_time}</p>
+                        <p className='min-w-max p-4 bg-transparent'>{defaultData.start_time}</p>
                 }
             </div>
             <div className='table-cell'>
                 {
                     action == 'edit' ?
-                        <select id='end_time' name='end_time' value={chosenTimes.end} onChange={(event) => { setChosenTimes({ start: chosenTimes.start, end: event.target.value }); }} className='w-full p-2 appearance-none bg-transparent text-center' required >
+                        <select id='endTime' name='endTime' value={chosenTimes.end} onChange={(event) => { setChosenTimes({ start: chosenTimes.start, end: event.target.value }); }} className='w-full min-w-max p-2 appearance-none bg-transparent text-center' required >
                             {defaultData.schedules[date] && defaultData.schedules[date][chosenTimes.start] ? Object.values(defaultData.schedules[date][chosenTimes.start]).map((time, index) => (
                                 <option key={`end_time_${index + 1}`} value={time}>{time}</option>
                             )) : <option disabled value=''>No available times</option>}
                         </select> :
-                        <p className='p-4 bg-transparent'>{defaultData.end_time}</p>
+                        <p className='p-4 min-w-max bg-transparent'>{defaultData.end_time}</p>
                 }
             </div>
             <div className='table-cell'>

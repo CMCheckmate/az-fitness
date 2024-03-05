@@ -4,7 +4,6 @@ import { auth } from '@/auth';
 import Link from 'next/link';
 import Navigation from '@/app/components/navigation';
 import Loader from '@/app/components/loader';
-import SignOut from '@/app/components/signout-button';
 import ProfileBar from '@/app/components/sidebar';
 
 export const metadata: Metadata = {
@@ -21,7 +20,7 @@ export default async function InfoLayout({ content }: { content: React.ReactNode
                 <div className='w-3/4 m-10 mb-0 p-2 flex flex-wrap justify-end items-center border-b-2 border-red-600'>
                     <Link className='max-w-full flex-1 text-5xl text-red-600 font-bold' href='/'>A to Z Fitness</Link>
                     
-                    <ProfileBar session={session} signOutButton={SignOut()} />
+                    <ProfileBar session={session} />
                 </div>
                 
                 <Navigation />
