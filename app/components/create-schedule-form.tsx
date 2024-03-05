@@ -56,7 +56,7 @@ export default function CreateSchedules({ scheduleData }: { scheduleData: QueryR
                 </datalist>
                 
                 <div className='p-10 grid place-items-center bg-gray-100'>
-                    <div className='w-3/4 h-full min-w-64 min-h-80 aspect-[5/3]'>
+                    <div className='w-full h-full min-w-64 min-h-80 aspect-[5/3]'>
                         <Map />
                     </div>
                 </div>

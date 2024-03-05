@@ -11,8 +11,8 @@ function Testimonials() {
             
             <Image src={womenRunning} alt='Women Running' className='w-full aspect-[5/2] object-cover' />
 
-            <div className='p-10 flex justify-center items-center bg-red-600 overflow-auto'>
-                <div className='w-max'>
+            <div className='p-10 grid place-items-center bg-red-600 overflow-auto'>
+                <div className='w-1/2 min-w-min'>
                     <h2 className='m-10 text-center text-4xl text-white font-bold'>ADD A REVIEW</h2>
                     
                     <TestimonialForm />

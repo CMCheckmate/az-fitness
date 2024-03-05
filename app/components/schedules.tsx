@@ -203,7 +203,7 @@ export default async function Schedules({ session }: { session: Session | null }
             </div>
 
             <div className='m-5 grid place-items-center overflow-auto'>
-                <div className='w-1/2 min-w-min p-10 shadow-lg'>
+                <div className='w-1/2 min-w-min m-5 p-10 shadow-lg'>
                     <CreateSchedules scheduleData={await getScheduleTimes()} />
                 </div>
             </div>

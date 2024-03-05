@@ -55,7 +55,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                 {
                     action == 'edit' ?
                         <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={(event) => { const date = event.target.value in defaultData.schedules ? event.target.value : String(new Date(event.target.value).getDay()); setDate(date); if (date == defaultData.date) { setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }) } else { setChosenTimes({ start: Object.keys(defaultData.schedules[date])[0], end: Object.values(defaultData.schedules[date])[0][0] }) } }} className='w-full p-2 bg-transparent text-center' disabled={submitting} required /> :
-                        <span className='w-full p-4 px-10 bg-transparent'>{format(defaultData.date, 'dd/MM/yyyy')}</span>
+                        <p className='w-full p-4 px-10 bg-transparent'>{format(defaultData.date, 'dd/MM/yyyy')}</p>
                 }
             </div>
             <div className='table-cell'>
@@ -66,7 +66,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                                 <option key={`start_time_${index + 1}`} value={time}>{time}</option>
                             )) : <option disabled value=''>No available times</option>}
                         </select> :
-                        <span className='w-full p-4 bg-transparent'>{defaultData.start_time}</span>
+                        <p className='w-full p-4 bg-transparent'>{defaultData.start_time}</p>
                 }
             </div>
             <div className='table-cell'>
@@ -77,7 +77,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                                 <option key={`end_time_${index + 1}`} value={time}>{time}</option>
                             )) : <option disabled value=''>No available times</option>}
                         </select> :
-                        <span className='w-full p-4 bg-transparent'>{defaultData.end_time}</span>
+                        <p className='p-4 bg-transparent'>{defaultData.end_time}</p>
                 }
             </div>
             <div className='table-cell'>
@@ -92,11 +92,11 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                                 <option value='24 Tawa Drive, Albany'>24 Tawa Drive, Albany</option>
                             </datalist>
                         </div> :
-                        <textarea value={defaultData.address} placeholder='-' className='w-full p-4 px-10 resize-none align-middle bg-transparent text-center' disabled/>
+                        <textarea value={defaultData.address} placeholder='-' className='w-max p-4 px-10 resize-none align-middle bg-transparent text-center' disabled/>
                 }
             </div>
             <div className='table-cell'>
-                <textarea name='comments' id='comments' maxLength={95} defaultValue={defaultData.comments} placeholder='-' className='w-full p-4 resize-none align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} />
+                <textarea name='comments' id='comments' maxLength={95} defaultValue={defaultData.comments} placeholder='-' className='w-max p-4 resize-none align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} />
             </div>
             <div className='table-cell p-2'>
                 <div className='flex justify-center items-center'>

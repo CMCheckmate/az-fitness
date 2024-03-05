@@ -4,8 +4,8 @@ import { auth } from '@/auth';
 import Link from 'next/link';
 import Navigation from '@/app/components/navigation';
 import Loader from '@/app/components/loader';
-import Sidebar from '@/app/components/sidebar';
 import SignOut from '@/app/components/signout-button';
+import ProfileBar from '@/app/components/sidebar';
 
 export const metadata: Metadata = {
     title: 'AZ-Fitness',
@@ -17,11 +17,11 @@ export default async function InfoLayout({ content }: { content: React.ReactNode
     
     return (
         <div className={`${inter.className} antialiased`}>
-            <div className='pb-2 flex flex-col justify-center items-center'>
-                <div className='w-3/4 m-10 mb-0 p-5 flex flex-wrap justify-center items-center border-b-2 border-red-600'>
+            <div className='py-2 flex flex-col justify-center items-center'>
+                <div className='w-3/4 m-10 mb-0 p-2 flex flex-wrap justify-end items-center border-b-2 border-red-600'>
                     <Link className='max-w-full flex-1 text-5xl text-red-600 font-bold' href='/'>A to Z Fitness</Link>
-
-                    {/* <Sidebar session={session} signOutButton={SignOut()} /> */}
+                    
+                    <ProfileBar session={session} signOutButton={SignOut()} />
                 </div>
                 
                 <Navigation />
