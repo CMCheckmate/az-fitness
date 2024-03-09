@@ -12,16 +12,16 @@ export default function ProfileBar({ session } : { session : Session | null }) {
     
     function toggleProfile() {
         const bar = profileBar.current as unknown as HTMLElement;
-        if (bar.style.display == 'block') {
-            bar.style.display = 'none';
-        } else {
+        if (bar.style.display != 'block') {
             bar.style.display = 'block';
+        } else {
+            bar.style.display = 'none';
         }
     }
     
     return (
         <div className='relative'>
-            <Image src={profile} alt='Profile' onClick={toggleProfile} className='w-16 h-16 object-cover' />
+            <Image src={profile} alt='Profile' onClick={toggleProfile} className='w-16 h-16 object-cover hover:cursor-pointer' />
             <div ref={profileBar} className='absolute right-0 z-50 hidden'>
                 <div className='py-2 flex flex-col justify-center items-end'>
                     <div className='w-0 h-0 mr-3 border-l-[12px] border-r-[12px] border-b-[24px] border-l-transparent border-r-transparent border-b-solid border-red-600'></div>

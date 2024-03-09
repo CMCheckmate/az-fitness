@@ -77,8 +77,8 @@ export default function TestimonialDisplay() {
                     <p className='mt-10 text-xl text-red-600'>{testimonial.author}</p>
                 </div>
             ))}
-            <button ref={leftButton} onClick={() => { clearTimeout(timeout.current); swap(-1); }} className='absolute top-1/2 left-[5%] translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`<`}</button>
-            <button ref={rightButton} onClick={() => { clearTimeout(timeout.current); swap(1); }} className='absolute top-1/2 right-[5%] translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`>`}</button>
+            <button ref={leftButton} onClick={() => { clearTimeout(timeout.current); swap(-1); }} className='absolute top-1/2 left-8 translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`<`}</button>
+            <button ref={rightButton} onClick={() => { clearTimeout(timeout.current); swap(1); }} className='absolute top-1/2 right-8 translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`>`}</button>
         </div>
     );
 }

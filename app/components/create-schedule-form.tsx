@@ -62,7 +62,7 @@ export default function CreateSchedules({ scheduleData }: { scheduleData: QueryR
                 </div>
 
                 <label htmlFor='comments' className='mt-2 px-2 text-red-600'>Comments</label>
-                <textarea name='comments' id='comments' placeholder='Enter any comments' className='mb-2 p-2 border-b-2' />
+                <textarea name='comments' id='comments' maxLength={80} placeholder='Enter any comments' className='mb-2 p-2 border-b-2' />
 
                 <div className='flex items-center' aria-live="polite" aria-atomic="true">
                     {response && (<p className="py-4 text-red-600">{response}</p>)}

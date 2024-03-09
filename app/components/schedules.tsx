@@ -24,13 +24,13 @@ export function SchedulesSkeleton() {
                     </thead>
                     <tbody className='border-2'>
                         <tr className='p-2 text-center divide-x-2'>
-                            <td className='p-4'></td>
-                            <td className='p-4'></td>
-                            <td className='p-4'></td>
-                            <td className='p-4'></td>
-                            <td className='p-4'></td>
-                            <td className='p-4'></td>
-                            <td className='p-4'></td>
+                            <td className='p-4'>-</td>
+                            <td className='p-4'>-</td>
+                            <td className='p-4'>-</td>
+                            <td className='p-4'>-</td>
+                            <td className='p-4'>-</td>
+                            <td className='p-4'>-</td>
+                            <td className='p-4'>-</td>
                         </tr>
                     </tbody>
                 </table>

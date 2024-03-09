@@ -101,7 +101,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                 }
             </div>
             <div className='table-cell'>
-                <textarea name='comments' id='comments' maxLength={95} defaultValue={defaultData.comments} placeholder='-' className='w-max p-4 resize-none align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} />
+                <textarea name='comments' id='comments' maxLength={80} defaultValue={defaultData.comments} placeholder='-' className='w-max p-4 resize-none align-middle bg-transparent text-center' disabled={submitting || action != 'edit'} />
             </div>
             <div className='table-cell p-2'>
                 <div className='flex justify-center items-center'>
