@@ -19,7 +19,7 @@ function TipsAndAdvice(articles: any[] | null) {
                     </div>
                 ))}
 
-                <div className='flex flex-wrap justify-center'>
+                {/* <div className='flex flex-wrap justify-center'>
                     <div className='max-w-full flex-1 p-5 flex flex-col items-center'>
                         <Image src={placeholder} alt='Placeholder 1' className='w-1/2 min-w-36' />
                         <h3 className='max-w-full py-5 text-2xl text-red-600 font-bold'>HOW TO TRAIN FOR YOUR NEXT MARATHON</h3>
@@ -47,7 +47,7 @@ function TipsAndAdvice(articles: any[] | null) {
                             Choose a great image, photo or video to feature in your post for extra engagement.
                         </p>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );
