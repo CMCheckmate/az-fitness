@@ -7,6 +7,8 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { z } from 'zod';
+import { load } from 'cheerio';
+import axios from 'axios';
 import bcrypt from 'bcrypt';
 
 const scheduleSchema = z.object({
@@ -224,5 +226,38 @@ export async function sendEmailForm(formType: string, formData: FormData) {
         }
     } catch (error) {
         return 'Something went wrong. Could not send form.';
+    }
+}
+
+export async function scrapeWebsite(url: string) {
+    interface Article {
+        title: string;
+        image: string;
+        link: string;
+        content: string;
+    }
+
+    const axiosInstance = axios.create();
+    const articles = [] as Article[];
+
+    try {
+        const response = await axiosInstance.get(url, { responseType: 'arraybuffer' });
+        const html = response.data;
+        const $ = load(html);
+        
+        const articleData = $('article');
+        articleData.each((index, element) => {
+            articles.push({
+                title: $(element).find('h3').text(),
+                image: $(element).find('img').attr('data-srcset')?.split(' ')[0] || '../public/placeholder.png',
+                link: $(element).find('a').attr('href') || '',
+                content: $(element).find('p').text()
+            });
+        });
+
+        return articles;
+    } catch (error) {
+        console.error(error);
+        return null;
     }
 }

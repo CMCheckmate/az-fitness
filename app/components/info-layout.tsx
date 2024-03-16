@@ -4,7 +4,7 @@ import { auth } from '@/auth';
 import Link from 'next/link';
 import Navigation from '@/app/components/navigation';
 import Loader from '@/app/components/loader';
-import ProfileBar from '@/app/components/sidebar';
+import ProfileBar from '@/app/components/profile-bar';
 
 export const metadata: Metadata = {
     title: 'AZ-Fitness',

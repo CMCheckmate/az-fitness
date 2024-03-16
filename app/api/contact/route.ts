@@ -10,7 +10,8 @@ export async function POST(request: Request) {
         const data = await request.json();
         
         await transporter.sendMail({
-            ...mailOptions,
+            ...mailOptions,  // Customise sender and receiver email
+            from: data.email,
             subject: data.formType,
             html: data.formType == 'Contact' ? ContactEmail(data) : TestimonialEmail(data)
         });

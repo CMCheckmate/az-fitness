@@ -32,7 +32,7 @@
   }
 
   100% {
-    transform: translateX(100%)
+    transform: translateX(125%)
   }
 }
 
@@ -42,7 +42,7 @@
   }
 
   100% {
-    transform: translateX(-100%)
+    transform: translateX(-125%)
   }
 }
 
@@ -76,7 +76,7 @@
     animation-direction: reverse;
   }
 
-  .showSidebar {
+  /* .showSidebar {
     transform: translateX(0);
     animation: slideRight 0.5s cubic-bezier(0.4, 0, 0.6, 1);
     animation-direction: reverse;
@@ -84,7 +84,7 @@
 
   .hideSidebar {
     animation: slideRight 0.5s cubic-bezier(0.4, 0, 0.6, 1);
-  }
+  } */
 
   /* .showMenu {
     background-image: url('../../public/account.png');
