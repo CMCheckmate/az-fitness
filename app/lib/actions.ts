@@ -52,8 +52,8 @@ export async function getExcludedTimes(dateTime: { date: string, time: string } 
 
 export async function getSchedules(user: Session['user'] | undefined) {
     try {
-        const schedules = user?.status == 'Administrator' ? await sql`SELECT schedule_id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH:MI AM') AS start_time, TO_CHAR(ending_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id ORDER BY name, date, starting_time;` :
-            await sql`SELECT schedule_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH:MI AM') AS start_time, TO_CHAR(ending_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email} ORDER BY date, starting_time;`;
+        const schedules = user?.status == 'Administrator' ? await sql`SELECT schedule_id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH:MI AM') AS start_time, TO_CHAR(ending_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE date >= CURRENT_DATE ORDER BY name, date, starting_time;` :
+            await sql`SELECT schedule_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH:MI AM') AS start_time, TO_CHAR(ending_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email} AND date >= CURRENT_DATE ORDER BY date, starting_time;`;
 
         return schedules.rows;
     } catch (error) {

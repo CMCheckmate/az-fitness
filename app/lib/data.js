@@ -1,5 +1,12 @@
 const users = [
     {
+        name: 'AZ Fitness',
+        email: 'az-fitnessing@gmail.com',
+        password: 'AZFitness2024',
+        status: 'Administrator',
+        signUpDate: '2024-03-24'
+    },
+    {
         name: 'Sum Ding Wong',
         email: 'sumdingwong@gmail.com',
         password: '@SumDingWong321',

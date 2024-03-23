@@ -60,7 +60,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                 {
                     action == 'edit' ?
                         <input type='date' name='date' id='date' min={defaultData.date} defaultValue={defaultData.date} onChange={(event) => { const date = event.target.value in defaultData.schedules ? event.target.value : String(new Date(event.target.value).getDay()); setDate(date); if (date == defaultData.date) { setChosenTimes({ start: defaultData.start_time, end: defaultData.end_time }) } else { setChosenTimes({ start: Object.keys(defaultData.schedules[date])[0], end: Object.values(defaultData.schedules[date])[0][0] }) } }} className='w-full p-2 bg-transparent text-center border border-transparent hover:border-gray-200' disabled={submitting} required /> :
-                        <p className='w-full p-2 px-10 bg-transparent'>{format(defaultData.date, 'dd/MM/yyyy')}</p>
+                        <p className='w-full p-2 px-9 bg-transparent'>{format(defaultData.date, 'dd/MM/yyyy')}</p>
                 }
             </div>
             <div className='table-cell p-2'>
@@ -68,7 +68,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                     action == 'edit' ?
                         <select id='start_time' name='start_time' value={chosenTimes.start} onChange={(event) => { setChosenTimes({ start: event.target.value, end: chosenTimes.end }); }} className='w-full p-2 appearance-none bg-transparent text-center border border-transparent hover:border-gray-200' required >
                             {defaultData.schedules[date] ? Object.keys(defaultData.schedules[date]).map((time, index) => (
-                                <option key={`start_time_${index + 1}`} value={time}>{time}</option>
+                                <option key={`start_time_${index + 1}`} value={time} className='text-red-600'>{time}</option>
                             )) : <option disabled value=''>No available times</option>}
                         </select> :
                         <p className='w-full p-2 px-3 bg-transparent'>{defaultData.start_time}</p>
@@ -79,7 +79,7 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                     action == 'edit' ?
                         <select id='end_time' name='end_time' value={chosenTimes.end} onChange={(event) => { setChosenTimes({ start: chosenTimes.start, end: event.target.value }); }} className='w-full p-2 appearance-none bg-transparent text-center border border-transparent hover:border-gray-200' required >
                             {defaultData.schedules[date] && defaultData.schedules[date][chosenTimes.start] ? Object.values(defaultData.schedules[date][chosenTimes.start]).map((time, index) => (
-                                <option key={`end_time_${index + 1}`} value={time}>{time}</option>
+                                <option key={`end_time_${index + 1}`} value={time} className='text-red-600'>{time}</option>
                             )) : <option disabled value=''>No available times</option>}
                         </select> :
                         <p className='w-full p-2 px-3 bg-transparent'>{defaultData.end_time}</p>
