@@ -1,12 +1,12 @@
 import { auth } from '@/auth';
 import SignOut from '@/app/components/signout-button';
 import AccountForm from '@/app/components/account-form';
+import ScheduleLayout from '@/app/components/schedule-layout';
+import { Session } from 'next-auth';
 
-export default async function LoginPage() {
-    const session = await auth();
-
+function Login(session: Session | null ) {
     return (
-        <div className='p-5 flex justify-center items-center'>
+        <div className='p-5 grid place-items-center overflow-auto'>
             <div className='w-1/2 min-w-min shadow-lg'>
                 {
                     session?.user ? 
@@ -20,3 +20,11 @@ export default async function LoginPage() {
         </div>
     );
 };
+
+export default async function LoginPage() {
+    const session = await auth();
+
+    return (
+        <ScheduleLayout content={Login(session)} />
+    )
+}

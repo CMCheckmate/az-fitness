@@ -7,10 +7,8 @@ import EditSchedules from '@/app/components/edit-schedule-form';
 export function SchedulesSkeleton() {
     return (
         <div>
-            <h2 className='p-5 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
-
             <div className='m-5 grid place-items-center overflow-auto'>
-                <table className='w-3/4 border-2'>
+                <table className='w-3/4 min-w-max border-2'>
                     <thead className='border-2'>
                         <tr className='divide-x-2 bg-red-600'>
                             <th className='table-cell p-2 text-center text-l text-white font-bold'>Number</th>
@@ -177,14 +175,12 @@ export default async function Schedules({ session }: { session: Session | null }
 
     return (
         <div>
-            <h2 className='p-5 text-center text-4xl text-red-600 font-bold'>Schedules</h2>
-
             <div className='mx-10 grid place-items-center overflow-auto'>
-                <div className='w-3/4 table border-2'>
+                <div className='w-3/4 min-w-max table border-2'>
                     <div className='table-header-group'>
                         <div className='table-row divide-x-2 bg-red-600'>
                             <div className='table-cell p-2 text-center text-l text-white font-bold'>Number</div>
-                            {session?.user.status == 'administrator' && <div className='table-cell text-center p-2 text-l text-white font-bold'>Name</div>}
+                            {session?.user.status == 'Administrator' && <div className='table-cell text-center p-2 text-l text-white font-bold'>Name</div>}
                             <div className='table-cell p-2 text-center text-l text-white font-bold'>Date</div>
                             <div className='table-cell p-2 text-center text-l text-white font-bold'>Start Time</div>
                             <div className='table-cell p-2 text-center text-l text-white font-bold'>End Time</div>
@@ -195,16 +191,30 @@ export default async function Schedules({ session }: { session: Session | null }
                     </div>
 
                     <div className='table-row-group'>
-                        {schedules && schedules.map((schedule, index) => (
-                            <EditSchedules key={`row_${index + 1}`} data={{ ...schedule, number: index + 1, schedules: scheduleTimes[index] }} className={`${index % 2 != 0 && 'bg-gray-300'}`} />
-                        ))}
+                        {
+                            schedules.length > 0 ? 
+                                schedules.map((schedule, index) => (
+                                    <EditSchedules key={`row_${index + 1}`} data={{ ...schedule, number: index + 1, schedules: scheduleTimes[index] }} className={`${index % 2 != 0 && 'bg-gray-300'}`} />
+                                )) : 
+                                <div className='table-row divide-x-2 divide-y-2 text-center font-bold'>
+                                    <div className='table-cell p-4'>-</div>
+                                    <div className='table-cell p-4'>-</div>
+                                    <div className='table-cell p-4'>-</div>
+                                    <div className='table-cell p-4'>-</div>
+                                    <div className='table-cell p-4'>-</div>
+                                    <div className='table-cell p-4'>-</div>
+                                    <div className='table-cell p-4'>-</div>
+                                </div>
+                        }
                     </div>
                 </div>
             </div>
-
-            <div className='m-5 grid place-items-center overflow-auto'>
-                <div className='w-1/2 min-w-min m-5 p-10 shadow-lg'>
-                    <CreateSchedules scheduleData={await getScheduleTimes()} />
+ 
+            <div className='bg-red-600'>
+                <div className='mt-10 p-10 grid place-items-center overflow-auto'>
+                    <div className='w-3/4 min-w-max p-10 bg-white shadow-2xl'>
+                        <CreateSchedules scheduleData={await getScheduleTimes()} />
+                    </div>
                 </div>
             </div>
         </div>

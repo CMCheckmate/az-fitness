@@ -23,7 +23,7 @@ export default function TestimonialForm() {
     return (
         <form ref={reviewForm} action={dispatch} onSubmit={() => { setSubmitting(true); setResponse('Loading...'); }}>
             <fieldset disabled={submitting}>
-                <h3 className='text-center text-xl text-white'>How Was Your Experience?</h3>
+                <h3 className='text-center text-2xl text-white'>How Was Your Experience?</h3>
 
                 <div className='grid grid-cols-2'>
                     <input type='text' name='firstName' id='firstName' placeholder='First Name' className='m-5 p-5 border-b-2' required />
@@ -36,7 +36,7 @@ export default function TestimonialForm() {
 
                     <textarea name='review' id='review' placeholder='Write your review here' className='col-span-2 m-5 p-5 border-b-2' required />
                     
-                    <p className='col-span-2 m-5 text-white'>Would you recommend us to your friends?</p>
+                    <p className='col-span-2 m-5 text-xl text-white'>Would you recommend us to your friends?</p>
                     <label htmlFor='Yes' className='mx-5'>
                         <input type='radio' name='recommend' id='Yes' value='Yes' required />
                         <span className='p-5 text-white'>Yes</span>

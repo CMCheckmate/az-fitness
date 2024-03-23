@@ -52,7 +52,7 @@ export async function getExcludedTimes(dateTime: { date: string, time: string } 
 
 export async function getSchedules(user: Session['user'] | undefined) {
     try {
-        const schedules = user?.status == 'administrator' ? await sql`SELECT schedule_id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH:MI AM') AS start_time, TO_CHAR(ending_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id ORDER BY name, date, starting_time;` :
+        const schedules = user?.status == 'Administrator' ? await sql`SELECT schedule_id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH:MI AM') AS start_time, TO_CHAR(ending_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id ORDER BY name, date, starting_time;` :
             await sql`SELECT schedule_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, TO_CHAR(starting_time, 'HH:MI AM') AS start_time, TO_CHAR(ending_time, 'HH:MI AM') AS end_time, address, comments FROM schedules INNER JOIN users ON schedules.user_id = users.user_id WHERE email = ${user?.email} ORDER BY date, starting_time;`;
 
         return schedules.rows;
@@ -113,8 +113,8 @@ export async function addSchedules(formData: FormData) {
 export async function updateSchedule(scheduleID: string, formData: FormData) {
     const validatedFields = scheduleSchema.safeParse({
         date: formData.get('date'),
-        startTime: formData.get('startTime'),
-        endTime: formData.get('endTime'),
+        startTime: formData.get('start_time'),
+        endTime: formData.get('end_time'),
         address: formData.get('address'),
         comments: formData.get('comments')
     });
@@ -164,9 +164,18 @@ export async function signUp(formData: FormData) {
 
             try {
                 await sql`INSERT INTO users(name, email, password, status, signup_date) 
-            VALUES(${name}, ${email}, ${hashedPassword}, ${'member'}, ${(new Date).toISOString().split('T')[0]});`;
+            VALUES(${name}, ${email}, ${hashedPassword}, ${'Member'}, ${(new Date).toISOString().split('T')[0]});`;
             } catch (error) {
-                return 'Database error. Failed to add user.';
+                try {
+                    const existingEmail = await sql`SELECT email FROM users WHERE email = ${email};`;
+                    if (existingEmail.rows.length > 0) {
+                        return 'Email already exists, try logging in.';
+                    } else {
+                        return 'Database error: Failed to add user.';
+                    }
+                } catch (error) {
+                    return 'Database error: Failed to add user.';
+                }
             }
             return 'Successful signup';
         } else {
@@ -247,17 +256,18 @@ export async function scrapeWebsite(url: string) {
         
         const articleData = $('article');
         articleData.each((index, element) => {
-            articles.push({
-                title: $(element).find('h3').text(),
-                image: $(element).find('img').attr('data-srcset')?.split(' ')[0] || '../public/placeholder.png',
-                link: $(element).find('a').attr('href') || '',
-                content: $(element).find('p').text()
-            });
+            if ($(element).attr('data-card-type') != 'premium') {
+                articles.push({
+                    title: $(element).find('h3').text(),
+                    image: $(element).find('img').attr('data-srcset')?.split(' ')[0] || '../public/placeholder.png',
+                    link: $(element).find('a').attr('href') || '',
+                    content: $(element).find('p').text()
+                });
+            }
         });
 
         return articles;
     } catch (error) {
-        console.error(error);
         return null;
     }
 }

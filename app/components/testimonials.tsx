@@ -85,10 +85,10 @@ export default function TestimonialDisplay() {
     return (
         <div className='relative py-32 flex justify-center items-center text-center overflow-x-hidden'>
             {testimonials.map((testimonial, index) => (
-                <div key={`testimonial${index + 1}`} ref={(block) => { testimonialBlocks.current.push(block); }} onAnimationEnd={() => { setBlock(index); }} className={`w-3/4 min-w-min ${(index == 0 ? 'block' : 'hidden') }`}>
+                <div key={`testimonial${index + 1}`} ref={(block) => { testimonialBlocks.current.push(block); }} onAnimationEnd={() => { setBlock(index); }} className={`md:w-3/4 min-w-min ${(index == 0 ? 'block' : 'hidden') }`}>
                     <p className={`mt-5 text-9xl text-red-600 ${nestoCopper.className} leading-[0.5]`}>{'\'\''}</p>
-                    <p className='mx-16 text-red-600'>{testimonial.text}</p>
-                    <p className='mt-10 text-xl text-red-600'>{testimonial.author}</p>
+                    <p className='mx-16 text-xl text-red-600'>{testimonial.text}</p>
+                    <p className='mt-10 text-2xl text-red-600'>{testimonial.author}</p>
                 </div>
             ))}
             <button ref={leftButton} onClick={() => { clearTimeout(timeout.current); swap(-1); }} className='absolute top-1/2 left-8 translate-y-[-50%] text-5xl text-red-600 hover:text-red-400'>{`<`}</button>

@@ -11,7 +11,7 @@ async function seedUsers(client) {
             RETURNS VOID AS $$
             BEGIN
                 IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_status') THEN
-                    CREATE TYPE user_status AS ENUM ('member', 'administrator');
+                    CREATE TYPE user_status AS ENUM ('Member', 'Administrator');
                 END IF;
             END;
             $$ LANGUAGE plpgsql;
@@ -19,9 +19,9 @@ async function seedUsers(client) {
 
             CREATE TABLE IF NOT EXISTS users (
                 user_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                name VARCHAR(45) NOT NULL,
-                email VARCHAR(45) NOT NULL UNIQUE,
-                password TEXT NOT NULL,
+                name VARCHAR(50) NOT NULL,
+                email VARCHAR(50) NOT NULL UNIQUE,
+                password VARCHAR(65) NOT NULL,
                 status user_status NOT NULL,
                 signup_date DATE NOT NULL
             );
@@ -59,8 +59,8 @@ async function seedSchedules(client) {
                 date DATE NOT NULL,
                 starting_time TIME NOT NULL,
                 ending_time TIME NOT NULL,
-                address VARCHAR(95),
-                comments VARCHAR(45),
+                address VARCHAR(100),
+                comments VARCHAR(100),
                 CONSTRAINT user_id
                     FOREIGN KEY (user_id)
                     REFERENCES users (user_id)

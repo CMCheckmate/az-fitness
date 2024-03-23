@@ -3,28 +3,28 @@ const users = [
         name: 'Sum Ding Wong',
         email: 'sumdingwong@gmail.com',
         password: '@SumDingWong321',
-        status: 'administrator',
+        status: 'Administrator',
         signUpDate: '2019-02-01'
     },
     {
         name: 'Sussy Baka',
         email: 'sussybaka@gmail.com',
         password: '#SussyBaka123',
-        status: 'member',
+        status: 'Member',
         signUpDate: '2020-01-02'
     },
     {
         name: 'Mike Oxlong',
         email: 'mikeoxlong@yahoo.com',
         password: '$mikeoxlong69',
-        status: 'member',
+        status: 'Member',
         signUpDate: '2023-09-29'
     },
     {
         name: 'Hatsune Miku',
         email: 'hatsunemiku@hotmail.com',
-        password: 'SEKAIIIII',
-        status: 'member',
+        password: 'SEKAI DE ICHIBAN OHIME-SAMA',
+        status: 'Member',
         signUpDate: '2024-01-01'
     }
 ]

@@ -2,22 +2,33 @@ import { Suspense } from 'react';
 import { auth } from '@/auth';
 import SignOut from '@/app/components/signout-button';
 import Schedules, { SchedulesSkeleton } from '@/app/components/schedules';
+import ScheduleLayout from '../components/schedule-layout';
+import { Session } from 'next-auth';
 
-export default async function SchedulePage() {
-    const session = await auth();
-
+function Schedule(session: Session | null) {
     return (
-        <div>
-            <div className='max-w-full m-5 p-2 flex flex-wrap items-center justify-center'>
-                <h3 className='max-w-full text-2xl font-bold'>{session ? `Logged In As: ${session.user?.name} (${session.user?.status})` : 'Problem with user session'}</h3>
-                <div className='mx-5'>
-                    <SignOut />
+        <div className='pt-10'>
+            <div className='mx-10 flex justify-center items-center'>
+                <div className='md:w-3/4 flex justify-end items-center'>
+                    <div className='flex flex-wrap'>
+                        <h3 className='mr-5 text-xl font-bold'>{session ? `${session.user?.status}: ${session.user?.name}` : 'Problem with user session'}</h3>
+                        <SignOut />
+                    </div>
                 </div>
             </div>
+            <h2 className='p-5 text-4xl text-center text-red-600 font-bold'>Schedules</h2>
 
             <Suspense fallback={<SchedulesSkeleton />}>
                 <Schedules session={session} />
             </Suspense>
         </div>
     );
+}
+
+export default async function SchedulePage() {
+    const session = await auth();
+
+    return (
+        <ScheduleLayout content={Schedule(session)} />
+    )
 }

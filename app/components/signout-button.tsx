@@ -16,7 +16,7 @@ export default function SignOut() {
     return (
         <form action={dispatch} onSubmit={() => { setLoading(true); }} className=''>
             <button className='w-full p-2 flex justify-center items-center rounded-md bg-gray-400'>
-                <div className='w-max flex justify-center items-center'>
+                <div className='w-32 flex justify-center items-center'>
                     <span className='text-white font-bold'>Sign Out</span>
                     <div className='flex items-center' aria-live='polite' aria-atomic='true'>
                         {loading && <CircularProgress className='mx-2 max-w-5 max-h-5' />}

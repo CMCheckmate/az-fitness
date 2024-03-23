@@ -30,10 +30,10 @@ export default async function InfoLayout({ content }: { content: React.ReactNode
                 <Loader component={content} />
             </main>
 
-            <div className='p-10 text-center'>
-                <h3 className='py-5 text-xl text-red-600 font-bold'>A to Z Fitness</h3>
-                <h4 className='text-red-600'>aran.ziegler@gmail.com</h4>
-                <h4 className='text-red-600'>022 017 0799</h4>
+            <div className='p-10 flex flex-col justify-center items-center text-center'>
+                <Link href={'/'} className='py-5 text-xl text-red-600 font-bold hover:underline'>A to Z Fitness</Link>
+                <Link href={'mailto:aran.ziegler@gmail.com'} className='text-red-600 italic hover:underline'>aran.ziegler@gmail.com</Link>
+                <Link href={'tel:+64284357966'} className='text-red-600 hover:underline'>022-017-0799</Link>
                 <p className='pt-10 text-red-600'>©2023 by AZ Fitness</p>
             </div>
         </div>

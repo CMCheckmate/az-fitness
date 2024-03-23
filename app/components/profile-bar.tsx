@@ -5,6 +5,8 @@ import { Session } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import profile from '@/public/account.png';
+import profileIcon from '@/public/profile_icon.png'
+import unknownIcon from '@/public/unknown_profile.png';
 import SignOut from '@/app/components/signout-button';
 
 export default function ProfileBar({ session } : { session : Session | null }) {
@@ -28,20 +30,21 @@ export default function ProfileBar({ session } : { session : Session | null }) {
                     <div className='p-5 flex flex-col justify-end items-end rounded-lg bg-red-600'>
                         {
                             session && session.user ?
-                                <div className='my-5 flex flex-col justify-center items-end'>
-                                    <p className='py-2 text-right text-white text-xl'>
+                                <div className='min-w-50 my-5 p-5 flex flex-col justify-center items-center'>
+                                    <Image src={profileIcon} alt="Profile Image"></Image>
+                                    <p className='py-2 text-center text-white text-xl'>
                                         {session.user.name}
                                     </p>
-                                    <div className='w-full max-w-11/12 my-2'>
+                                    <div className='my-2'>
                                         <SignOut />
                                     </div>
                                 </div> :
-                                <div className='my-5 flex flex-col justify-center items-end'>
+                                <div className='my-5 flex flex-col justify-center items-center'>
+                                    <Image src={unknownIcon} alt="Unknown Profile"></Image>
                                     <h2 className='py-2 text-2xl text-white font-bold'>Account</h2>
                                     <Link className='w-min p-2 bg-gray-400 rounded-md text-white font-bold' href='/login'>Login/Signup</Link>
                                 </div>
                         }
-                        <Link className='w-min my-5 text-2xl text-white font-bold hover:text-gray-200 hover:underline' href='/schedules'>Schedules</Link>
                     </div>
                 </div>
             </div>
