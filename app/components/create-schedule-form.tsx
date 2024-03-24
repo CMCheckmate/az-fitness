@@ -7,7 +7,7 @@ import { addSchedules } from '@/app/lib/actions';
 import { addDays, format } from 'date-fns';
 import { QueryResultRow } from '@vercel/postgres';
 import { CircularProgress } from '@mui/material';
-import Map from '@/app/components/map';
+import Map, { gymLocations } from '@/app/components/map';
 
 export default function CreateSchedules({ scheduleData }: { scheduleData: QueryResultRow }) {
     const scheduleForm = useRef(null);
@@ -49,10 +49,9 @@ export default function CreateSchedules({ scheduleData }: { scheduleData: QueryR
                 <label htmlFor='address' className='mt-2 px-2 text-red-600'>Session Address</label>
                 <input type='text' name='address' list='addressList' spellCheck={false} maxLength={95} placeholder='Enter your desired address' className='mb-2 p-2 border-b-2' required />
                 <datalist id='addressList'>
-                    <option value='252 Oteha Valley Road, Albany'>252 Oteha Valley Road, Albany</option>
-                    <option value='The Foundation 270 Oteha Valley Road, Albany'>The Foundation 270 Oteha Valley Road, Albany</option>
-                    <option value='C3/65 Greville Road, Pinehill'>C3/65 Greville Road, Pinehill</option>
-                    <option value='24 Tawa Drive, Albany'>24 Tawa Drive, Albany</option>
+                    {gymLocations && gymLocations.map((location, index) => (
+                        <option value={location} key={`location_${index}`}>{`${location}`}</option>
+                    ))}
                 </datalist>
                 
                 <div className='p-10 grid place-items-center bg-gray-100'>

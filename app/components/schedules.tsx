@@ -204,6 +204,7 @@ export default async function Schedules({ session }: { session: Session | null }
                                     <div className='table-cell p-4'>-</div>
                                     <div className='table-cell p-4'>-</div>
                                     <div className='table-cell p-4'>-</div>
+                                    <div className='table-cell p-4'>-</div>
                                 </div>
                         }
                     </div>

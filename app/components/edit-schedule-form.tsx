@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 import { updateSchedule, deleteSchedule } from '@/app/lib/actions';
 import { QueryResultRow } from '@vercel/postgres';
 import { CircularProgress } from '@mui/material';
+import { gymLocations } from './map';
 
 export default function EditSchedules({ data, className }: { data: QueryResultRow, className?: string }) {
     interface Data {
@@ -91,10 +92,9 @@ export default function EditSchedules({ data, className }: { data: QueryResultRo
                         <div>
                             <input type='text' name='address' list='addressList' maxLength={95} defaultValue={defaultData.address} placeholder='Enter your desired address' className={`w-full p-2 bg-transparent text-center border border-transparent hover:border-gray-200`} spellCheck={false} disabled={submitting || action != 'edit'} required />
                             <datalist id='addressList'>
-                                <option value='252 Oteha Valley Road, Albany'>252 Oteha Valley Road, Albany</option>
-                                <option value='The Foundation 270 Oteha Valley Road, Albany'>The Foundation 270 Oteha Valley Road, Albany</option>
-                                <option value='C3/65 Greville Road, Pinehill'>C3/65 Greville Road, Pinehill</option>
-                                <option value='24 Tawa Drive, Albany'>24 Tawa Drive, Albany</option>
+                                {gymLocations && gymLocations.map((location, index) => (
+                                    <option value={location} key={`location_${index}`}>{`${location}`}</option>
+                                ))}
                             </datalist>
                         </div> :
                         <textarea value={defaultData.address} placeholder='-' className='w-full px-5 resize-none align-middle bg-transparent text-center' disabled/>

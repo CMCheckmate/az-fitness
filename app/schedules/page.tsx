@@ -10,7 +10,7 @@ function Schedule(session: Session | null) {
         <div className='pt-10'>
             <div className='mx-10 flex justify-center items-center'>
                 <div className='md:w-3/4 flex justify-end items-center'>
-                    <div className='flex flex-wrap'>
+                    <div className='flex flex-wrap justify-center items-center'>
                         <h3 className='mr-5 text-xl font-bold'>{session ? `${session.user?.status}: ${session.user?.name}` : 'Problem with user session'}</h3>
                         <SignOut />
                     </div>
